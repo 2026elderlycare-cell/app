@@ -407,6 +407,19 @@ textarea.fi{resize:none;min-height:70px;}
 .vital-chip{background:var(--crema);border-radius:8px;padding:4px 8px;text-align:center;}
 .vital-val{font-size:13px;font-weight:600;color:var(--verde);}
 .vital-lbl{font-size:10px;color:var(--suave);}
+
+
+.mod-inner { padding: 16px 14px 100px; }
+.mod-inner .stitle { font-family: 'Cormorant Garamond', serif; font-size: 24px; 
+  font-weight: 400; font-style: italic; color: var(--verde); margin-bottom: 3px; }
+.mod-inner .ssub { font-size: 12px; color: var(--suave); margin-bottom: 14px; }
+
+/* ═══ MODULE ISOLATION FIX ═══ */
+.module { display: none !important; }
+.module.active { display: block !important; }
+.subview { display: none !important; }
+.module.active .subview.active { display: block !important; animation: fu .3s ease; }
+
 </style>
 </head>
 <body>
@@ -934,6 +947,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:19px;heigh
 
 </div>
 
+</div>
 <!-- ═══════════════════════════
      MÓDULO 2: PERSONAL
 ═══════════════════════════ -->
@@ -1604,51 +1618,48 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:19px;heigh
 ══════════════════════════════ -->
 <div class="module" id="mod-gastos">
   <div class="subview active" id="gsub-gastos">
-  <div style="padding:16px 14px">
-  <div class="stitle">Gastos</div>
-  <div class="ssub">Registro mensual del residencial</div>
-  <div class="card" style="display:flex;justify-content:space-between;align-items:center">
-    <div><div style="font-size:11px;color:var(--suave)">TOTAL ESTE MES</div>
-    <div style="font-family:Cormorant Garamond,serif;font-size:28px;color:var(--verde)" id="gastos-total">$0</div></div>
-    <button class="btn bv btn-sm" onclick="showM('modal-gasto-manual')">＋ Agregar</button>
+    <div class="mod-inner">
+      <div class="stitle">Gastos</div>
+      <div class="ssub" id="gastos-mes-label">Mes actual</div>
+
+      <!-- Resumen total -->
+      <div class="card" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <div>
+          <div style="font-size:11px;color:var(--suave);letter-spacing:.5px">TOTAL ESTE MES</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:300;color:var(--verde)" id="gastos-total">$0</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:7px">
+          <button class="btn bv btn-sm" onclick="showM('modal-gasto-manual')">＋ Agregar gasto</button>
+        </div>
+      </div>
+
+      <!-- Distribución socias -->
+      <div class="sg" style="margin-bottom:12px">
+        <div class="sc">
+          <div class="sn" style="font-size:22px" id="gastos-juli">$0</div>
+          <div class="sl">Juliana 40%</div>
+        </div>
+        <div class="sc">
+          <div class="sn" style="font-size:22px" id="gastos-lucia">$0</div>
+          <div class="sl">Lucía 40%</div>
+        </div>
+      </div>
+      <div class="card" style="text-align:center;margin-bottom:12px">
+        <div class="sn" style="font-size:20px" id="gastos-flavia">$0</div>
+        <div class="sl">Flavia 20%</div>
+      </div>
+
+      <!-- Lista de gastos -->
+      <div class="sep">Gastos del mes</div>
+      <div id="lista-gastos">
+        <div style="text-align:center;padding:30px;color:var(--suave)">Sin gastos este mes</div>
+      </div>
+
+      <div style="height:80px"></div>
+    </div>
   </div>
-  <div class="sep">Gastos del mes</div>
-  <div id="lista-gastos"></div>
-  <div style="height:70px"></div>
-  </div>
-  </div>
-  <div class="section-title">Gastos</div><div class="section-sub">Abril 2025 · elderlycare94@gmail.com</div>
-  <div class="card" style="background:var(--verde);border:none">
-    <div style="color:rgba(255,255,255,.5);font-size:10px;letter-spacing:1px;margin-bottom:4px">TOTAL DEL MES</div>
-    <div style="font-family:'Cormorant Garamond',serif;font-size:40px;font-weight:300;color:var(--dorado-claro);line-height:1">$87.340</div>
-    <div style="font-size:11px;color:rgba(255,255,255,.35);margin-top:3px">UYU · Actualizado hoy</div>
-    <div class="divider" style="background:rgba(255,255,255,.12);margin:10px 0"></div>
-    <div style="display:flex;justify-content:space-between;font-size:13px;color:rgba(255,255,255,.8)"><span>Juliana (40%)</span><strong style="color:var(--dorado-claro)">$9.864</strong></div>
-    <div style="display:flex;justify-content:space-between;font-size:13px;color:rgba(255,255,255,.8);margin-top:4px"><span>Lucía (40%)</span><strong style="color:var(--dorado-claro)">$9.864</strong></div>
-    <div style="display:flex;justify-content:space-between;font-size:13px;color:rgba(255,255,255,.8);margin-top:4px"><span>Flavia (20%)</span><strong style="color:var(--dorado-claro)">$4.932</strong></div>
-  </div>
-  <div class="sep-label">Escanear documento</div>
-  <div class="ocr-area" onclick="showM('modal-ocr')">
-    <div class="ocr-icon">📷</div>
-    <div class="ocr-label">Foto a factura o recibo</div>
-    <div class="ocr-sub">Claude reconoce y carga automáticamente</div>
-  </div>
-  <div class="norma-box">📧 <strong>Facturas por email:</strong> Para cargar una factura que llegó a elderlycare94@gmail.com, reenviala a la app o usá el botón de foto. Integración automática disponible en fase 2 del desarrollo.</div>
-  <div class="sep-label">Gastos del mes</div>
-  <div class="card">
-    <div class="gasto-item"><div class="gasto-cat" style="background:#e3f2fd">💧</div><div style="flex:1"><div style="font-size:13px;font-weight:500">OSE — Agua</div><div style="font-size:11px;color:var(--texto-suave)">03 abr · Factura #8821</div></div><div class="gasto-monto">$3.200</div></div>
-    <div class="gasto-item"><div class="gasto-cat" style="background:#fff3e0">⚡</div><div style="flex:1"><div style="font-size:13px;font-weight:500">UTE — Electricidad</div><div style="font-size:11px;color:var(--texto-suave)">05 abr · Factura #44102</div></div><div class="gasto-monto">$8.750</div></div>
-    <div class="gasto-item"><div class="gasto-cat" style="background:#f3e5f5">🔥</div><div style="flex:1"><div style="font-size:13px;font-weight:500">Gaseba — Gas</div><div style="font-size:11px;color:var(--texto-suave)">05 abr · Factura #1190</div></div><div class="gasto-monto">$4.100</div></div>
-    <div class="gasto-item"><div class="gasto-cat" style="background:#e8f5e9">🛒</div><div style="flex:1"><div style="font-size:13px;font-weight:500">Supermercado · Alimentos</div><div style="font-size:11px;color:var(--texto-suave)">08 abr · Ticket #3390</div></div><div class="gasto-monto">$22.800</div></div>
-    <div class="gasto-item"><div class="gasto-cat" style="background:#fce4ec">💊</div><div style="flex:1"><div style="font-size:13px;font-weight:500">Farmacia · Insumos</div><div style="font-size:11px;color:var(--texto-suave)">10 abr · Ticket #7712</div></div><div class="gasto-monto">$12.490</div></div>
-  </div>
-  <button class="btn btn-dorado" onclick="showM('modal-informe')">📄 Generar informe mensual</button>
-</div>
 </div>
 
-<!-- ══════════════════════════════
-     MÓDULO 4: DIAGNÓSTICO
-══════════════════════════════ -->
 <div class="module" id="mod-diagnostico">
   <div class="subview active" id="dsub-resumen">
     <div class="section-title">Diagnóstico</div><div class="section-sub">Salud financiera · Abr 2025</div>
@@ -2172,8 +2183,8 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:19px;heigh
       <div style="font-size:11px;color:rgba(100,100,100,.5);margin-top:4px">elderlycare94@gmail.com</div>
     </div>
     <div style="display:flex;gap:8px"><button class="btn btn-sec" style="flex:1" onclick="closeM('modal-perfil')">Cerrar</button><button class="btn btn-rojo" style="flex:1" onclick="logout()">🔒 Salir</button></div>
-  </div>
-</div>
+  
+
 
 <!-- base script removed: consolidated below -->
 </body>
@@ -3148,28 +3159,44 @@ async function guardarLiquidacion() {
 // GASTOS DESDE DB
 // ═══════════════════════════════════════════════════
 function renderGastos() {
-  var container = document.getElementById('lista-gastos');
-  if (!container) return;
   var mesActual = new Date().toISOString().slice(0,7);
-  var gastosDelMes = DB.gastos.filter(function(g){
+  var mesLabel  = new Date().toLocaleString('es-UY',{month:'long',year:'numeric'});
+  var lbl = document.getElementById('gastos-mes-label');
+  if (lbl) lbl.textContent = mesLabel.charAt(0).toUpperCase() + mesLabel.slice(1);
+
+  var gastosM = DB.gastos.filter(function(g){
     return g.fecha && String(g.fecha).startsWith(mesActual);
   });
-  var total = gastosDelMes.reduce(function(s,g){return s+Number(g.monto);},0);
-  var el = document.getElementById('gastos-total');
-  if (el) el.textContent = '$'+total.toLocaleString('es-UY');
-  if (gastosDelMes.length === 0) {
-    container.innerHTML = '<div style="text-align:center;padding:20px;color:var(--suave)">Sin gastos este mes</div>';
+  var total = gastosM.reduce(function(s,g){ return s + Number(g.monto); }, 0);
+
+  var elTot = document.getElementById('gastos-total');
+  if (elTot) elTot.textContent = '$' + Math.round(total).toLocaleString('es-UY');
+  var elJ = document.getElementById('gastos-juli');
+  if (elJ) elJ.textContent = '$' + Math.round(total*0.4).toLocaleString('es-UY');
+  var elL = document.getElementById('gastos-lucia');
+  if (elL) elL.textContent = '$' + Math.round(total*0.4).toLocaleString('es-UY');
+  var elF = document.getElementById('gastos-flavia');
+  if (elF) elF.textContent = '$' + Math.round(total*0.2).toLocaleString('es-UY');
+
+  var container = document.getElementById('lista-gastos');
+  if (!container) return;
+
+  if (gastosM.length === 0) {
+    container.innerHTML = '<div style="text-align:center;padding:30px;color:var(--suave)">Sin gastos este mes.<br>Tocá <strong>+ Agregar gasto</strong> para registrar.</div>';
     return;
   }
-  var ICONOS = {'Electricidad':'⚡','Agua':'💧','Gas':'🔥','Alimentación':'🛒','Farmacia':'💊','Personal':'👥','Otro':'📋'};
-  container.innerHTML = gastosDelMes.slice().reverse().slice(0,20).map(function(g) {
-    var ico = ICONOS[g.categoria] || '📋';
-    var fecha = g.fecha ? new Date(g.fecha).toLocaleDateString('es-UY') : '';
-    return '<div class="gasto-item">'+
-      '<div class="gasto-cat" style="background:var(--crema)">'+ico+'</div>'+
-      '<div style="flex:1"><div style="font-size:13px;font-weight:500">'+g.descripcion+'</div>'+
-      '<div style="font-size:11px;color:var(--suave)">'+fecha+' · '+g.registrado_por+'</div></div>'+
-      '<div class="gasto-monto">$'+Number(g.monto).toLocaleString('es-UY')+'</div>'+
+
+  var ICONOS = {Electricidad:'⚡',Agua:'💧',Gas:'🔥',Alimentación:'🛒',Farmacia:'💊',Personal:'👥',Mantenimiento:'🔧',Otro:'📋'};
+  container.innerHTML = gastosM.slice().reverse().slice(0,30).map(function(g) {
+    var ico   = ICONOS[g.categoria] || '📋';
+    var fecha = g.fecha ? new Date(g.fecha+'T00:00:00').toLocaleDateString('es-UY') : '';
+    return '<div class="gasto-item">' +
+      '<div class="gasto-cat">' + ico + '</div>' +
+      '<div style="flex:1">' +
+        '<div style="font-size:13px;font-weight:500">' + g.descripcion + '</div>' +
+        '<div style="font-size:11px;color:var(--suave)">' + fecha + ' · ' + (g.categoria||'') + (g.registrado_por?' · '+g.registrado_por:'') + '</div>' +
+      '</div>' +
+      '<div class="gasto-monto">$' + Number(g.monto).toLocaleString('es-UY') + '</div>' +
     '</div>';
   }).join('');
 }
