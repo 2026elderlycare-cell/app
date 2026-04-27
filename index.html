@@ -399,10 +399,14 @@ textarea.fi{resize:none;min-height:70px;}
 .btn{border:none;border-radius:var(--radio-sm,9px);padding:11px 15px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;width:100%;display:flex;align-items:center;justify-content:center;gap:6px;}
 .btn:active{opacity:.8;}
 
-/* ── SYNC INDICATOR ── */
-.sync-dot { width:8px;height:8px;border-radius:50%;background:#4caf50;display:inline-block;margin-left:6px;animation:pulse 2s infinite; }
-.sync-dot.offline { background:#ff9800; }
-@keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:.4;} }
+.gasto-item{display:flex;align-items:center;gap:11px;padding:10px 0;border-bottom:1px solid var(--crema-o);}
+.gasto-item:last-child{border-bottom:none;}
+.gasto-cat{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.gasto-monto{font-weight:600;font-size:14px;color:var(--rojo);flex-shrink:0;}
+.hist-vitales{display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;}
+.vital-chip{background:var(--crema);border-radius:8px;padding:4px 8px;text-align:center;}
+.vital-val{font-size:13px;font-weight:600;color:var(--verde);}
+.vital-lbl{font-size:10px;color:var(--suave);}
 </style>
 </head>
 <body>
@@ -740,6 +744,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:19px;heigh
 
   <div class="stitle">Residentes</div>
   <div class="ssub">9 residentes activos · Abr 2026</div>
+  <div id="lista-residentes"></div>
 
   <div class="sg">
     <div class="sc vbg"><div class="sn">9</div><div class="sl">Activos</div></div>
@@ -860,6 +865,8 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:19px;heigh
     <button class="btn bd btn-sm" onclick="imprimirPastillero()">⬇️ PDF</button>
   </div>
 
+  <div id="pastillero-dinamico"></div>
+  <div id="pastillero-estatico" style="display:none">
   <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;color:#1565c0;margin-bottom:8px">🌅 MAÑANA — 08:00 hs</div>
   <div class="card" style="padding:10px">
     <div class="past-row" onclick="resTogglePast(this)"><div class="past-check">○</div><div class="past-info"><div class="past-res">Leonor Rodríguez</div><div class="past-med">Esomeprazol 20mg · 1 comp en ayunas</div></div><div class="past-hab">Hab.9</div></div>
@@ -963,6 +970,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:19px;heigh
   </div>
 
   <div class="sep">Cuidadoras activas</div>
+  <div id="lista-empleadas"></div>
 
   <div class="emp-card" onclick="abrirEmp('choca')">
     <div class="emp-av">CH</div>
@@ -1595,6 +1603,20 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:19px;heigh
 ═══════════════════════════ -->
 ══════════════════════════════ -->
 <div class="module" id="mod-gastos">
+  <div class="subview active" id="gsub-gastos">
+  <div style="padding:16px 14px">
+  <div class="stitle">Gastos</div>
+  <div class="ssub">Registro mensual del residencial</div>
+  <div class="card" style="display:flex;justify-content:space-between;align-items:center">
+    <div><div style="font-size:11px;color:var(--suave)">TOTAL ESTE MES</div>
+    <div style="font-family:Cormorant Garamond,serif;font-size:28px;color:var(--verde)" id="gastos-total">$0</div></div>
+    <button class="btn bv btn-sm" onclick="showM('modal-gasto-manual')">＋ Agregar</button>
+  </div>
+  <div class="sep">Gastos del mes</div>
+  <div id="lista-gastos"></div>
+  <div style="height:70px"></div>
+  </div>
+  </div>
   <div class="section-title">Gastos</div><div class="section-sub">Abril 2025 · elderlycare94@gmail.com</div>
   <div class="card" style="background:var(--verde);border:none">
     <div style="color:rgba(255,255,255,.5);font-size:10px;letter-spacing:1px;margin-bottom:4px">TOTAL DEL MES</div>
@@ -1621,6 +1643,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:19px;heigh
     <div class="gasto-item"><div class="gasto-cat" style="background:#fce4ec">💊</div><div style="flex:1"><div style="font-size:13px;font-weight:500">Farmacia · Insumos</div><div style="font-size:11px;color:var(--texto-suave)">10 abr · Ticket #7712</div></div><div class="gasto-monto">$12.490</div></div>
   </div>
   <button class="btn btn-dorado" onclick="showM('modal-informe')">📄 Generar informe mensual</button>
+</div>
 </div>
 
 <!-- ══════════════════════════════
@@ -2098,12 +2121,12 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:19px;heigh
 <!-- NUEVO RESIDENTE -->
 <div class="modal-overlay" id="modal-nuevo-res" onclick="closeO(event,'modal-nuevo-res')">
   <div class="modal"><div class="modal-handle"></div><div class="modal-title">Nuevo residente</div>
-    <div class="form-row"><div class="form-group"><label class="form-label">Nombre</label><input class="form-input"></div><div class="form-group"><label class="form-label">Apellido</label><input class="form-input"></div></div>
-    <div class="form-row"><div class="form-group"><label class="form-label">Edad</label><input class="form-input" type="number"></div><div class="form-group"><label class="form-label">Habitación</label><input class="form-input"></div></div>
-    <div class="form-group"><label class="form-label">Mutualista</label><select class="form-input"><option>ASSE</option><option>FONASA</option><option>Medicus</option><option>SMI</option><option>Particular</option></select></div>
+    <div class="form-row"><div class="form-group"><label class="form-label">Nombre</label><input class="form-input" id="nr-nombre" placeholder="Nombre/s"></div><div class="form-group"><label class="form-label">Apellido</label><input class="form-input" id="nr-apellido" placeholder="Apellido/s"></div></div>
+    <div class="form-row"><div class="form-group"><label class="form-label">Edad</label><input class="form-input" type="number" id="nr-edad"></div><div class="form-group"><label class="form-label">Habitación</label><input class="form-input" id="nr-hab"></div></div>
+    <div class="form-group"><label class="form-label">Mutualista</label><select class="form-input" id="nr-mut"><option>ASSE</option><option>FONASA</option><option>Medicus</option><option>SMI</option><option>Particular</option></select></div>
     <div class="form-group"><label class="form-label">Familiar referencia</label><input class="form-input" placeholder="Nombre · teléfono"></div>
-    <div class="form-group"><label class="form-label">Fecha ingreso</label><input class="form-input" type="date"></div>
-    <div style="display:flex;gap:8px"><button class="btn btn-sec" style="flex:1" onclick="closeM('modal-nuevo-res')">Cancelar</button><button class="btn btn-verde" style="flex:1" onclick="closeM('modal-nuevo-res')">✅ Crear</button></div>
+    <div class="form-group"><label class="form-label">Fecha ingreso</label><input class="form-input" type="date" id="nr-ingreso"></div>
+    <div style="display:flex;gap:8px"><button class="btn btn-sec" style="flex:1" onclick="closeM('modal-nuevo-res')">← Volver</button><button class="btn btn-verde" style="flex:1" onclick="closeM('modal-nuevo-res')">✅ Crear</button></div>
   </div>
 </div>
 
@@ -2169,20 +2192,20 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:19px;heigh
     <div class="mtit">Nueva empleada</div>
     <div class="msub">Carrasco Elderly Care · Grupo 15/200</div>
     <div class="fr">
-      <div class="fg"><label class="fl">Nombres</label><input class="fi" placeholder="Nombres"></div>
-      <div class="fg"><label class="fl">Apellidos</label><input class="fi" placeholder="Apellidos"></div>
+      <div class="fg"><label class="fl">Nombres</label><input class="fi" id="ne-nombre" placeholder="Nombres"></div>
+      <div class="fg"><label class="fl">Apellidos</label><input class="fi" id="ne-apellido" placeholder="Apellidos"></div>
     </div>
     <div class="fr">
       <div class="fg"><label class="fl">CI</label><input class="fi" placeholder="X.XXX.XXX-X"></div>
-      <div class="fg"><label class="fl">Fecha nacimiento</label><input class="fi" type="date"></div>
+      <div class="fg"><label class="fl">Fecha nacimiento</label><input class="fi" type="date" id="ne-ingreso"></div>
     </div>
     <div class="fr">
       <div class="fg"><label class="fl">Fecha ingreso</label><input class="fi" type="date"></div>
-      <div class="fg"><label class="fl">Turno</label><select class="fi"><option>07 - 15</option><option>15 - 23</option><option>23 - 07</option><option>Rotativo</option></select></div>
+      <div class="fg"><label class="fl">Turno</label><select class="fi" id="ne-turno"><option>07 - 15</option><option>15 - 23</option><option>23 - 07</option><option>Rotativo</option></select></div>
     </div>
     <div class="fr">
       <div class="fg"><label class="fl">Categoría</label><select class="fi"><option>Cuidadora</option><option>Limpiadora (6hs)</option></select></div>
-      <div class="fg"><label class="fl">Sueldo base ($)</label><input class="fi" type="number" value="29674" placeholder="Laudo vigente"></div>
+      <div class="fg"><label class="fl">Sueldo base ($)</label><input class="fi" type="number" id="ne-sueldo" value="29674"></div>
     </div>
     <div class="fg"><label class="fl">Presentismo ($)</label>
       <select class="fi">
@@ -2555,136 +2578,720 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:19px;heigh
 
 
 
+
+<!-- MODAL: GASTO MANUAL -->
+<div class="moverlay" id="modal-gasto-manual" onclick="if(event.target===this)closeM('modal-gasto-manual')">
+  <div class="modal">
+    <div class="mhandle"></div>
+    <div class="mtit">Nuevo gasto</div>
+    <div class="msub">Registrar gasto del residencial</div>
+    <div class="fg">
+      <label class="fl">Descripción</label>
+      <input class="fi" id="gasto-desc" placeholder="Ej: UTE — Factura abril">
+    </div>
+    <div class="fr">
+      <div class="fg"><label class="fl">Monto ($)</label>
+        <input class="fi" type="number" id="gasto-monto-inp" placeholder="0">
+      </div>
+      <div class="fg"><label class="fl">Categoría</label>
+        <select class="fi" id="gasto-cat">
+          <option>Electricidad</option><option>Agua</option><option>Gas</option>
+          <option>Alimentación</option><option>Farmacia</option>
+          <option>Mantenimiento</option><option>Otro</option>
+        </select>
+      </div>
+    </div>
+    <div class="fr">
+      <div class="fg"><label class="fl">Fecha</label>
+        <input class="fi" type="date" id="gasto-fecha">
+      </div>
+      <div class="fg"><label class="fl">Proveedor</label>
+        <input class="fi" id="gasto-proveedor" placeholder="Ej: UTE">
+      </div>
+    </div>
+    <div class="fg"><label class="fl">Nro. factura (opcional)</label>
+      <input class="fi" id="gasto-factura" placeholder="Nro.">
+    </div>
+    <div style="display:flex;gap:8px;margin-top:4px">
+      <button class="btn bs" style="flex:1" onclick="closeM('modal-gasto-manual')">← Volver</button>
+      <button class="btn bv" style="flex:1" onclick="guardarGastoManual()">✅ Confirmar gasto</button>
+    </div>
+  </div>
+</div>
+
 <script>
 
-// ============================================================
-// ELDERLY CARE — API CONFIG
-// ============================================================
-const API_URL   = 'https://script.google.com/macros/s/AKfycbxlaGFNX580KIPd1BrZBM8uGb_NNRmTVk4bYkCmmA-XVjv2QwIJGa4cD1rrX0_vrA97_A/exec'; // Se actualiza después del deploy
-const API_TOKEN = 'ec2026';
-const OFFLINE   = false; // true hasta configurar
+// ═══════════════════════════════════════════════════
+// API CONFIG
+// ═══════════════════════════════════════════════════
+var API_URL   = 'https://script.google.com/macros/s/AKfycbxlaGFNX580KIPd1BrZBM8uGb_NNRmTVk4bYkCmmA-XVjv2QwIJGa4cD1rrX0_vrA97_A/exec';
+var API_TOKEN = 'ec2026';
 
-// ── API HELPER ──
-async function apiGet(sheet, extra) {
-  if (OFFLINE) return null;
+// ── Fetch helpers ──
+async function apiGet(sheet, extraParams) {
   try {
-    var params = '?sheet=' + sheet + '&token=' + API_TOKEN + (extra || '');
-    var res = await fetch(API_URL + params);
-    var json = await res.json();
-    return json.ok ? json.data : null;
-  } catch(e) { console.warn('API GET error:', e); return null; }
+    var url = API_URL + '?token=' + API_TOKEN + '&sheet=' + sheet + '&action=getAll' + (extraParams||'');
+    var r = await fetch(url);
+    var j = await r.json();
+    return j.ok ? j.data : [];
+  } catch(e) { console.warn('apiGet error', e); return []; }
 }
 
 async function apiPost(sheet, action, data, id) {
-  if (OFFLINE) return null;
   try {
-    var body = { sheet, action, data, token: API_TOKEN };
+    var body = {sheet:sheet, action:action, data:data, token:API_TOKEN};
     if (id) body.id = id;
-    var res = await fetch(API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    var r = await fetch(API_URL, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
       body: JSON.stringify(body)
     });
-    var json = await res.json();
-    return json.ok ? json.data : null;
-  } catch(e) { console.warn('API POST error:', e); return null; }
+    var j = await r.json();
+    return j.ok ? j.data : null;
+  } catch(e) { console.warn('apiPost error', e); return null; }
 }
 
-// ── TOAST NOTIFICATIONS ──
-function showToast(msg, type) {
-  var existing = document.querySelector('.ec-toast');
-  if (existing) existing.remove();
-  var t = document.createElement('div');
-  t.className = 'ec-toast';
-  t.textContent = msg;
-  t.style.cssText = 'position:fixed;bottom:110px;left:50%;transform:translateX(-50%);' +
-    'background:' + (type==='error'?'#c0392b':type==='warn'?'#e65100':'#1a3d35') + ';' +
-    'color:white;padding:10px 20px;border-radius:20px;font-size:13px;z-index:999;' +
-    'box-shadow:0 4px 16px rgba(0,0,0,.3);transition:opacity .3s;max-width:300px;text-align:center;';
-  document.body.appendChild(t);
-  setTimeout(function() { t.style.opacity='0'; setTimeout(function(){t.remove();},300); }, 2500);
+// ── Toast ──
+function toast(msg, tipo) {
+  var old = document.querySelector('.ec-toast');
+  if (old) old.remove();
+  var d = document.createElement('div');
+  d.className = 'ec-toast';
+  d.textContent = msg;
+  var bg = tipo==='error'?'#c0392b': tipo==='ok'?'#1a3d35': '#e65100';
+  d.style.cssText = 'position:fixed;bottom:110px;left:50%;transform:translateX(-50%);' +
+    'background:'+bg+';color:white;padding:10px 22px;border-radius:20px;font-size:13px;' +
+    'z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,.3);max-width:320px;text-align:center;' +
+    'font-family:DM Sans,sans-serif;';
+  document.body.appendChild(d);
+  setTimeout(function(){d.style.opacity='0';d.style.transition='opacity .3s';
+    setTimeout(function(){d.remove();},400);}, 2600);
 }
 
-// ── LOADING INDICATOR ──
+// ── Loading overlay ──
 function showLoading(msg) {
-  var el = document.getElementById('ec-loading');
-  if (!el) {
-    el = document.createElement('div');
-    el.id = 'ec-loading';
-    el.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(26,61,53,.7);' +
-      'z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;color:white;';
-    el.innerHTML = '<div style="font-size:28px;margin-bottom:12px">⏳</div>' +
-      '<div style="font-family:DM Sans,sans-serif;font-size:14px" id="ec-loading-msg">Cargando...</div>';
-    document.body.appendChild(el);
-  }
-  document.getElementById('ec-loading-msg').textContent = msg || 'Cargando...';
-  el.style.display = 'flex';
+  var el = document.getElementById('ec-loading') || (function(){
+    var d=document.createElement('div'); d.id='ec-loading';
+    d.style.cssText='position:fixed;inset:0;background:rgba(26,61,53,.75);z-index:9999;'+
+      'display:flex;flex-direction:column;align-items:center;justify-content:center;color:white;';
+    d.innerHTML='<div style="font-size:32px;margin-bottom:14px">⏳</div>'+
+      '<div id="ec-loading-msg" style="font-family:DM Sans,sans-serif;font-size:15px">Cargando...</div>';
+    document.body.appendChild(d); return d;
+  })();
+  document.getElementById('ec-loading-msg').textContent = msg||'Cargando...';
+  el.style.display='flex';
 }
-
 function hideLoading() {
-  var el = document.getElementById('ec-loading');
-  if (el) el.style.display = 'none';
+  var el=document.getElementById('ec-loading'); if(el) el.style.display='none';
 }
 
-// ── GUARDAR HISTORIAL (conectado a Sheets) ──
-async function guardarHistorial(residenteId, residenteNom, tipo, datos) {
+// ═══════════════════════════════════════════════════
+// ESTADO GLOBAL DE DATOS (cache local)
+// ═══════════════════════════════════════════════════
+var DB = {
+  residentes: [],
+  empleadas:  [],
+  historial:  [],
+  medicacion: [],
+  gastos:     [],
+  adelantos:  [],
+  liquidaciones: [],
+  config:     []
+};
+
+var PINES = {'Juliana':'1234','Lucía':'5678','Flavia':'9012'};
+
+// ── Cargar datos al inicio ──
+async function cargarDatos() {
+  showLoading('Cargando datos...');
+  try {
+    DB.residentes  = await apiGet('residentes');
+    DB.empleadas   = await apiGet('empleadas');
+    DB.medicacion  = await apiGet('medicacion');
+    DB.gastos      = await apiGet('gastos');
+    DB.adelantos   = await apiGet('adelantos');
+    DB.liquidaciones = await apiGet('liquidaciones');
+    var cfg = await apiGet('config');
+    cfg.forEach(function(r){
+      if(r.clave==='pin_juliana') PINES['Juliana']=String(r.valor);
+      if(r.clave==='pin_lucia')   PINES['Lucía']=String(r.valor);
+      if(r.clave==='pin_flavia')  PINES['Flavia']=String(r.valor);
+    });
+    renderListaResidentes();
+    renderListaEmpleadas();
+    renderGastos();
+    renderIndicadores();
+    renderPastillero();
+    hideLoading();
+    toast('✅ Datos actualizados', 'ok');
+  } catch(e) {
+    hideLoading();
+    toast('⚠️ Error cargando datos', 'error');
+  }
+}
+
+// ═══════════════════════════════════════════════════
+// RENDER RESIDENTES DESDE DB
+// ═══════════════════════════════════════════════════
+function renderListaResidentes() {
+  var container = document.getElementById('lista-residentes');
+  if (!container) return;
+  if (DB.residentes.length === 0) {
+    container.innerHTML = '<div style="text-align:center;padding:30px;color:var(--suave)">No hay residentes cargados</div>';
+    return;
+  }
+  container.innerHTML = DB.residentes.filter(function(r){return r.activo==='Sí';}).map(function(r) {
+    var badgeColor = r.dem_estadio && r.dem_estadio.includes('GDS 6') ? 'b-critico' :
+                     r.dem_estadio && r.dem_estadio.includes('GDS 5') ? 'b-morado' : 'b-alerta';
+    var initials = r.nombre.split(' ').map(function(w){return w[0];}).slice(0,2).join('');
+    var alertas = r.cuid_espesantes==='Sí - OBLIGATORIO todos los líquidos' ? ' <span class="badge b-critico">Espesantes</span>' : '';
+    alertas += r.alergias && r.alergias.includes('ANTICOAG') ? ' <span class="badge b-azul">Anticoagulada</span>' : '';
+    return '<div class="res-card" onclick="abrirResidente(\''+r.id+'\')">'+
+      '<div class="res-av">'+initials+'</div>'+
+      '<div style="flex:1">'+
+        '<div class="res-nom">'+r.nombre+'</div>'+
+        '<div class="res-sub">'+r.edad+' años · Hab. '+r.hab+' · CI '+r.ci+'</div>'+
+        '<div style="margin-top:3px">'+
+          '<span class="badge '+badgeColor+'">'+r.dem_estadio+'</span>'+alertas+
+        '</div>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+  // Actualizar contador
+  var activos = DB.residentes.filter(function(r){return r.activo==='Sí';}).length;
+  var el = document.querySelector('#mod-residentes .ssub');
+  if (el) el.textContent = activos + ' residentes activos';
+}
+
+// ═══════════════════════════════════════════════════
+// ABRIR FICHA RESIDENTE (desde DB)
+// ═══════════════════════════════════════════════════
+function abrirResidente(id) {
+  var r = DB.residentes.find(function(x){return x.id===id;});
+  if (!r) { toast('Residente no encontrado','error'); return; }
+  residenteActual = id;
+
+  // Actualizar modal header
+  var initials = r.nombre.split(' ').map(function(w){return w[0];}).slice(0,2).join('');
+  document.getElementById('mr-av').textContent  = initials;
+  document.getElementById('mr-nom').textContent = r.nombre;
+  document.getElementById('mr-sub').textContent = r.edad+' años · CI '+r.ci+' · Hab. '+r.hab;
+  var badge = document.getElementById('mr-badges');
+  badge.innerHTML = '<span class="badge b-morado">'+r.dem_estadio+'</span>';
+  if (r.alergias && r.alergias.includes('ANTICOAG'))
+    badge.innerHTML += ' <span class="badge b-azul">Anticoagulada</span>';
+  if (r.cuid_espesantes && r.cuid_espesantes.includes('OBLIGATORIO'))
+    badge.innerHTML += ' <span class="badge b-critico">Espesantes</span>';
+
+  // Ficha datos
+  document.getElementById('ficha-datos-content').innerHTML =
+    '<div class="fs-row"><span class="fs-lbl">Habitación</span><span class="fs-val">'+r.hab+'</span></div>'+
+    '<div class="fs-row"><span class="fs-lbl">Mutualista</span><span class="fs-val">'+r.mutualista+'</span></div>'+
+    '<div class="fs-row"><span class="fs-lbl">Familiar</span><span class="fs-val">'+r.familiar_nom+'</span></div>'+
+    '<div class="fs-row"><span class="fs-lbl">Teléfono familiar</span><span class="fs-val">'+(r.familiar_tel||'Sin cargar')+'</span></div>'+
+    '<div class="fs-row"><span class="fs-lbl">Médico de cabecera</span><span class="fs-val">'+r.medico+'</span></div>';
+
+  // Diagnósticos
+  document.getElementById('ficha-diag-content').innerHTML =
+    r.diags.split('|').map(function(d){
+      return '<div style="padding:3px 0;border-bottom:1px solid var(--crema-o)">• '+d.trim()+'</div>';
+    }).join('');
+
+  // Alertas críticas
+  document.getElementById('ficha-alergias-content').innerHTML =
+    r.alergias.split('|').map(function(a){
+      return '<div style="padding:3px 0;color:var(--rojo);font-weight:500;border-bottom:1px solid var(--crema-o)">⚠️ '+a.trim()+'</div>';
+    }).join('');
+
+  // Medicación desde DB
+  var meds = DB.medicacion.filter(function(m){return m.residente_id===id && m.activo==='Sí';});
+  var medContent = meds.length > 0 ?
+    '<table class="med-tabla"><thead><tr><th>Medicamento</th><th>Dosis</th><th>Horario</th><th>Notas</th></tr></thead><tbody>'+
+    meds.map(function(m){
+      return '<tr><td style="font-weight:500">'+m.medicamento+'</td><td>'+m.dosis+'</td>'+
+        '<td><span class="med-hora">'+m.horario+'</span></td>'+
+        '<td style="color:'+(m.nota.includes('⚠️')?'var(--rojo)':'var(--suave)')+'">'+m.nota+'</td></tr>';
+    }).join('')+'</tbody></table>' :
+    '<div style="color:var(--suave);font-size:13px;padding:10px 0">Sin medicación cargada. Usá el botón 📷 para cargar la planilla.</div>';
+  document.getElementById('medicacion-content').innerHTML = medContent;
+
+  // Historial
+  cargarYRenderHistorial(id);
+
+  // Prefill ficha de salida
+  var fs_fecha = document.getElementById('fs-fecha');
+  if (fs_fecha) {
+    var now = new Date();
+    fs_fecha.value = new Date(now - now.getTimezoneOffset()*60000).toISOString().slice(0,16);
+  }
+
+  document.getElementById('nr-res-nom').textContent = r.nombre;
+
+  // Reset tabs
+  document.querySelectorAll('[id^="mt-mr-"]').forEach(function(t){t.style.display='none';});
+  document.getElementById('mt-mr-ficha').style.display='block';
+  document.querySelectorAll('#modal-residente .mtab').forEach(function(t,i){t.classList.toggle('active',i===0);});
+
+  resShowM('modal-residente');
+}
+
+async function cargarYRenderHistorial(resId) {
+  var container = document.getElementById('historial-content');
+  if (!container) return;
+  container.innerHTML = '<div style="text-align:center;padding:20px;color:var(--suave)">⏳ Cargando historial...</div>';
+  var hist = await apiGet('historial', '&residente_id='+resId);
+  hist = hist.filter(function(h){return h.residente_id===resId;});
+  hist.sort(function(a,b){return b.created_at > a.created_at ? 1 : -1;});
+  if (hist.length === 0) {
+    container.innerHTML = '<div style="text-align:center;padding:20px;color:var(--suave)">Sin registros aún.<br>Tocá "+ Nuevo registro" para agregar.</div>';
+    return;
+  }
+  var TIPO_COLORS = {nota:'hb-nota',vital:'hb-vital',incidente:'hb-incidente',medico:'hb-medico',estudio:'hb-estudio',medicacion:'hb-med'};
+  var TIPO_LABELS = {nota:'NOTA CLÍNICA',vital:'SIGNOS VITALES',incidente:'INCIDENTE',medico:'CONSULTA MÉDICA',estudio:'ESTUDIO',medicacion:'MEDICACIÓN'};
+  container.innerHTML = hist.slice(0,20).map(function(h) {
+    var fecha = h.created_at ? new Date(h.created_at).toLocaleString('es-UY') : '';
+    var color = TIPO_COLORS[h.tipo] || 'hb-nota';
+    var label = TIPO_LABELS[h.tipo] || h.tipo;
+    var vitales = '';
+    if (h.tipo==='vital' && h.vit_pa) {
+      vitales = '<div class="hist-vitales">'+
+        '<div class="vital-chip"><div class="vital-val">'+h.vit_pa+'</div><div class="vital-lbl">PA</div></div>'+
+        '<div class="vital-chip"><div class="vital-val">'+h.vit_pulso+'</div><div class="vital-lbl">Pulso</div></div>'+
+        '<div class="vital-chip"><div class="vital-val">'+h.vit_temp+'°</div><div class="vital-lbl">Temp</div></div>'+
+        '<div class="vital-chip"><div class="vital-val">'+h.vit_sat+'%</div><div class="vital-lbl">Sat</div></div>'+
+        '</div>';
+    }
+    return '<div class="hist-entry">'+
+      '<span class="hist-badge '+color+'">'+label+'</span>'+
+      '<div class="hist-fecha">'+fecha+'</div>'+
+      '<div class="hist-user">👤 '+h.usuario+(h.turno?' · '+h.turno:'')+'</div>'+
+      '<div class="hist-txt">'+h.texto+'</div>'+vitales+
+    '</div>';
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════════
+// GUARDAR NUEVO REGISTRO HISTORIAL
+// ═══════════════════════════════════════════════════
+async function cerrarNuevoRegistro() {
+  var r = DB.residentes.find(function(x){return x.id===residenteActual;});
+  var tipoEl = document.querySelector('#modal-nuevo-registro .tipo-btn.sel .lbl');
+  var tipo   = tipoEl ? tipoEl.textContent.trim().toLowerCase()
+    .replace('nota clínica','nota').replace('signos vitales','vital')
+    .replace('consulta méd.','medico').replace('incidente','incidente')
+    .replace('estudio','estudio').replace('medicación','medicacion') : 'nota';
+
+  var texto = document.getElementById('nr-texto')?.value ||
+              document.getElementById('nr-inc-txt')?.value ||
+              document.getElementById('nr-med-txt')?.value ||
+              document.getElementById('nr-est-txt')?.value || '';
+
+  if (!texto.trim()) { resCloseM('modal-nuevo-registro'); return; }
+
   var entry = {
-    residente_id:  residenteId,
-    residente_nom: residenteNom,
+    residente_id:  residenteActual,
+    residente_nom: r ? r.nombre : '',
     tipo:          tipo,
-    fecha:         new Date().toISOString(),
     usuario:       currentUser.nombre,
-    turno:         datos.turno || '',
-    texto:         datos.texto || '',
-    vitales_pa:    datos.pa    || '',
-    vitales_pulso: datos.pulso || '',
-    vitales_temp:  datos.temp  || '',
-    vitales_sat:   datos.sat   || '',
-    vitales_gluc:  datos.gluc  || '',
-    vitales_peso:  datos.peso  || '',
-    adjunto:       datos.adjunto || ''
+    turno:         document.querySelector('#campos-nota select')?.value || '',
+    texto:         texto,
+    vit_pa:    document.getElementById('nr-pa')?.value    || '',
+    vit_pulso: document.getElementById('nr-pulso')?.value || '',
+    vit_temp:  document.getElementById('nr-temp')?.value  || '',
+    vit_sat:   document.getElementById('nr-sat')?.value   || '',
+    vit_gluc:  document.getElementById('nr-gluc')?.value  || '',
+    vit_peso:  document.getElementById('nr-peso')?.value  || ''
   };
-  var result = await apiPost('historial', 'insert', entry);
-  if (result) showToast('✅ Registro guardado');
-  else showToast(OFFLINE ? '⚠️ Modo offline — conectá la API para guardar' : '❌ Error al guardar', OFFLINE?'warn':'error');
-  return result;
+
+  showLoading('Guardando registro...');
+  var result = await apiPost('historial','insert',entry);
+  hideLoading();
+
+  if (result) {
+    toast('✅ Registro guardado','ok');
+    cargarYRenderHistorial(residenteActual);
+  } else {
+    toast('❌ Error al guardar. Revisá la conexión.','error');
+  }
+  resCloseM('modal-nuevo-registro');
 }
 
-// ── GUARDAR GASTO (conectado a Sheets) ──
-async function guardarGasto(gasto) {
-  gasto.registrado_por = currentUser.nombre;
-  var result = await apiPost('gastos', 'insert', gasto);
-  if (result) { showToast('✅ Gasto guardado'); return result; }
-  else { showToast(OFFLINE ? '⚠️ Modo offline' : '❌ Error al guardar', 'warn'); return null; }
+// ═══════════════════════════════════════════════════
+// GUARDAR NUEVO RESIDENTE
+// ═══════════════════════════════════════════════════
+async function guardarNuevoResidente() {
+  var nom  = document.getElementById('nr-nombre')?.value?.trim();
+  var ape  = document.getElementById('nr-apellido')?.value?.trim();
+  var edad = document.getElementById('nr-edad')?.value;
+  var hab  = document.getElementById('nr-hab')?.value;
+  var mut  = document.getElementById('nr-mut')?.value;
+  var fam  = document.getElementById('nr-familiar')?.value?.trim();
+  var ing  = document.getElementById('nr-ingreso')?.value;
+
+  if (!nom || !ape) { toast('Completá al menos nombre y apellido','error'); return; }
+
+  var data = {
+    nombre: nom + ' ' + ape,
+    ci: document.getElementById('nr-ci')?.value?.trim() || '',
+    edad: parseInt(edad) || 0,
+    hab: hab || '',
+    mutualista: mut || 'Particular',
+    ingreso: ing || new Date().toISOString().split('T')[0],
+    familiar_nom: fam || '',
+    familiar_tel: '',
+    familiar_parentesco: '',
+    medico: '',
+    diags: '',
+    alergias: '',
+    demencia: 'No',
+    dem_estadio: '',
+    dem_etiologia: '',
+    dem_compensada: '',
+    dem_sintomas: '',
+    dem_antipsic: '',
+    cuid_dieta: 'Normal',
+    cuid_degl: 'No',
+    cuid_espesantes: 'No',
+    cuid_movilidad: '',
+    cuid_continencia: '',
+    cuid_panal: 'No',
+    cuid_ulceras: 'No',
+    cuid_oxigeno: 'No',
+    activo: 'Sí'
+  };
+
+  showLoading('Guardando residente...');
+  var result = await apiPost('residentes','insert',data);
+  hideLoading();
+
+  if (result) {
+    DB.residentes.push(result);
+    renderListaResidentes();
+    toast('✅ Residente '+data.nombre+' guardado','ok');
+    closeM('modal-nuevo-res');
+    // Limpiar formulario
+    ['nr-nombre','nr-apellido','nr-ci','nr-edad','nr-hab','nr-familiar'].forEach(function(id){
+      var el=document.getElementById(id); if(el) el.value='';
+    });
+  } else {
+    toast('❌ Error al guardar','error');
+  }
 }
 
-// ── CARGAR HISTORIAL DE UN RESIDENTE ──
-async function cargarHistorial(residenteId) {
-  var data = await apiGet('historial', '&residente_id=' + residenteId);
-  return data ? data.filter(function(r){ return r.residente_id === residenteId; }) : [];
+// ═══════════════════════════════════════════════════
+// RENDER EMPLEADAS DESDE DB
+// ═══════════════════════════════════════════════════
+function renderListaEmpleadas() {
+  var container = document.getElementById('lista-empleadas');
+  if (!container) return;
+  if (DB.empleadas.length === 0) {
+    container.innerHTML = '<div style="text-align:center;padding:30px;color:var(--suave)">Sin empleadas cargadas</div>';
+    return;
+  }
+  var hoy   = new Date();
+  container.innerHTML = DB.empleadas.filter(function(e){return e.activo==='Sí';}).map(function(e) {
+    var ing    = new Date(e.ingreso);
+    var meses  = (hoy.getFullYear()-ing.getFullYear())*12 + hoy.getMonth()-ing.getMonth();
+    var prueba = meses < 3;
+    var initials = e.nombre.split(' ').map(function(w){return w[0];}).filter(Boolean).slice(0,2).join('');
+    var pres   = Number(e.presentismo)||0;
+    var nomMin = e.nombre.split(' ').slice(0,2).join(' ');
+    return '<div class="emp-card" onclick="abrirEmpleada(\''+e.id+'\')">' +
+      '<div class="emp-av">'+initials+'</div>'+
+      '<div style="flex:1">'+
+        '<div class="emp-nom">'+nomMin+'</div>'+
+        '<div class="emp-rol">'+e.turno+' · Ingreso '+ing.toLocaleDateString('es-UY')+'</div>'+
+        '<div style="margin-top:4px">'+
+          '<span class="prueba-badge '+(prueba?'pb-naranja':'pb-ok')+'">'+(prueba?'⏳ En prueba ('+meses+'m)':'✓ Consolidada')+'</span>'+
+        '</div>'+
+      '</div>'+
+      '<div style="text-align:right">'+
+        '<div style="font-family:Cormorant Garamond,serif;font-size:15px;color:var(--verde);font-weight:600">$'+Number(e.sueldo).toLocaleString('es-UY')+'</div>'+
+        '<div style="font-size:10px;color:var(--suave)">nominal</div>'+
+      '</div>'+
+    '</div>';
+  }).join('');
 }
 
-// ── CARGAR GASTOS DEL MES ──
-async function cargarGastosMes(mes) {
-  var data = await apiGet('gastos');
-  if (!data) return [];
-  return data.filter(function(g) { return g.fecha && g.fecha.startsWith(mes); });
+// ═══════════════════════════════════════════════════
+// ABRIR FICHA EMPLEADA (desde DB)
+// ═══════════════════════════════════════════════════
+function abrirEmpleada(id) {
+  var e = DB.empleadas.find(function(x){return x.id===id;});
+  if (!e) { toast('Empleada no encontrada','error'); return; }
+  empleadaActual = id;
+  var initials = e.nombre.split(' ').map(function(w){return w[0];}).filter(Boolean).slice(0,2).join('');
+  document.getElementById('fe-av').textContent  = initials;
+  document.getElementById('fe-nom').textContent = e.nombre;
+  var ing = new Date(e.ingreso);
+  document.getElementById('fe-sub').textContent = e.turno + ' · Ingreso ' + ing.toLocaleDateString('es-UY');
+  document.getElementById('fe-ci').value        = e.ci;
+  document.getElementById('fe-sueldo').value    = e.sueldo;
+  document.getElementById('fe-pres').value      = e.presentismo;
+  document.getElementById('fe-antig-pct').value = e.antig_pct || 0;
+  document.getElementById('fe-tog-hijos').classList.toggle('on', e.hijos==='Sí');
+  document.getElementById('fe-tog-conyuge').classList.toggle('on', e.conyuge==='Sí');
+  document.getElementById('fe-lic-ing').textContent  = ing.toLocaleDateString('es-UY');
+  var hoy   = new Date();
+  var meses = (hoy.getFullYear()-ing.getFullYear())*12 + hoy.getMonth()-ing.getMonth();
+  document.getElementById('fe-lic-meses').textContent = meses;
+  var diasGen = Math.round(meses*1.66*10)/10;
+  document.getElementById('fe-lic-gen').textContent  = diasGen + ' días';
+  document.getElementById('fe-lic-pend').textContent = diasGen + ' días';
+  document.getElementById('fe-adel-total').textContent = '$' +
+    DB.adelantos.filter(function(a){return a.empleada_id===id && a.descontado==='No';})
+      .reduce(function(s,a){return s+Number(a.monto);},0).toLocaleString('es-UY');
+  // Prellenar liquidación
+  precargarLiquidacion(id);
+  document.querySelectorAll('[id^="mt-fe-"]').forEach(function(t,i){t.style.display=t.id==='mt-fe-datos'?'block':'none';});
+  document.querySelectorAll('#modal-empleado .mtab').forEach(function(t,i){t.classList.toggle('active',i===0);});
+  perShowM('modal-empleado');
 }
 
-// ── PIN POR USUARIO DESDE CONFIG ──
-var USER_PINS = { 'Juliana':'1234', 'Lucía':'5678', 'Flavia':'9012' };
+function precargarLiquidacion(id) {
+  var e = DB.empleadas.find(function(x){return x.id===id;});
+  if (!e) return;
+  var sel = document.getElementById('liq-emp');
+  if (sel) {
+    // Find or create option
+    var found = false;
+    for (var i=0; i<sel.options.length; i++) {
+      if (sel.options[i].value === id) { sel.value = id; found = true; break; }
+    }
+    if (!found) {
+      var opt = new Option(e.nombre.split(' ').slice(0,2).join(' '), id);
+      sel.add(opt); sel.value = id;
+    }
+  }
+  if (document.getElementById('liq-sueldo')) document.getElementById('liq-sueldo').value = e.sueldo;
+  if (document.getElementById('liq-pres'))   document.getElementById('liq-pres').value   = e.presentismo;
+  if (document.getElementById('tog-hijos'))  document.getElementById('tog-hijos').classList.toggle('on', e.hijos==='Sí');
+  if (document.getElementById('tog-conyuge')) document.getElementById('tog-conyuge').classList.toggle('on', e.conyuge==='Sí');
+  tieneHijos   = e.hijos==='Sí';
+  tieneConyuge = e.conyuge==='Sí';
+  calcLiq();
+}
 
-async function cargarPinesDesdeConfig() {
-  var config = await apiGet('config');
-  if (!config) return;
-  config.forEach(function(row) {
-    if (row.clave === 'pin_juliana') USER_PINS['Juliana'] = String(row.valor);
-    if (row.clave === 'pin_lucia')   USER_PINS['Lucía']   = String(row.valor);
-    if (row.clave === 'pin_flavia')  USER_PINS['Flavia']  = String(row.valor);
+// ═══════════════════════════════════════════════════
+// GUARDAR NUEVA EMPLEADA
+// ═══════════════════════════════════════════════════
+async function guardarNuevaEmpleada() {
+  var nom = document.getElementById('ne-nombre')?.value?.trim();
+  var ape = document.getElementById('ne-apellido')?.value?.trim();
+  if (!nom || !ape) { toast('Completá nombre y apellido','error'); return; }
+  var data = {
+    nombre:      nom + ' ' + ape,
+    ci:          document.getElementById('ne-ci')?.value?.trim() || '',
+    nacimiento:  '',
+    telefono:    document.getElementById('ne-tel')?.value?.trim() || '',
+    ingreso:     document.getElementById('ne-ingreso')?.value || new Date().toISOString().split('T')[0],
+    turno:       document.getElementById('ne-turno')?.value || 'Rotativo',
+    sueldo:      parseFloat(document.getElementById('ne-sueldo')?.value) || 29674,
+    presentismo: parseFloat(document.getElementById('ne-pres')?.value) || 2500,
+    hijos:       'No',
+    conyuge:     'No',
+    antig_pct:   0,
+    banco:       '',
+    cuenta:      '',
+    activo:      'Sí'
+  };
+  showLoading('Guardando empleada...');
+  var result = await apiPost('empleadas','insert',data);
+  hideLoading();
+  if (result) {
+    DB.empleadas.push(result);
+    renderListaEmpleadas();
+    toast('✅ '+data.nombre+' guardada','ok');
+    perCloseM('modal-nueva-emp');
+  } else toast('❌ Error al guardar','error');
+}
+
+// ═══════════════════════════════════════════════════
+// GUARDAR LIQUIDACIÓN
+// ═══════════════════════════════════════════════════
+async function guardarLiquidacion() {
+  var liqData = window._liqData;
+  if (!liqData) { toast('Calculá primero la liquidación','error'); return; }
+  var empId = document.getElementById('liq-emp')?.value;
+  var emp   = DB.empleadas.find(function(e){return e.id===empId;}) ||
+              {nombre: document.getElementById('liq-emp')?.options[document.getElementById('liq-emp')?.selectedIndex]?.text || ''};
+  var mes   = document.getElementById('liq-mes')?.value || new Date().toISOString().slice(0,7);
+  var data  = {
+    empleada_id:  empId || '',
+    empleada_nom: emp.nombre,
+    mes:          mes,
+    nominal:      liqData.nominal,
+    liquido:      liqData.liquido,
+    pagado:       'No',
+    fecha_pago:   '',
+    detalle_json: JSON.stringify(liqData)
+  };
+  showLoading('Guardando liquidación...');
+  var result = await apiPost('liquidaciones','insert',data);
+  hideLoading();
+  if (result) {
+    DB.liquidaciones.push(result);
+    toast('✅ Liquidación guardada','ok');
+    // Descontar adelanto si hay
+    var adelanto = liqData.adelanto || 0;
+    if (adelanto > 0 && empId) {
+      var pendientes = DB.adelantos.filter(function(a){return a.empleada_id===empId && a.descontado==='No';});
+      for (var i=0; i<pendientes.length && adelanto>0; i++) {
+        await apiPost('adelantos','update',{descontado:'Sí'},pendientes[i].id);
+        adelanto -= Number(pendientes[i].monto);
+      }
+    }
+  } else toast('❌ Error al guardar','error');
+}
+
+// ═══════════════════════════════════════════════════
+// GASTOS DESDE DB
+// ═══════════════════════════════════════════════════
+function renderGastos() {
+  var container = document.getElementById('lista-gastos');
+  if (!container) return;
+  var mesActual = new Date().toISOString().slice(0,7);
+  var gastosDelMes = DB.gastos.filter(function(g){
+    return g.fecha && String(g.fecha).startsWith(mesActual);
   });
+  var total = gastosDelMes.reduce(function(s,g){return s+Number(g.monto);},0);
+  var el = document.getElementById('gastos-total');
+  if (el) el.textContent = '$'+total.toLocaleString('es-UY');
+  if (gastosDelMes.length === 0) {
+    container.innerHTML = '<div style="text-align:center;padding:20px;color:var(--suave)">Sin gastos este mes</div>';
+    return;
+  }
+  var ICONOS = {'Electricidad':'⚡','Agua':'💧','Gas':'🔥','Alimentación':'🛒','Farmacia':'💊','Personal':'👥','Otro':'📋'};
+  container.innerHTML = gastosDelMes.slice().reverse().slice(0,20).map(function(g) {
+    var ico = ICONOS[g.categoria] || '📋';
+    var fecha = g.fecha ? new Date(g.fecha).toLocaleDateString('es-UY') : '';
+    return '<div class="gasto-item">'+
+      '<div class="gasto-cat" style="background:var(--crema)">'+ico+'</div>'+
+      '<div style="flex:1"><div style="font-size:13px;font-weight:500">'+g.descripcion+'</div>'+
+      '<div style="font-size:11px;color:var(--suave)">'+fecha+' · '+g.registrado_por+'</div></div>'+
+      '<div class="gasto-monto">$'+Number(g.monto).toLocaleString('es-UY')+'</div>'+
+    '</div>';
+  }).join('');
 }
 
-// ============================================================
+async function guardarGastoManual() {
+  var desc  = document.getElementById('gasto-desc')?.value?.trim();
+  var monto = parseFloat(document.getElementById('gasto-monto-inp')?.value);
+  var cat   = document.getElementById('gasto-cat')?.value;
+  var fecha = document.getElementById('gasto-fecha')?.value || new Date().toISOString().split('T')[0];
+  if (!desc || !monto) { toast('Completá descripción y monto','error'); return; }
+  var data = {
+    fecha:         fecha,
+    categoria:     cat || 'Otro',
+    descripcion:   desc,
+    monto:         monto,
+    proveedor:     document.getElementById('gasto-proveedor')?.value?.trim() || '',
+    nro_factura:   document.getElementById('gasto-factura')?.value?.trim() || '',
+    registrado_por: currentUser.nombre
+  };
+  showLoading('Guardando gasto...');
+  var result = await apiPost('gastos','insert',data);
+  hideLoading();
+  if (result) {
+    DB.gastos.push(result);
+    renderGastos();
+    renderIndicadores();
+    toast('✅ Gasto guardado','ok');
+    closeM('modal-gasto-manual');
+    ['gasto-desc','gasto-monto-inp','gasto-proveedor','gasto-factura'].forEach(function(id){
+      var el=document.getElementById(id); if(el) el.value='';
+    });
+  } else toast('❌ Error al guardar','error');
+}
+
+// ═══════════════════════════════════════════════════
+// INDICADORES FINANCIEROS DESDE DB
+// ═══════════════════════════════════════════════════
+function renderIndicadores() {
+  var mesActual = new Date().toISOString().slice(0,7);
+  var gastosM   = DB.gastos.filter(function(g){return g.fecha && String(g.fecha).startsWith(mesActual);});
+  var totalGastos = gastosM.reduce(function(s,g){return s+Number(g.monto);},0);
+  var nResidentes = DB.residentes.filter(function(r){return r.activo==='Sí';}).length;
+  // Actualizar indicadores en el DOM si existen
+  var elG = document.querySelector('[data-ind="gastos-mes"]');
+  if (elG) elG.textContent = '$'+totalGastos.toLocaleString('es-UY');
+  var elR = document.querySelector('[data-ind="residentes"]');
+  if (elR) elR.textContent = nResidentes;
+}
+
+// ═══════════════════════════════════════════════════
+// PASTILLERO DESDE DB
+// ═══════════════════════════════════════════════════
+function renderPastillero() {
+  var container = document.getElementById('pastillero-dinamico');
+  if (!container) return;
+  if (DB.medicacion.length === 0) {
+    container.innerHTML = '<div style="text-align:center;padding:20px;color:var(--suave)">Sin medicación cargada</div>';
+    return;
+  }
+  var FRANJAS = [
+    {key:'H8',  label:'🌅 MAÑANA — 08:00 hs', color:'#1565c0'},
+    {key:'H14', label:'☀️ MEDIODÍA — 14:00 hs', color:'#f57f17'},
+    {key:'H16', label:'🕔 TARDE — 16:00 hs', color:'#e65100'},
+    {key:'H20', label:'🌙 NOCHE — 20:00 hs', color:'#4527a0'},
+    {key:'H0',  label:'🌑 MEDIANOCHE — 00:00 hs', color:'#1a3d35'}
+  ]
+  var html = '';
+  FRANJAS.forEach(function(f) {
+    var items = DB.medicacion.filter(function(m){
+      return m.activo==='Sí' && m.horario && m.horario.toUpperCase().includes(f.key);
+    });
+    if (items.length === 0) return;
+    html += '<div style="font-size:11px;font-weight:700;letter-spacing:1.5px;color:'+f.color+
+      ';margin:10px 0 8px">'+f.label+'</div>';
+    items.forEach(function(m) {
+      html += '<div class="past-row" onclick="resTogglePast(this)">'+
+        '<div class="past-check">○</div>'+
+        '<div class="past-info">'+
+          '<div class="past-res">'+m.residente_nom+'</div>'+
+          '<div class="past-med">'+m.medicamento+' · '+m.dosis+(m.nota?' — '+m.nota:'')+'</div>'+
+        '</div>'+
+        '<div class="past-hab">Hab.'+
+          (DB.residentes.find(function(r){return r.id===m.residente_id;})||{hab:'?'}).hab+
+        '</div>'+
+      '</div>';
+    });
+  });
+  container.innerHTML = html || '<div style="padding:10px;color:var(--suave)">Sin medicación para hoy</div>';
+}
+
+// ═══════════════════════════════════════════════════
+// REGISTRO ADELANTO
+// ═══════════════════════════════════════════════════
+async function guardarAdelanto() {
+  var monto  = parseFloat(document.getElementById('adelanto-monto')?.value);
+  var cuotas = parseInt(document.getElementById('adelanto-cuotas')?.value) || 1;
+  if (!monto || monto <= 0) { toast('Ingresá un monto válido','error'); return; }
+  var e   = DB.empleadas.find(function(x){return x.id===empleadaActual;});
+  var data = {
+    empleada_id:  empleadaActual,
+    empleada_nom: e ? e.nombre : '',
+    fecha:        new Date().toISOString().split('T')[0],
+    monto:        monto,
+    cuotas:       cuotas,
+    descontado:   'No'
+  };
+  showLoading('Registrando adelanto...');
+  var result = await apiPost('adelantos','insert',data);
+  hideLoading();
+  if (result) {
+    DB.adelantos.push(result);
+    document.getElementById('fe-adel-total').textContent = '$'+
+      DB.adelantos.filter(function(a){return a.empleada_id===empleadaActual && a.descontado==='No';})
+        .reduce(function(s,a){return s+Number(a.monto);},0).toLocaleString('es-UY');
+    toast('✅ Adelanto registrado','ok');
+    var el=document.getElementById('adelanto-monto'); if(el) el.value='';
+  } else toast('❌ Error al guardar','error');
+}
+
+// Variable para rastrear empleada actual
+var empleadaActual = null;
+
 
 // ═══════ BASE JS (PIN, modules, gastos, diagnostico) ═══════
 
@@ -2703,8 +3310,7 @@ function selUser(el,ini,nom){
 function pinPress(d){
   if(pin.length>=4)return; pin+=d; updateDots();
   if(pin.length===4){setTimeout(()=>{
-    var expectedPin = USER_PINS[currentUser.nombre] || '1234';
-    if(pin===expectedPin){
+    if(pin==='1234'){
       document.getElementById('splash').classList.add('hidden');
       document.getElementById('header-user-btn').textContent=currentUser.ini;
       document.getElementById('header-info').textContent=`Bienvenida, ${currentUser.nombre} · Lun 14 abr`;
@@ -3165,26 +3771,6 @@ function abrirEmp(key) {
   // Prellenar liquidación
   precargarLiquidacion(key);
   perShowM('modal-ficha-emp');
-}
-
-function precargarLiquidacion(key) {
-  const e = EMPLEADAS[key];
-  if (!e) return;
-  document.getElementById('liq-emp').value = key;
-  document.getElementById('liq-sueldo').value = e.sueldo;
-  document.getElementById('liq-pres').value = e.pres;
-  document.getElementById('liq-noct').value = e.noct || 0;
-  document.getElementById('liq-hexn').value = e.hexn || 0;
-  document.getElementById('liq-adelanto').value = e.adelanto || 0;
-  document.getElementById('liq-faltas').value = e.faltas || 0;
-  document.getElementById('liq-faltaxing').value = 0;
-  document.getElementById('liq-antig-pct').value = e.antig_pct || 0;
-  document.getElementById('liq-antig-anios').value = e.antig_anios || 0;
-  tieneHijos = e.hijos;
-  tieneConyuge = e.conyuge;
-  document.getElementById('tog-hijos').classList.toggle('on', tieneHijos);
-  document.getElementById('tog-conyuge').classList.toggle('on', tieneConyuge);
-  calcLiq();
 }
 
 function actualizarDesdeEmp() {
@@ -3700,91 +4286,6 @@ function selTipo(el, tipo) {
   });
 }
 
-// ══ ABRIR RESIDENTE ══
-function abrirResidente(key) {
-  residenteActual = key;
-  const r = RESIDENTES[key];
-  document.getElementById('mr-av').textContent = r.av;
-  document.getElementById('mr-nom').textContent = r.nom;
-  document.getElementById('mr-sub').textContent = `${r.edad} años · CI ${r.ci} · Hab. ${r.hab}`;
-  document.getElementById('mr-badges').innerHTML = r.badges.map(b => {
-    const [cls, txt] = b.split(':');
-    return `<span class="badge ${cls}" style="margin-right:4px">${txt}</span>`;
-  }).join('');
-
-  // Ficha datos
-  document.getElementById('ficha-datos-content').innerHTML = `
-    <div class="fs-row"><span class="fs-lbl">Nombre completo</span><span class="fs-val">${r.nom}</span></div>
-    <div class="fs-row"><span class="fs-lbl">CI</span><span class="fs-val">${r.ci}</span></div>
-    <div class="fs-row"><span class="fs-lbl">Edad</span><span class="fs-val">${r.edad} años</span></div>
-    <div class="fs-row"><span class="fs-lbl">Habitación</span><span class="fs-val">${r.hab}</span></div>
-    <div class="fs-row"><span class="fs-lbl">Mutualista</span><span class="fs-val">${r.mutualista}</span></div>
-    <div class="fs-row"><span class="fs-lbl">Familiar referencia</span><span class="fs-val">${r.familiar}</span></div>
-    <div class="fs-row"><span class="fs-lbl">Médico de cabecera</span><span class="fs-val">${r.medico}</span></div>
-  `;
-
-  document.getElementById('ficha-diag-content').innerHTML =
-    r.diags.map(d => `<div style="padding:3px 0;border-bottom:1px solid var(--crema-o)">• ${d}</div>`).join('');
-
-  document.getElementById('ficha-alergias-content').innerHTML =
-    r.alergias.map(a => `<div style="padding:3px 0;color:var(--rojo);font-weight:500;border-bottom:1px solid var(--crema-o)">⚠️ ${a}</div>`).join('');
-
-  // Medicación
-  document.getElementById('medicacion-content').innerHTML = `
-    <div style="font-size:12px;color:var(--suave);margin-bottom:8px">Residente: <strong>${r.nom}</strong> · CI: ${r.ci}</div>
-    <table class="med-tabla">
-      <thead><tr><th>Medicamento</th><th>Dosis</th><th>Horario</th><th>Notas</th></tr></thead>
-      <tbody>
-        ${r.medicacion.map(m => `
-          <tr>
-            <td style="font-weight:500">${m.med}</td>
-            <td>${m.dosis}</td>
-            <td><span class="med-hora">${m.horario}</span></td>
-            <td style="color:${m.nota.includes('⚠️') ? 'var(--rojo)' : 'var(--suave)'};font-size:10px">${m.nota}</td>
-          </tr>`).join('')}
-      </tbody>
-    </table>
-    ${r.alergias.some(a => a.includes('ANTICOAG')) ? '<div style="background:#fce4ec;border:1px solid #f48fb1;padding:7px 10px;border-radius:6px;font-weight:bold;color:#c62828;margin-top:8px;font-size:12px">⚠️ PACIENTE ANTICOAGULADA — Verificar antes de cualquier procedimiento invasivo</div>' : ''}
-  `;
-
-  // Historial
-  document.getElementById('historial-content').innerHTML = `
-    <div class="hist-entry vital">
-      <span class="hist-badge hb-vital">SIGNOS VITALES</span>
-      <div class="hist-fecha">Hoy 08:00</div>
-      <div class="hist-user">👤 Turno mañana · Carrasco Elderly Care</div>
-      <div class="hist-txt">PA: pendiente · Pulso: pendiente · Temp: pendiente · Sat: pendiente</div>
-    </div>
-    <div class="hist-entry">
-      <span class="hist-badge hb-nota">NOTA CLÍNICA</span>
-      <div class="hist-fecha">Ayer 20:30</div>
-      <div class="hist-user">👤 Turno tarde</div>
-      <div class="hist-txt">Sin novedades en el turno. Medicación administrada según planilla. Paciente colaboradora.</div>
-    </div>
-    <div class="hist-entry medico">
-      <span class="hist-badge hb-medico">VALORACIÓN GERIÁTRICA</span>
-      <div class="hist-fecha">Abr 2026 · Dra. Juliana</div>
-      <div class="hist-user">👤 Dra. Juliana — Médica geriatra</div>
-      <div class="hist-txt">Valoración integral del mes. Residente estable. ${r.diags[0]}. Sin cambios en plan terapéutico.</div>
-    </div>
-  `;
-
-  document.getElementById('nr-res-nom').textContent = r.nom;
-
-  // Reset tabs
-  document.querySelectorAll('[id^="mt-mr-"]').forEach(t => t.style.display = 'none');
-  document.getElementById('mt-mr-ficha').style.display = 'block';
-  document.querySelectorAll('.mtab').forEach((t,i) => t.classList.toggle('active', i===0));
-
-  // Pre-cargar fecha en ficha de salida
-  const now = new Date();
-  const localIso = new Date(now - now.getTimezoneOffset()*60000).toISOString().slice(0,16);
-  const fsf = document.getElementById('fs-fecha');
-  if (fsf) fsf.value = localIso;
-
-  resShowM('modal-residente');
-}
-
 // ══ GENERAR FICHA DE SALIDA ══
 function generarFichaSalida() {
   const r = RESIDENTES[residenteActual];
@@ -4080,8 +4581,6 @@ function imprimirAgenda() { alert('Abrirá ventana de impresión con la agenda d
 function imprimirMedicacion() { alert('Abrirá la planilla de medicación en formato imprimible.'); }
 function descargarHistorial() { alert('Generará PDF con todo el historial del residente seleccionado.'); }
 function simAdjunto() { alert('Aquí se abriría la cámara o la galería para adjuntar foto o PDF.'); }
-function cerrarNuevoRegistro() { resCloseM('modal-nuevo-registro'); }
-
 // ══ VOZ ══
 function resStartVoice(targetId) {
   const status = document.getElementById('voice-status');
