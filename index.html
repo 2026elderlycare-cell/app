@@ -2543,7 +2543,6 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:19px;heigh
       <div class="norma">💊 Planilla de medicación mensual — formato oficial del residencial</div>
       <div id="medicacion-content"></div>
       <div style="display:flex;gap:8px;margin-top:10px">
-        <button class="btn bs btn-sm" style="flex:1">📷 Actualizar por foto</button>
         <button class="btn bd btn-sm" style="flex:1" onclick="imprimirMedicacion()">⬇️ Imprimir planilla</button>
       </div>
     </div>
@@ -3077,15 +3076,90 @@ function mostrarBotonReintento() {
   document.body.appendChild(btn);
 }
 
-async function cargarDatos() {
-  showLoading('Cargando datos...');
 
-  // Intenta cargar con reintentos — sin ping previo para mayor compatibilidad
+// ── Indicador de carga NO bloqueante (esquina superior, no tapa el PIN) ──
+function mostrarIndicadorCarga(mostrar, msg) {
+  var el = document.getElementById('ec-carga-mini');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'ec-carga-mini';
+    el.style.cssText = [
+      'position:fixed', 'top:12px', 'right:12px', 'z-index:150',
+      'background:rgba(26,61,53,.85)', 'color:white',
+      'padding:6px 12px', 'border-radius:20px',
+      'font-size:11px', 'font-family:DM Sans,sans-serif',
+      'transition:opacity .3s', 'pointer-events:none'
+    ].join(';');
+    document.body.appendChild(el);
+  }
+  if (mostrar) {
+    el.textContent = msg || '⏳ Cargando...';
+    el.style.opacity = '1';
+    el.style.display = 'block';
+  } else {
+    el.style.opacity = '0';
+    setTimeout(function(){ el.style.display = 'none'; }, 300);
+  }
+}
+
+// ── Botón reintento sutil — debajo del PIN, NO tapa nada ──
+function mostrarBotonReintentoSutil() {
+  // Remove if already exists
+  var old = document.getElementById('btn-reintento-sutil');
+  if (old) old.remove();
+
+  // Find the splash and append inside it
+  var splash = document.getElementById('splash');
+  if (!splash) return;
+
+  var btn = document.createElement('div');
+  btn.id = 'btn-reintento-sutil';
+  btn.style.cssText = 'margin-top:10px;text-align:center';
+  btn.innerHTML =
+    '<div style="font-size:11px;color:rgba(255,255,255,.5);margin-bottom:6px">Sin conexión al servidor</div>' +
+    '<button style="background:rgba(255,255,255,.15);color:white;border:1px solid rgba(255,255,255,.3);' +
+    'border-radius:20px;padding:7px 18px;font-size:12px;cursor:pointer;font-family:DM Sans,sans-serif"' +
+    ' onclick="this.parentElement.remove();cargarDatos()">🔄 Reintentar conexión</button>';
+  splash.appendChild(btn);
+}
+
+// ── Función original mostrarBotonReintento (post-login, si falla recarga) ──
+function mostrarBotonReintento() {
+  var old = document.getElementById('btn-reintento');
+  if (old) old.remove();
+  var btn = document.createElement('div');
+  btn.id = 'btn-reintento';
+  btn.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);' +
+    'background:white;border-radius:16px;padding:28px;text-align:center;' +
+    'box-shadow:0 8px 32px rgba(0,0,0,.2);z-index:500;max-width:300px;width:85%';
+
+  var retryBtn = document.createElement('button');
+  retryBtn.textContent = '🔄 Reintentar';
+  retryBtn.style.cssText = 'background:#1a3d35;color:white;border:none;border-radius:10px;' +
+    'padding:13px 0;font-size:14px;cursor:pointer;width:100%;font-family:DM Sans,sans-serif;margin-bottom:10px';
+  retryBtn.onclick = function() {
+    var el = document.getElementById('btn-reintento');
+    if (el) el.remove();
+    showLoading('Cargando...');
+    cargarDatos().then(function(){ hideLoading(); });
+  };
+
+  btn.innerHTML = '<div style="font-size:36px;margin-bottom:12px">📡</div>' +
+    '<div style="font-family:Cormorant Garamond,serif;font-size:19px;color:#1a3d35;margin-bottom:8px">Sin conexión</div>' +
+    '<div style="font-size:12px;color:#888;margin-bottom:20px;line-height:1.5">No se pudieron cargar los datos.</div>';
+  btn.appendChild(retryBtn);
+  document.body.appendChild(btn);
+}
+
+async function cargarDatos() {
+  // NO showLoading() aquí — no bloquear el splash/PIN
+  // Mostrar solo un indicador pequeño y no invasivo
+  mostrarIndicadorCarga(true);
+
   for (var intento = 1; intento <= 3; intento++) {
     try {
-      showLoading(intento > 1 ? 'Reintentando (' + intento + '/3)...' : 'Cargando datos...');
+      if (intento > 1) mostrarIndicadorCarga(true, 'Reintentando...');
 
-      // Cargar todo en paralelo — si config falla, igual continúa con datos
       var results = await Promise.allSettled([
         apiGet('config'),
         apiGet('residentes'),
@@ -3096,7 +3170,6 @@ async function cargarDatos() {
         apiGet('liquidaciones')
       ]);
 
-      // Procesar config (PINes) — opcional, no bloquea
       var cfg = results[0].status === 'fulfilled' ? results[0].value : [];
       cfg.forEach(function(r) {
         if (r.clave === 'pin_juliana') PINES['Juliana'] = String(r.valor);
@@ -3104,7 +3177,6 @@ async function cargarDatos() {
         if (r.clave === 'pin_flavia')  PINES['Flavia']  = String(r.valor);
       });
 
-      // Asignar datos — si alguno falla, queda vacío
       DB.residentes    = results[1].status === 'fulfilled' ? results[1].value : [];
       DB.empleadas     = results[2].status === 'fulfilled' ? results[2].value : [];
       DB.medicacion    = results[3].status === 'fulfilled' ? results[3].value : [];
@@ -3114,15 +3186,13 @@ async function cargarDatos() {
 
       var totalOk = DB.residentes.length + DB.empleadas.length;
 
-      // Si NO cargó nada y todavía hay intentos, reintentar
       if (totalOk === 0 && intento < 3) {
         console.warn('cargarDatos intento ' + intento + ': sin datos, reintentando...');
         await new Promise(function(r){ setTimeout(r, 1500 * intento); });
         continue;
       }
 
-      // Éxito (con o sin datos)
-      hideLoading();
+      mostrarIndicadorCarga(false);
       renderListaResidentes();
       renderListaEmpleadas();
       renderGastos();
@@ -3134,7 +3204,7 @@ async function cargarDatos() {
       if (totalOk > 0) {
         toast('✅ ' + DB.residentes.length + ' residentes · ' + DB.empleadas.length + ' empleadas', 'ok');
       } else {
-        toast('⚠️ Conectado pero sin datos. Verificá el Apps Script.', 'warn');
+        toast('⚠️ Conectado sin datos. Verificá el Apps Script.', 'warn');
       }
       return true;
 
@@ -3146,10 +3216,11 @@ async function cargarDatos() {
     }
   }
 
-  // Todos los intentos fallaron
-  hideLoading();
-  toast('⚠️ Sin conexión al servidor. Intentá recargar la página.', 'error');
-  mostrarBotonReintento();
+  // Todos los intentos fallaron — mostrar aviso NO bloqueante
+  mostrarIndicadorCarga(false);
+  // Solo toast (no bloquea PIN) + botón reintento pequeño debajo del PIN
+  toast('⚠️ Sin conexión al servidor', 'warn');
+  mostrarBotonReintentoSutil();
   return false;
 }
 
@@ -5017,4 +5088,1392 @@ async function compartirHistorialWA() {
 // ═══════════════════════════════════════════════════════
 function generarReciboPDF() {
   var liqData = window._liqData;
-  if (!liqData) { toast('C
+  if (!liqData) { toast('Calculá primero la liquidación', 'error'); return; }
+  var empSel = document.getElementById('liq-emp');
+  var empNom = empSel ? (empSel.options[empSel.selectedIndex].text || '') : '';
+  var empId  = empSel ? empSel.value : '';
+  var emp    = DB.empleadas.find(function(e){ return String(e.id) === String(empId); }) || {};
+
+  var mes = (document.getElementById('liq-mes') || {}).value || new Date().toISOString().slice(0,7);
+  var mesLabel = new Date(mes + '-01').toLocaleString('es-UY', {month:'long', year:'numeric'});
+  mesLabel = mesLabel.charAt(0).toUpperCase() + mesLabel.slice(1);
+
+  var hoy = new Date().toLocaleDateString('es-UY');
+
+  function fmt(n) { return '$' + Math.round(n).toLocaleString('es-UY'); }
+
+  var html = `
+  <div style="font-family:Arial,sans-serif;font-size:11px;color:#000;line-height:1.6;max-width:720px;margin:0 auto;padding:20px">
+
+    <!-- ENCABEZADO -->
+    <div style="border-bottom:2px solid #1a3d35;padding-bottom:10px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:flex-end">
+      <div>
+        <div style="font-size:15px;font-weight:bold;color:#1a3d35">CARRASCO ELDERLY CARE SAS</div>
+        <div style="font-size:10px;color:#555">Rafael Barradas 1527 · Montevideo</div>
+        <div style="font-size:10px;color:#555">RUT 220257400017 · BPS 8831922</div>
+      </div>
+      <div style="text-align:right;font-size:10px;color:#555">
+        <div style="font-weight:bold;font-size:13px;color:#1a3d35">RECIBO DE SUELDO</div>
+        <div>Período: <strong>${mesLabel}</strong></div>
+        <div>Emitido: ${hoy}</div>
+      </div>
+    </div>
+
+    <!-- DATOS DE LA EMPLEADA -->
+    <div style="background:#f5f0e8;padding:10px;border-left:3px solid #c9a84c;margin-bottom:12px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
+        <div><span style="color:#555">Empleada:</span> <strong>${emp.nombre || empNom}</strong></div>
+        <div><span style="color:#555">CI:</span> <strong>${emp.ci || '—'}</strong></div>
+        <div><span style="color:#555">Categoría:</span> <strong>Cuidadora — Grupo 15/200</strong></div>
+        <div><span style="color:#555">Turno:</span> <strong>${emp.turno || '—'}</strong></div>
+        <div><span style="color:#555">Fecha ingreso:</span> <strong>${emp.ingreso || '—'}</strong></div>
+        <div><span style="color:#555">Antigüedad:</span> <strong>${emp.antig_pct || 0}%</strong></div>
+      </div>
+    </div>
+
+    <!-- LIQUIDACIÓN -->
+    <table style="width:100%;border-collapse:collapse;margin-bottom:10px;font-size:11px">
+      <thead>
+        <tr style="background:#1a3d35;color:white">
+          <th style="padding:6px 10px;text-align:left">Concepto</th>
+          <th style="padding:6px 10px;text-align:right">Importe</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom:1px solid #ede5d4"><td style="padding:5px 10px">Sueldo base laudo</td><td style="padding:5px 10px;text-align:right">${fmt(liqData.sueldo)}</td></tr>
+        <tr style="border-bottom:1px solid #ede5d4"><td style="padding:5px 10px">Presentismo</td><td style="padding:5px 10px;text-align:right">${fmt(liqData.pres)}</td></tr>
+        ${liqData.compl_noc > 0 ? '<tr style="border-bottom:1px solid #ede5d4"><td style="padding:5px 10px">Complemento nocturno</td><td style="padding:5px 10px;text-align:right">' + fmt(liqData.compl_noc) + '</td></tr>' : ''}
+        ${liqData.h_extra > 0 ? '<tr style="border-bottom:1px solid #ede5d4"><td style="padding:5px 10px">Horas extras</td><td style="padding:5px 10px;text-align:right">' + fmt(liqData.h_extra) + '</td></tr>' : ''}
+        ${liqData.antig > 0 ? '<tr style="border-bottom:1px solid #ede5d4"><td style="padding:5px 10px">Prima antigüedad</td><td style="padding:5px 10px;text-align:right">' + fmt(liqData.antig) + '</td></tr>' : ''}
+        ${liqData.faltax > 0 ? '<tr style="border-bottom:1px solid #ede5d4"><td style="padding:5px 10px">Faltas (días previos al ingreso)</td><td style="padding:5px 10px;text-align:right;color:#c62828">- ' + fmt(liqData.faltax) + '</td></tr>' : ''}
+        <tr style="background:#fafafa;border-top:1px solid #1a3d35;border-bottom:1px solid #1a3d35"><td style="padding:7px 10px;font-weight:bold">NOMINAL</td><td style="padding:7px 10px;text-align:right;font-weight:bold">${fmt(liqData.nominal)}</td></tr>
+        <tr style="border-bottom:1px solid #ede5d4"><td style="padding:5px 10px">BPS Jubilatorio (15%)</td><td style="padding:5px 10px;text-align:right;color:#c62828">- ${fmt(liqData.bps)}</td></tr>
+        <tr style="border-bottom:1px solid #ede5d4"><td style="padding:5px 10px">FRL (0,1%)</td><td style="padding:5px 10px;text-align:right;color:#c62828">- ${fmt(liqData.frl)}</td></tr>
+        <tr style="border-bottom:1px solid #ede5d4"><td style="padding:5px 10px">SNIS Salud (3%)</td><td style="padding:5px 10px;text-align:right;color:#c62828">- ${fmt(liqData.snis)}</td></tr>
+        ${liqData.snisad > 0 ? '<tr style="border-bottom:1px solid #ede5d4"><td style="padding:5px 10px">SNIS Adicional</td><td style="padding:5px 10px;text-align:right;color:#c62828">- ' + fmt(liqData.snisad) + '</td></tr>' : ''}
+        ${liqData.sniscony > 0 ? '<tr style="border-bottom:1px solid #ede5d4"><td style="padding:5px 10px">SNIS Cónyuge</td><td style="padding:5px 10px;text-align:right;color:#c62828">- ' + fmt(liqData.sniscony) + '</td></tr>' : ''}
+        ${liqData.adelanto > 0 ? '<tr style="border-bottom:1px solid #ede5d4"><td style="padding:5px 10px">Adelantos descontados</td><td style="padding:5px 10px;text-align:right;color:#c62828">- ' + fmt(liqData.adelanto) + '</td></tr>' : ''}
+        <tr style="background:#1a3d35;color:white"><td style="padding:9px 10px;font-weight:bold;font-size:13px">LÍQUIDO A COBRAR</td><td style="padding:9px 10px;text-align:right;font-weight:bold;font-size:13px;color:#e8d08a">${fmt(liqData.liquido)}</td></tr>
+      </tbody>
+    </table>
+
+    <!-- FIRMAS -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-top:30px;font-size:10px">
+      <div style="text-align:center;border-top:1px solid #555;padding-top:6px">
+        <div>Firma empleadora</div>
+        <div style="margin-top:18px;color:#555">Carrasco Elderly Care SAS</div>
+      </div>
+      <div style="text-align:center;border-top:1px solid #555;padding-top:6px">
+        <div>Firma empleada</div>
+        <div style="margin-top:18px;color:#555">${emp.nombre || empNom}</div>
+        <div style="font-size:9px;color:#888">CI ${emp.ci || ''}</div>
+      </div>
+    </div>
+
+    <!-- PIE -->
+    <div style="border-top:1px solid #1a3d35;padding-top:8px;margin-top:18px;font-size:9px;color:#555;text-align:center">
+      <div>Carrasco Elderly Care SAS · RUT 220257400017 · BPS 8831922</div>
+      <div style="margin-top:2px">Recibo emitido el ${hoy} · Válido sin firma para presentación bancaria</div>
+    </div>
+
+  </div>`;
+
+  var w = window.open('', '_blank');
+  w.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Recibo — ' + (emp.nombre || empNom) + '</title>' +
+    '<style>body{margin:0;padding:0;}@media print{@page{margin:10mm;}}' +
+    '</style></head><body>' + html +
+    '<scr' + 'ipt>window.onload=function(){window.print();};<\/scr' + 'ipt>' +
+    '</body></html>');
+  w.document.close();
+  toast('✅ Recibo generado', 'ok');
+}
+
+
+
+// ── Egreso PDF ──
+function generarReciboEgresoPDF() {
+  // Use existing egreso calculation
+  if (typeof calcEgreso !== 'function') { toast('Recalculá el egreso', 'error'); return; }
+  calcEgreso();
+  var empSel = document.getElementById('eg-emp');
+  var empNom = empSel ? (empSel.options[empSel.selectedIndex].text || '') : '';
+  var ing  = (document.getElementById('eg-ing')  || {}).value || '';
+  var sal  = (document.getElementById('eg-sal')  || {}).value || '';
+
+  // Read calculated values from DOM
+  var vacac    = parseFloat((document.getElementById('eg-out-vac')   || {}).textContent.replace(/[^\d.-]/g,'')) || 0;
+  var nogoz    = parseFloat((document.getElementById('eg-out-nogoz') || {}).textContent.replace(/[^\d.-]/g,'')) || 0;
+  var aguin    = parseFloat((document.getElementById('eg-out-agu')   || {}).textContent.replace(/[^\d.-]/g,'')) || 0;
+  var nominal  = parseFloat((document.getElementById('eg-out-nom')   || {}).textContent.replace(/[^\d.-]/g,'')) || 0;
+  var liquido  = parseFloat((document.getElementById('eg-out-liq')   || {}).textContent.replace(/[^\d.-]/g,'')) || 0;
+
+  var hoy = new Date().toLocaleDateString('es-UY');
+  function fmt(n){ return '$' + Math.round(n).toLocaleString('es-UY'); }
+
+  var html = `
+  <div style="font-family:Arial,sans-serif;font-size:11px;color:#000;line-height:1.6;max-width:720px;margin:0 auto;padding:20px">
+
+    <div style="border-bottom:2px solid #1a3d35;padding-bottom:10px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:flex-end">
+      <div>
+        <div style="font-size:15px;font-weight:bold;color:#1a3d35">CARRASCO ELDERLY CARE SAS</div>
+        <div style="font-size:10px;color:#555">Rafael Barradas 1527 · Montevideo · RUT 220257400017</div>
+      </div>
+      <div style="text-align:right;font-size:10px;color:#555">
+        <div style="font-weight:bold;font-size:13px;color:#1a3d35">RECIBO DE EGRESO</div>
+        <div>Emitido: ${hoy}</div>
+      </div>
+    </div>
+
+    <div style="background:#f5f0e8;padding:10px;border-left:3px solid #c9a84c;margin-bottom:12px">
+      <div style="font-size:13px;font-weight:bold">${empNom}</div>
+      <div style="font-size:10px;color:#555;margin-top:3px">Período: ${ing} → ${sal}</div>
+    </div>
+
+    <table style="width:100%;border-collapse:collapse;margin-bottom:10px;font-size:11px">
+      <thead><tr style="background:#1a3d35;color:white"><th style="padding:6px 10px;text-align:left">Concepto</th><th style="padding:6px 10px;text-align:right">Importe</th></tr></thead>
+      <tbody>
+        <tr style="border-bottom:1px solid #ede5d4"><td style="padding:5px 10px">Vacacional proporcional</td><td style="padding:5px 10px;text-align:right">${fmt(vacac)}</td></tr>
+        <tr style="border-bottom:1px solid #ede5d4"><td style="padding:5px 10px">Licencia no gozada</td><td style="padding:5px 10px;text-align:right">${fmt(nogoz)}</td></tr>
+        <tr style="border-bottom:1px solid #ede5d4"><td style="padding:5px 10px">Aguinaldo proporcional</td><td style="padding:5px 10px;text-align:right">${fmt(aguin)}</td></tr>
+        <tr style="background:#fafafa;border-top:1px solid #1a3d35;border-bottom:1px solid #1a3d35"><td style="padding:7px 10px;font-weight:bold">NOMINAL</td><td style="padding:7px 10px;text-align:right;font-weight:bold">${fmt(nominal)}</td></tr>
+        <tr style="background:#1a3d35;color:white"><td style="padding:9px 10px;font-weight:bold;font-size:13px">LÍQUIDO A COBRAR</td><td style="padding:9px 10px;text-align:right;font-weight:bold;font-size:13px;color:#e8d08a">${fmt(liquido)}</td></tr>
+      </tbody>
+    </table>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-top:30px;font-size:10px">
+      <div style="text-align:center;border-top:1px solid #555;padding-top:6px"><div>Firma empleadora</div><div style="margin-top:18px;color:#555">Carrasco Elderly Care SAS</div></div>
+      <div style="text-align:center;border-top:1px solid #555;padding-top:6px"><div>Firma empleada</div><div style="margin-top:18px;color:#555">${empNom}</div></div>
+    </div>
+
+    <div style="border-top:1px solid #1a3d35;padding-top:8px;margin-top:18px;font-size:9px;color:#555;text-align:center">
+      <div>Carrasco Elderly Care SAS · RUT 220257400017 · BPS 8831922</div>
+      <div style="margin-top:2px">Recibo de egreso emitido el ${hoy}</div>
+    </div>
+
+  </div>`;
+
+  var w = window.open('', '_blank');
+  w.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Egreso — ' + empNom + '</title>' +
+    '<style>body{margin:0;padding:0;}@media print{@page{margin:10mm;}}' +
+    '</style></head><body>' + html +
+    '<scr' + 'ipt>window.onload=function(){window.print();};<\/scr' + 'ipt>' +
+    '</body></html>');
+  w.document.close();
+  toast('✅ Recibo de egreso generado', 'ok');
+}
+
+
+
+// ═══════════════════════════════════════════════════════
+// MÓDULO CLÍNICO
+// ═══════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
+// MÓDULO CLÍNICO — Barthel, Vacunas, Caídas, MSP
+// Solo accesible para Juliana, Lucía, Flavia
+// ═══════════════════════════════════════════════════════
+
+var DUENNAS = ['Juliana', 'Lucía', 'Flavia'];
+
+function esDuenna() {
+  return DUENNAS.includes(currentUser.nombre);
+}
+
+// ── Mostrar tab clínico solo a dueñas ──
+function switchMtabSociaDuenna(name, el) {
+  if (!esDuenna()) {
+    toast('Solo Juliana, Lucía y Flavia pueden acceder a esta sección', 'error');
+    return;
+  }
+  switchMtab(name, el);
+  // Cargar datos clínicos al abrir
+  if (name === 'r-clinico') cargarDatosClinicos(residenteActual);
+  if (name === 'r-msp')     renderMSPPreview(residenteActual);
+}
+
+// ── Chip toggle único por grupo ──
+function selChipGrupo(el, grupo) {
+  el.closest('.chip-group').querySelectorAll('.chip').forEach(function(c) {
+    c.classList.remove('sel');
+  });
+  el.classList.add('sel');
+}
+
+// ── Chip toggle múltiple ──
+function toggleClinico(el, grupo) {
+  el.classList.toggle('sel');
+  // Actualizar cálculo Barthel si aplica
+  if (['b-alimentacion','b-bano','b-aseo','b-vestido','b-deposiciones',
+       'b-miccion','b-retrete','b-traslado','b-deambulacion','b-escaleras'].includes(grupo)) {
+    calcularBarthel();
+  }
+}
+
+// ── Chips select on change for barthel selects ──
+document.addEventListener('change', function(e) {
+  var barthelIds = ['b-alimentacion','b-bano','b-aseo','b-vestido','b-deposiciones',
+                    'b-miccion','b-retrete','b-traslado','b-deambulacion','b-escaleras'];
+  if (barthelIds.includes(e.target.id)) calcularBarthel();
+});
+
+function calcularBarthel() {
+  var campos = ['b-alimentacion','b-bano','b-aseo','b-vestido','b-deposiciones',
+                'b-miccion','b-retrete','b-traslado','b-deambulacion','b-escaleras'];
+  var total = 0;
+  campos.forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) total += parseInt(el.value) || 0;
+  });
+  var el = document.getElementById('barthel-total-calc');
+  if (el) el.textContent = total;
+  return total;
+}
+
+function categoriaBarthel(score) {
+  score = parseInt(score);
+  if (score === 100) return { cat: 'Independiente', color: '#2e7d32' };
+  if (score >= 91)  return { cat: 'Dependencia leve', color: '#388e3c' };
+  if (score >= 61)  return { cat: 'Dependencia moderada', color: '#f57f17' };
+  if (score >= 21)  return { cat: 'Dependencia severa', color: '#e65100' };
+  return { cat: 'Dependencia total', color: '#c62828' };
+}
+
+// ── ABRIR MODAL BARTHEL ──
+function abrirBarthel() {
+  var r = DB.residentes.find(function(x){ return String(x.id) === String(residenteActual); });
+  var nom = document.getElementById('barthel-res-nom');
+  if (nom) nom.textContent = r ? r.nombre : '';
+  var fec = document.getElementById('barthel-fecha-eval');
+  if (fec) fec.value = new Date().toISOString().split('T')[0];
+  var ev = document.getElementById('barthel-evaluador');
+  if (ev) ev.value = currentUser.nombre;
+  calcularBarthel();
+  resShowM('modal-barthel');
+}
+
+// ── GUARDAR BARTHEL ──
+
+// ── Actualizar label Barthel al escribir ──
+function actualizarBarthelLabel(val) {
+  val = parseInt(val);
+  var el = document.getElementById('barthel-label-rapido');
+  if (!el) return;
+  if (isNaN(val) || val < 0 || val > 100) { el.textContent = '—'; el.style.color = 'var(--suave)'; return; }
+  var cat = categoriaBarthel(val);
+  el.textContent = val + ' pts — ' + cat.cat;
+  el.style.color = cat.color;
+}
+
+// ── Guardar Barthel desde input rápido ──
+async function guardarBarthelRapido() {
+  var inp = document.getElementById('barthel-input-rapido');
+  if (!inp) return;
+  var score = parseInt(inp.value);
+  if (isNaN(score) || score < 0 || score > 100) { toast('Ingresá un valor entre 0 y 100', 'error'); return; }
+
+  var data = {
+    residente_id:  residenteActual,
+    residente_nom: (DB.residentes.find(function(x){ return String(x.id)===String(residenteActual); }) || {}).nombre || '',
+    tipo:          'barthel',
+    usuario:       currentUser.nombre,
+    turno:         '',
+    texto:         'Barthel: ' + score + ' pts — ' + categoriaBarthel(score).cat,
+    vit_pa:        String(score),
+    adjunto:       '{}',
+    fecha:         new Date().toISOString().split('T')[0]
+  };
+
+  showLoading('Guardando Barthel...');
+  var result = await apiPost('historial', 'insert', data);
+  hideLoading();
+
+  if (result) {
+    inp.value = '';
+    var lbl = document.getElementById('barthel-label-rapido');
+    if (lbl) lbl.textContent = '—';
+    toast('✅ Barthel ' + score + ' pts guardado', 'ok');
+    cargarDatosClinicos(residenteActual);
+  } else {
+    toast('❌ Error al guardar', 'error');
+  }
+}
+
+async function guardarBarthel() {
+  var score = calcularBarthel();
+  var campos = ['b-alimentacion','b-bano','b-aseo','b-vestido','b-deposiciones',
+                'b-miccion','b-retrete','b-traslado','b-deambulacion','b-escaleras'];
+  var detalle = {};
+  campos.forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) detalle[id] = parseInt(el.value) || 0;
+  });
+  var data = {
+    residente_id:  residenteActual,
+    tipo:          'barthel',
+    usuario:       (document.getElementById('barthel-evaluador') || {}).value || currentUser.nombre,
+    fecha:         (document.getElementById('barthel-fecha-eval') || {}).value || new Date().toISOString().split('T')[0],
+    texto:         'Barthel: ' + score + ' pts — ' + categoriaBarthel(score).cat,
+    vit_pa:        String(score),    // usamos vit_pa para guardar el score
+    adjunto:       JSON.stringify(detalle),
+    turno:         ''
+  };
+  showLoading('Guardando Barthel...');
+  var result = await apiPost('historial', 'insert', data);
+  hideLoading();
+  if (result) {
+    toast('✅ Barthel ' + score + ' pts guardado', 'ok');
+    resCloseM('modal-barthel');
+    cargarDatosClinicos(residenteActual);
+  } else {
+    toast('❌ Error al guardar', 'error');
+  }
+}
+
+// ── CARGAR DATOS CLÍNICOS (Barthel, vacunas, caídas) ──
+async function cargarDatosClinicos(resId) {
+  var hist = await apiGet('historial');
+  var resHist = hist.filter(function(h){ return String(h.residente_id) === String(resId); });
+
+  // Barthel
+  var barthelRecs = resHist
+    .filter(function(h){ return h.tipo === 'barthel'; })
+    .sort(function(a,b){ return b.created_at > a.created_at ? 1 : -1; });
+
+  if (barthelRecs.length > 0) {
+    var ultimo = barthelRecs[0];
+    var score  = parseInt(ultimo.vit_pa) || 0;
+    var cat    = categoriaBarthel(score);
+    var elS = document.getElementById('barthel-score');
+    var elC = document.getElementById('barthel-cat');
+    var elF = document.getElementById('barthel-fecha');
+    if (elS) elS.textContent = score + ' / 100';
+    if (elC) { elC.textContent = cat.cat; }
+    if (elF) elF.textContent = 'Evaluado: ' + new Date(ultimo.created_at).toLocaleDateString('es-UY') + ' — por ' + ultimo.usuario;
+
+    // Evolución
+    var evDiv = document.getElementById('barthel-evolucion');
+    if (evDiv && barthelRecs.length > 1) {
+      evDiv.innerHTML = '<div style="font-size:11px;font-weight:600;color:var(--verde);margin-bottom:6px;letter-spacing:.5px">EVOLUCIÓN</div>' +
+        barthelRecs.slice(0,6).map(function(b) {
+          var sc  = parseInt(b.vit_pa) || 0;
+          var ct  = categoriaBarthel(sc);
+          var dt  = new Date(b.created_at).toLocaleDateString('es-UY');
+          var pct = sc;
+          return '<div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid var(--crema-o)">' +
+            '<div style="font-size:11px;color:var(--suave);min-width:65px">' + dt + '</div>' +
+            '<div style="flex:1;height:8px;background:var(--crema-o);border-radius:4px">' +
+              '<div style="height:8px;border-radius:4px;background:' + ct.color + ';width:' + pct + '%"></div>' +
+            '</div>' +
+            '<div style="font-size:12px;font-weight:600;color:' + ct.color + ';min-width:35px;text-align:right">' + sc + '</div>' +
+          '</div>';
+        }).join('');
+    } else if (evDiv) {
+      evDiv.innerHTML = '<div style="font-size:12px;color:var(--suave);text-align:center;padding:8px">Solo 1 registro — la evolución se verá con más registros</div>';
+    }
+  }
+
+  // Vacunas
+  var vacunas = resHist
+    .filter(function(h){ return h.tipo === 'vacuna'; })
+    .sort(function(a,b){ return b.created_at > a.created_at ? 1 : -1; });
+  var vacDiv = document.getElementById('vacunas-lista');
+  if (vacDiv) {
+    vacDiv.innerHTML = vacunas.length > 0 ?
+      vacunas.map(function(v) {
+        var dt = new Date(v.created_at).toLocaleDateString('es-UY');
+        return '<div style="padding:7px 0;border-bottom:1px solid var(--crema-o);display:flex;justify-content:space-between">' +
+          '<div><div style="font-size:13px;font-weight:500">' + v.texto + '</div>' +
+          '<div style="font-size:11px;color:var(--suave)">' + dt + ' · ' + v.usuario + '</div></div>' +
+          '<div style="font-size:11px;color:var(--verde)">💉</div>' +
+        '</div>';
+      }).join('') :
+      '<div style="font-size:12px;color:var(--suave);text-align:center;padding:8px">Sin vacunas registradas</div>';
+  }
+
+  // Caídas
+  var caidas = resHist
+    .filter(function(h){ return h.tipo === 'caida'; })
+    .sort(function(a,b){ return b.created_at > a.created_at ? 1 : -1; });
+  var caidaDiv = document.getElementById('caidas-lista');
+  if (caidaDiv) {
+    caidaDiv.innerHTML = caidas.length > 0 ?
+      '<div style="font-size:12px;color:var(--rojo);font-weight:600;margin-bottom:6px">⚡ ' + caidas.length + ' caída(s) registrada(s)</div>' +
+      caidas.map(function(c) {
+        var dt = c.turno || new Date(c.created_at).toLocaleDateString('es-UY');
+        return '<div style="background:#fff8f8;border:1px solid #ffcdd2;border-radius:8px;padding:10px;margin-bottom:6px">' +
+          '<div style="font-size:12px;font-weight:500;color:var(--rojo)">' + (c.texto || 'Caída registrada') + '</div>' +
+          '<div style="font-size:11px;color:var(--suave);margin-top:3px">' + dt + ' · ' + c.usuario + '</div>' +
+        '</div>';
+      }).join('') :
+      '<div style="font-size:12px;color:var(--suave);text-align:center;padding:8px">Sin caídas registradas</div>';
+  }
+
+  // Datos clínicos del residente (contenciones, salidas, etc)
+  var r = DB.residentes.find(function(x){ return String(x.id) === String(resId); });
+  if (r && r.clinico_json) {
+    try {
+      var clinico = JSON.parse(r.clinico_json);
+      // Restore chips
+      if (clinico.auxiliar)   preselChip('auxiliares-grupo', clinico.auxiliar);
+      if (clinico.salida)     preselChip('salidas-grupo', clinico.salida);
+      if (clinico.lpp)        preselChipMulti('lpp', clinico.lpp);
+      if (clinico.cont_obs)   { var el = document.getElementById('cont-obs');   if(el) el.value = clinico.cont_obs; }
+      if (clinico.salidas_just){ var el = document.getElementById('salidas-just'); if(el) el.value = clinico.salidas_just; }
+      if (clinico.lpp_desc)   { var el = document.getElementById('lpp-desc');   if(el) el.value = clinico.lpp_desc; }
+    } catch(e) {}
+  }
+}
+
+function preselChip(groupId, value) {
+  var group = document.getElementById(groupId);
+  if (!group) return;
+  group.querySelectorAll('.chip').forEach(function(c) {
+    if (c.textContent.trim() === value) c.classList.add('sel');
+    else c.classList.remove('sel');
+  });
+}
+
+// ── GUARDAR DATOS CLÍNICOS ──
+async function guardarDatosClinicos() {
+  var clinico = {
+    auxiliar:     getSelChip('auxiliares-grupo'),
+    cont_fis:     getSelChips('cont-fis'),
+    cont_farm:    getSelChip('cont-farm'),
+    cont_obs:     (document.getElementById('cont-obs') || {}).value || '',
+    salida:       getSelChip('salidas-grupo'),
+    salidas_just: (document.getElementById('salidas-just') || {}).value || '',
+    lpp:          getSelChips('lpp'),
+    lpp_desc:     (document.getElementById('lpp-desc') || {}).value || '',
+    fr_caida:     getSelChips('fr-caida'),
+    updated_at:   new Date().toISOString(),
+    updated_by:   currentUser.nombre
+  };
+
+  showLoading('Guardando datos clínicos...');
+  var result = await apiPost('residentes', 'update', { clinico_json: JSON.stringify(clinico) }, residenteActual);
+  hideLoading();
+
+  if (result) {
+    // Update local cache
+    var r = DB.residentes.find(function(x){ return String(x.id) === String(residenteActual); });
+    if (r) r.clinico_json = JSON.stringify(clinico);
+    toast('✅ Datos clínicos guardados', 'ok');
+  } else {
+    toast('❌ Error al guardar', 'error');
+  }
+}
+
+function getSelChip(groupId) {
+  var group = document.getElementById(groupId);
+  if (!group) return '';
+  var sel = group.querySelector('.chip.sel');
+  return sel ? sel.textContent.trim() : '';
+}
+
+function getSelChips(group) {
+  var sels = document.querySelectorAll('[onclick*="' + group + '"].chip.sel');
+  return Array.from(sels).map(function(c){ return c.textContent.trim(); }).join(', ');
+}
+
+// ── ABRIR MODAL CAÍDA ──
+function abrirRegistroCaida() {
+  var r = DB.residentes.find(function(x){ return String(x.id) === String(residenteActual); });
+  var nom = document.getElementById('caida-res-nom');
+  if (nom) nom.textContent = r ? r.nombre : '';
+  var fec = document.getElementById('caida-fecha');
+  if (fec) {
+    var now = new Date();
+    fec.value = new Date(now - now.getTimezoneOffset()*60000).toISOString().slice(0,16);
+  }
+  resShowM('modal-caida');
+}
+
+// ── GUARDAR CAÍDA ──
+async function guardarCaida() {
+  var desc    = (document.getElementById('caida-desc') || {}).value || '';
+  var fecha   = (document.getElementById('caida-fecha') || {}).value || '';
+  var turno   = (document.getElementById('caida-turno') || {}).value || '';
+  var presenc = getSelChipByGroup('c-presenciada');
+  var tipo    = getSelChipByGroup('c-tipo');
+  var prodr   = getSelChipByGroup('c-prodromo');
+  var levanta = getSelChipByGroup('c-levanta');
+  var trauma  = getSelChips('c-trauma');
+  var centinela = getSelChipByGroup('c-centinela');
+  var valoro  = getSelChips('c-valoro');
+
+  var resumen = [
+    presenc, tipo, prodr ? 'Pródromos: ' + prodr : null,
+    'Levanta: ' + levanta, trauma ? 'Trauma: ' + trauma : null,
+    centinela === 'Sí — requirió evaluación urgente' ? '⚠️ CENTINELA' : null,
+    valoro ? 'Valoró: ' + valoro : null
+  ].filter(Boolean).join(' | ');
+
+  var data = {
+    residente_id:  residenteActual,
+    residente_nom: (DB.residentes.find(function(x){ return String(x.id)===String(residenteActual); }) || {}).nombre || '',
+    tipo:          'caida',
+    usuario:       currentUser.nombre,
+    turno:         turno,
+    texto:         resumen + (desc ? '\n' + desc : ''),
+    vit_pa:        centinela || '',
+    vit_pulso:     presenc || '',
+    vit_temp:      tipo || '',
+    adjunto:       JSON.stringify({ trauma, valoro, prodr, levanta })
+  };
+
+  showLoading('Guardando caída...');
+  var result = await apiPost('historial', 'insert', data);
+  hideLoading();
+  if (result) {
+    toast('✅ Caída registrada', 'ok');
+    resCloseM('modal-caida');
+    cargarDatosClinicos(residenteActual);
+  } else {
+    toast('❌ Error al guardar', 'error');
+  }
+}
+
+function getSelChipByGroup(grupo) {
+  var chips = document.querySelectorAll('[onclick*="selChipGrupo"][onclick*="' + grupo + '"].chip.sel');
+  if (chips.length === 0) {
+    // try finding by data attribute approach
+    chips = document.querySelectorAll('.chip.sel');
+  }
+  // More reliable: look in the parent chip-group
+  return '';
+}
+
+// ── ABRIR MODAL VACUNA ──
+function agregarVacuna() {
+  var r = DB.residentes.find(function(x){ return String(x.id) === String(residenteActual); });
+  var nom = document.getElementById('vacuna-res-nom');
+  if (nom) nom.textContent = r ? r.nombre : '';
+  var fec = document.getElementById('vacuna-fecha');
+  if (fec) fec.value = new Date().toISOString().split('T')[0];
+  var ap = document.getElementById('vacuna-aplicador');
+  if (ap) ap.value = currentUser.nombre;
+  resShowM('modal-vacuna');
+}
+
+// ── GUARDAR VACUNA ──
+async function guardarVacuna() {
+  var tipo  = (document.getElementById('vacuna-tipo')     || {}).value || '';
+  var fecha = (document.getElementById('vacuna-fecha')    || {}).value || '';
+  var lote  = (document.getElementById('vacuna-lote')     || {}).value || '';
+  var aplic = (document.getElementById('vacuna-aplicador')|| {}).value || currentUser.nombre;
+  var prox  = (document.getElementById('vacuna-proxima')  || {}).value || '';
+
+  var data = {
+    residente_id:  residenteActual,
+    residente_nom: (DB.residentes.find(function(x){ return String(x.id)===String(residenteActual); }) || {}).nombre || '',
+    tipo:          'vacuna',
+    usuario:       aplic,
+    fecha:         fecha,
+    turno:         '',
+    texto:         tipo + (lote ? ' · Lote: ' + lote : '') + (prox ? ' · Próxima: ' + prox : ''),
+    vit_pa:        prox,
+    adjunto:       JSON.stringify({ lote, aplic, prox })
+  };
+
+  showLoading('Guardando vacuna...');
+  var result = await apiPost('historial', 'insert', data);
+  hideLoading();
+  if (result) {
+    toast('✅ Vacuna registrada', 'ok');
+    resCloseM('modal-vacuna');
+    cargarDatosClinicos(residenteActual);
+  } else {
+    toast('❌ Error al guardar', 'error');
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// INFORME MSP
+// ═══════════════════════════════════════════════════════
+async function generarInformeMSP() {
+  var r = DB.residentes.find(function(x){ return String(x.id) === String(residenteActual); });
+  if (!r) return;
+
+  showLoading('Generando informe MSP...');
+  var hist = await apiGet('historial');
+  var resHist = hist.filter(function(h){ return String(h.residente_id) === String(residenteActual); });
+  hideLoading();
+
+  var barthelRecs = resHist.filter(function(h){ return h.tipo === 'barthel'; })
+    .sort(function(a,b){ return b.created_at > a.created_at ? 1 : -1; });
+  var caidas = resHist.filter(function(h){ return h.tipo === 'caida'; });
+  var vacunas = resHist.filter(function(h){ return h.tipo === 'vacuna'; });
+
+  var ultimoBarthel = barthelRecs[0];
+  var barthelScore  = ultimoBarthel ? (parseInt(ultimoBarthel.vit_pa) || 0) : null;
+  var barthelCat    = barthelScore !== null ? categoriaBarthel(barthelScore) : null;
+
+  var clinico = {};
+  try { clinico = r.clinico_json ? JSON.parse(r.clinico_json) : {}; } catch(e) {}
+
+  var hoy = new Date().toLocaleDateString('es-UY');
+
+  var html = `
+  <div style="font-family:Arial,sans-serif;font-size:11px;color:#000;line-height:1.6;max-width:720px;margin:0 auto;padding:20px">
+
+    <!-- ENCABEZADO -->
+    <div style="border-bottom:2px solid #1a3d35;padding-bottom:10px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:flex-end">
+      <div>
+        <div style="font-size:15px;font-weight:bold;color:#1a3d35">CARRASCO ELDERLY CARE SAS</div>
+        <div style="font-size:10px;color:#555">Rafael Barradas 1527 · Montevideo · elderlycare94@gmail.com</div>
+      </div>
+      <div style="text-align:right;font-size:10px;color:#555">
+        <div style="font-weight:bold;font-size:11px">INFORME CLÍNICO — MSP</div>
+        <div>Fecha: ${hoy}</div>
+      </div>
+    </div>
+
+    <!-- DATOS FILIATORIOS -->
+    <div style="background:#f5f0e8;padding:10px;border-left:3px solid #c9a84c;margin-bottom:10px">
+      <div style="font-size:10px;font-weight:bold;letter-spacing:1px;color:#1a3d35;margin-bottom:6px">1. DATOS DEL RESIDENTE</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
+        <div><span style="color:#555">Nombre:</span> <strong>${r.nombre}</strong></div>
+        <div><span style="color:#555">CI:</span> <strong>${r.ci}</strong></div>
+        <div><span style="color:#555">Edad:</span> <strong>${r.edad} años</strong></div>
+        <div><span style="color:#555">Habitación:</span> <strong>${r.hab}</strong></div>
+        <div><span style="color:#555">Mutualista:</span> <strong>${r.mutualista || '—'}</strong></div>
+        <div><span style="color:#555">Fecha ingreso:</span> <strong>${r.ingreso || '—'}</strong></div>
+        <div><span style="color:#555">Médico:</span> <strong>${r.medico || '—'}</strong></div>
+        <div><span style="color:#555">Familiar ref.:</span> <strong>${r.familiar_nom || '—'}</strong></div>
+      </div>
+    </div>
+
+    <!-- DIAGNÓSTICOS -->
+    <div style="background:#f5f0e8;padding:10px;border-left:3px solid #c9a84c;margin-bottom:10px">
+      <div style="font-size:10px;font-weight:bold;letter-spacing:1px;color:#1a3d35;margin-bottom:6px">2. DIAGNÓSTICOS PRINCIPALES</div>
+      ${(r.diags || 'Sin diagnósticos cargados').split('|').map(function(d){
+        return '<div style="padding:2px 0;border-bottom:1px solid #ede5d4">• ' + d.trim() + '</div>';
+      }).join('')}
+      ${r.alergias && r.alergias !== 'Sin alergias documentadas' ?
+        '<div style="background:#fce4ec;border:1px solid #f48fb1;padding:5px 8px;border-radius:4px;margin-top:6px;font-weight:bold;color:#c62828">⚠️ ALERTAS: ' + r.alergias + '</div>' : ''}
+    </div>
+
+    <!-- FUNCIONALIDAD -->
+    <div style="background:#f5f0e8;padding:10px;border-left:3px solid #c9a84c;margin-bottom:10px">
+      <div style="font-size:10px;font-weight:bold;letter-spacing:1px;color:#1a3d35;margin-bottom:6px">3. FUNCIONALIDAD E INDICADORES DE DEPENDENCIA</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:8px">
+        <div><span style="color:#555">Dependencia ABVD:</span> <strong>${r.dem_estadio || '—'}</strong></div>
+        <div><span style="color:#555">Demencia:</span> <strong>${r.demencia === 'Sí' ? r.dem_estadio : 'No'}</strong></div>
+        <div><span style="color:#555">Auxiliar marcha:</span> <strong>${clinico.auxiliar || '—'}</strong></div>
+        <div><span style="color:#555">Continencia:</span> <strong>${r.cuid_continencia || '—'}</strong></div>
+        <div><span style="color:#555">Movilidad:</span> <strong>${r.cuid_movilidad || '—'}</strong></div>
+        <div><span style="color:#555">Dieta:</span> <strong>${r.cuid_dieta || '—'}</strong></div>
+        <div><span style="color:#555">Espesantes:</span> <strong>${r.cuid_espesantes || '—'}</strong></div>
+        <div><span style="color:#555">O₂ domiciliario:</span> <strong>${r.cuid_oxigeno || '—'}</strong></div>
+      </div>
+
+      <!-- BARTHEL -->
+      ${barthelScore !== null ? `
+      <div style="background:${barthelCat.color}15;border:1px solid ${barthelCat.color}40;border-radius:6px;padding:8px;margin-bottom:6px">
+        <div style="font-weight:bold;color:${barthelCat.color}">ÍNDICE DE BARTHEL: ${barthelScore}/100 — ${barthelCat.cat}</div>
+        <div style="font-size:10px;color:#555;margin-top:3px">Última evaluación: ${new Date(ultimoBarthel.created_at).toLocaleDateString('es-UY')} · Evaluó: ${ultimoBarthel.usuario}</div>
+      </div>
+      ${barthelRecs.length > 1 ? '<div style="font-size:10px;color:#555">Evolución Barthel: ' +
+        barthelRecs.slice(0,5).map(function(b){
+          return new Date(b.created_at).toLocaleDateString('es-UY') + ': ' + (parseInt(b.vit_pa)||0) + ' pts';
+        }).join(' → ') + '</div>' : ''}
+      ` : '<div style="color:#555;font-style:italic">Sin evaluación Barthel registrada</div>'}
+    </div>
+
+    <!-- CONTENCIONES Y SALIDAS -->
+    <div style="background:#f5f0e8;padding:10px;border-left:3px solid #c9a84c;margin-bottom:10px">
+      <div style="font-size:10px;font-weight:bold;letter-spacing:1px;color:#1a3d35;margin-bottom:6px">4. CONTENCIONES Y SALIDAS</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
+        <div><span style="color:#555">Contención física:</span> <strong>${clinico.cont_fis || 'No'}</strong></div>
+        <div><span style="color:#555">Contención farmacológica:</span> <strong>${clinico.cont_farm || 'No'}</strong></div>
+        <div><span style="color:#555">Lesiones por presión:</span> <strong>${clinico.lpp || '—'}</strong></div>
+        <div><span style="color:#555">Salidas del centro:</span> <strong>${clinico.salida || '—'}</strong></div>
+      </div>
+      ${clinico.cont_obs ? '<div style="margin-top:5px;font-size:10px"><span style="color:#555">Obs. contenciones:</span> ' + clinico.cont_obs + '</div>' : ''}
+      ${clinico.salidas_just ? '<div style="margin-top:3px;font-size:10px"><span style="color:#555">Justificación salidas:</span> ' + clinico.salidas_just + '</div>' : ''}
+      ${clinico.lpp_desc ? '<div style="margin-top:3px;font-size:10px"><span style="color:#555">Descripción LPP:</span> ' + clinico.lpp_desc + '</div>' : ''}
+    </div>
+
+    <!-- CAÍDAS -->
+    <div style="background:#f5f0e8;padding:10px;border-left:3px solid #c9a84c;margin-bottom:10px">
+      <div style="font-size:10px;font-weight:bold;letter-spacing:1px;color:#1a3d35;margin-bottom:6px">5. REGISTRO DE CAÍDAS</div>
+      <div><span style="color:#555">Total caídas registradas en el centro:</span> <strong>${caidas.length}</strong></div>
+      ${clinico.fr_caida ? '<div style="margin-top:4px;font-size:10px"><span style="color:#555">Factores de riesgo:</span> ' + clinico.fr_caida + '</div>' : ''}
+      ${caidas.slice(0,5).map(function(c,i) {
+        return '<div style="background:white;border:1px solid #ffcdd2;border-radius:4px;padding:6px;margin-top:5px">' +
+          '<div style="font-weight:bold;color:#c62828;font-size:10px">Caída #' + (i+1) + ' — ' + new Date(c.created_at).toLocaleDateString('es-UY') + '</div>' +
+          '<div style="font-size:10px;color:#555;margin-top:2px">' + (c.texto || '').replace(/\n/g,'<br>') + '</div>' +
+        '</div>';
+      }).join('')}
+    </div>
+
+    <!-- VACUNACIONES -->
+    <div style="background:#f5f0e8;padding:10px;border-left:3px solid #c9a84c;margin-bottom:10px">
+      <div style="font-size:10px;font-weight:bold;letter-spacing:1px;color:#1a3d35;margin-bottom:6px">6. VACUNACIONES EN EL CENTRO</div>
+      ${vacunas.length > 0 ?
+        '<table style="width:100%;border-collapse:collapse;font-size:10px">' +
+        '<tr style="background:#1a3d35;color:white"><th style="padding:4px 6px;text-align:left">Vacuna</th><th style="padding:4px 6px;text-align:left">Fecha</th><th style="padding:4px 6px;text-align:left">Aplicó</th></tr>' +
+        vacunas.map(function(v) {
+          return '<tr style="border-bottom:1px solid #ede5d4"><td style="padding:3px 6px">' + v.texto + '</td>' +
+            '<td style="padding:3px 6px">' + new Date(v.created_at).toLocaleDateString('es-UY') + '</td>' +
+            '<td style="padding:3px 6px">' + v.usuario + '</td></tr>';
+        }).join('') + '</table>' :
+        '<div style="color:#555;font-style:italic">Sin vacunas registradas en el centro</div>'
+      }
+    </div>
+
+    <!-- PIE -->
+    <div style="border-top:1px solid #1a3d35;padding-top:8px;margin-top:12px;font-size:9px;color:#555;text-align:center">
+      <div>Carrasco Elderly Care SAS · Rafael Barradas 1527, Montevideo · RUT 220257400017</div>
+      <div style="margin-top:2px">Informe generado el ${hoy} por ${currentUser.nombre} · Uso interno y MSP</div>
+    </div>
+
+  </div>`;
+
+  // Show preview
+  var preview = document.getElementById('msp-preview');
+  if (preview) {
+    preview.innerHTML = html;
+    preview.style.color = 'var(--texto)';
+    preview.style.textAlign = 'left';
+  }
+
+  // Open print window
+  var w = window.open('', '_blank');
+  w.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Informe MSP — ' + r.nombre + '</title>' +
+    '<style>body{margin:0;padding:0;}@media print{@page{margin:10mm;}}' +
+    '</style></head><body>' + html +
+    '<scr' + 'ipt>window.onload=function(){window.print();};<\/scr' + 'ipt>' +
+    '</body></html>');
+  w.document.close();
+}
+
+function renderMSPPreview(resId) {
+  var preview = document.getElementById('msp-preview');
+  if (!preview) return;
+  var r = DB.residentes.find(function(x){ return String(x.id) === String(resId); });
+  if (!r) return;
+  preview.innerHTML = '<div style="padding:10px">' +
+    '<div style="font-size:13px;font-weight:500;color:var(--verde);margin-bottom:8px">' + r.nombre + '</div>' +
+    '<div style="font-size:12px;color:var(--suave)">Tocá <strong>⬇️ Descargar informe MSP</strong> para generar el documento completo con todos los datos clínicos, Barthel y caídas.</div>' +
+    '</div>';
+}
+
+function compartirInformeMSP() {
+  var r = DB.residentes.find(function(x){ return String(x.id) === String(residenteActual); });
+  if (!r) return;
+  var txt = '📋 *INFORME MSP — ELDERLY CARE CARRASCO*\n\n' +
+    '*Residente:* ' + r.nombre + '\n' +
+    '*CI:* ' + r.ci + ' · *Edad:* ' + r.edad + ' años\n' +
+    '*Habitación:* ' + r.hab + '\n\n' +
+    'Informe completo disponible en el sistema.\n\n' +
+    '_Carrasco Elderly Care SAS · Rafael Barradas 1527_';
+  window.open('https://wa.me/?text=' + encodeURIComponent(txt), '_blank');
+}
+
+
+function compartirEgresoWA() {
+  var empSel = document.getElementById('eg-emp');
+  var empNom = empSel ? (empSel.options[empSel.selectedIndex].text || '') : '';
+  var liquido = (document.getElementById('eg-out-liq') || {}).textContent || '$0';
+  var txt = '💼 *RECIBO DE EGRESO — Elderly Care*\n\n*Empleada:* ' + empNom + '\n*Líquido a cobrar:* ' + liquido + '\n\n_Carrasco Elderly Care SAS_\nRecibo formal en PDF disponible.';
+  window.open('https://wa.me/?text=' + encodeURIComponent(txt), '_blank');
+}
+
+// Refresh liq-emp dropdown with real empleadas from DB
+function refreshLiqEmpDropdown() {
+  var sel = document.getElementById('liq-emp');
+  if (!sel) return;
+  var current = sel.value;
+  sel.innerHTML = '';
+  DB.empleadas.filter(function(e){ return e.activo === 'Sí'; }).forEach(function(e) {
+    var nomCorto = e.nombre.split(' ').slice(0,3).join(' ');
+    var opt = new Option(nomCorto, e.id);
+    sel.add(opt);
+  });
+  // Add manual option
+  sel.add(new Option('— Manual —', 'manual'));
+  if (current) sel.value = current;
+}
+
+// Refresh egreso dropdown too
+function refreshEgEmpDropdown() {
+  var sel = document.getElementById('eg-emp');
+  if (!sel) return;
+  var current = sel.value;
+  sel.innerHTML = '';
+  DB.empleadas.filter(function(e){ return e.activo === 'Sí'; }).forEach(function(e) {
+    var opt = new Option(e.nombre, e.id);
+    sel.add(opt);
+  });
+  sel.add(new Option('— Manual —', 'manual'));
+  if (current) sel.value = current;
+}
+
+
+// ═══════════════════════════════════════════════════════
+// FUNCIONES NUEVAS — Ficha editable, Salida unificada, Adelantos
+// ═══════════════════════════════════════════════════════
+
+// ── Cargar ficha residente en los campos editables ──
+function cargarFichaEnFormulario(r) {
+  if (!r) return;
+  var set = function(id, val) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    if (el.tagName === 'SELECT') {
+      for (var i = 0; i < el.options.length; i++) {
+        if (el.options[i].value === val || el.options[i].text === val) {
+          el.selectedIndex = i; break;
+        }
+      }
+    } else {
+      el.value = val || '';
+    }
+  };
+  set('ef-ci',          r.ci);
+  set('ef-edad',        r.edad);
+  set('ef-hab',         r.hab);
+  set('ef-mutualista',  r.mutualista);
+  // Normalize date - remove time component if present
+  var ingresoDate = r.ingreso ? String(r.ingreso).split('T')[0] : '';
+  set('ef-ingreso', ingresoDate);
+  set('ef-medico',      r.medico);
+  set('ef-familiar',    r.familiar_nom);
+  set('ef-familiar-tel', r.familiar_tel);
+  set('ef-familiar-par', r.familiar_parentesco);
+  set('ef-diags',       (r.diags || '').replace(/\|/g, '\n'));
+  set('ef-alergias',    (r.alergias || '').replace(/\|/g, '\n'));
+  set('ef-dieta',       r.cuid_dieta);
+  set('ef-espesantes',  r.cuid_espesantes);
+  set('ef-movilidad',   r.cuid_movilidad);
+  set('ef-continencia', r.cuid_continencia);
+  set('ef-panal',       r.cuid_panal);
+  set('ef-oxigeno',     r.cuid_oxigeno);
+  set('ef-ulceras',     r.cuid_ulceras);
+}
+
+// ── Guardar ficha residente ──
+async function guardarFichaResidente() {
+  if (!residenteActual) { toast('Sin residente seleccionado', 'error'); return; }
+  var get = function(id) {
+    var el = document.getElementById(id);
+    return el ? el.value.trim() : '';
+  };
+  var diags   = get('ef-diags').replace(/\n/g, '|').replace(/\s*\|\s*/g, '|').replace(/^\||\|$/g, '');
+  var alerg   = get('ef-alergias').replace(/\n/g, '|').replace(/\s*\|\s*/g, '|').replace(/^\||\|$/g, '');
+
+  var data = {
+    ci:                   get('ef-ci'),
+    edad:                 parseInt(get('ef-edad')) || 0,
+    hab:                  get('ef-hab'),
+    mutualista:           get('ef-mutualista'),
+    ingreso:              get('ef-ingreso'),
+    medico:               get('ef-medico'),
+    familiar_nom:         get('ef-familiar'),
+    familiar_tel:         get('ef-familiar-tel'),
+    familiar_parentesco:  get('ef-familiar-par'),
+    diags:                diags,
+    alergias:             alerg,
+    cuid_dieta:           get('ef-dieta'),
+    cuid_espesantes:      get('ef-espesantes'),
+    cuid_movilidad:       get('ef-movilidad'),
+    cuid_continencia:     get('ef-continencia'),
+    cuid_panal:           get('ef-panal'),
+    cuid_oxigeno:         get('ef-oxigeno'),
+    cuid_ulceras:         get('ef-ulceras')
+  };
+
+  showLoading('Guardando ficha...');
+  var result = await apiPost('residentes', 'update', data, residenteActual);
+  hideLoading();
+
+  if (result) {
+    // Update local cache
+    var r = DB.residentes.find(function(x){ return String(x.id) === String(residenteActual); });
+    if (r) Object.assign(r, data);
+    renderListaResidentes();
+    toast('✅ Ficha guardada', 'ok');
+  } else {
+    toast('❌ Error al guardar — revisá la conexión', 'error');
+  }
+}
+
+// ── Ficha de Salida Completa (unificada con Clínico) ──
+async function generarFichaSalidaCompleta() {
+  var r = DB.residentes.find(function(x){ return String(x.id) === String(residenteActual); });
+  if (!r) { toast('Sin residente seleccionado', 'error'); return; }
+
+  showLoading('Generando ficha PDF...');
+
+  // Cargar historial para Barthel, vacunas, caídas
+  var hist = await apiGet('historial');
+  var resHist = hist.filter(function(h){ return String(h.residente_id) === String(residenteActual); });
+
+  var barthelRecs = resHist.filter(function(h){ return h.tipo === 'barthel'; })
+    .sort(function(a,b){ return b.created_at > a.created_at ? 1 : -1; });
+  var caidas   = resHist.filter(function(h){ return h.tipo === 'caida'; });
+  var vacunas  = resHist.filter(function(h){ return h.tipo === 'vacuna'; });
+  var meds     = DB.medicacion.filter(function(m){ return String(m.residente_id) === String(residenteActual) && m.activo === 'Sí'; });
+
+  var ultimoBarthel = barthelRecs[0];
+  var barthelScore  = ultimoBarthel ? (parseInt(ultimoBarthel.vit_pa) || 0) : null;
+  var barthelCat    = barthelScore !== null ? categoriaBarthel(barthelScore) : null;
+
+  // Datos clínicos guardados
+  var clinico = {};
+  try { clinico = r.clinico_json ? JSON.parse(r.clinico_json) : {}; } catch(e) {}
+
+  // Datos del formulario de salida
+  var get = function(id){ var el=document.getElementById(id); return el ? el.value.trim() : ''; };
+  var getChip = function(group) {
+    var sel = document.querySelector('#salidas-grupo .chip.sel, #auxiliares-grupo .chip.sel, .' + group + '.chip.sel');
+    return sel ? sel.textContent.trim() : '';
+  };
+
+  var motivo   = get('fs-motivo');
+  var fecha    = get('fs-fecha');
+  var pa       = get('fs-pa');
+  var pulso    = get('fs-pulso');
+  var temp     = get('fs-temp');
+  var sat      = get('fs-sat');
+  var gluc     = get('fs-gluc');
+  var peso     = get('fs-peso');
+  var cognObs  = get('fs-cogn-obs');
+  var hoy      = new Date().toLocaleDateString('es-UY');
+
+  function fmt(n) { return '$' + Math.round(n).toLocaleString('es-UY'); }
+  function row(label, val) {
+    return '<div style="display:flex;padding:4px 0;border-bottom:1px solid #ede5d4">' +
+      '<div style="width:45%;color:#555;font-size:10px">' + label + '</div>' +
+      '<div style="width:55%;font-size:10px;font-weight:500">' + (val || '—') + '</div></div>';
+  }
+
+  var html = '<!DOCTYPE html><html><head><meta charset="UTF-8">' +
+    '<style>body{font-family:Arial,sans-serif;font-size:11px;color:#000;margin:0;padding:20px;line-height:1.5}' +
+    '@media print{@page{margin:10mm;size:A4}}' +
+    '.section{background:#f5f0e8;border-left:3px solid #c9a84c;padding:10px;margin-bottom:10px}' +
+    '.stitle{font-size:10px;font-weight:bold;letter-spacing:1px;color:#1a3d35;margin-bottom:6px}' +
+    '.grid2{display:grid;grid-template-columns:1fr 1fr;gap:4px}' +
+    '.chip-badge{display:inline-block;background:#e8f5e9;border:1px solid #a5d6a7;border-radius:4px;' +
+    'padding:2px 6px;font-size:9px;color:#1b5e20;margin:2px}' +
+    '.alerta{background:#fce4ec;border:1px solid #f48fb1;padding:6px 8px;border-radius:4px;' +
+    'color:#c62828;font-weight:bold;margin-bottom:6px}' +
+    'table{width:100%;border-collapse:collapse}' +
+    'th{background:#1a3d35;color:white;padding:5px 8px;text-align:left;font-size:10px}' +
+    'td{padding:4px 8px;border-bottom:1px solid #ede5d4;font-size:10px}' +
+    '</style></head><body>';
+
+  // ENCABEZADO
+  html += '<div style="border-bottom:2px solid #1a3d35;padding-bottom:10px;margin-bottom:14px;' +
+    'display:flex;justify-content:space-between;align-items:flex-end">' +
+    '<div><div style="font-size:15px;font-weight:bold;color:#1a3d35">CARRASCO ELDERLY CARE SAS</div>' +
+    '<div style="font-size:10px;color:#555">Rafael Barradas 1527 · Montevideo · elderlycare94@gmail.com</div></div>' +
+    '<div style="text-align:right"><div style="font-weight:bold;font-size:12px;color:#1a3d35">FICHA COMPLETA DEL RESIDENTE</div>' +
+    '<div style="font-size:10px;color:#555">Generado: ' + hoy + '</div></div></div>';
+
+  // SECCIÓN 1: DATOS FILIATORIOS
+  html += '<div class="section"><div class="stitle">1. DATOS DEL RESIDENTE</div>';
+  html += '<div class="grid2">';
+  html += row('Nombre', r.nombre);
+  html += row('CI', r.ci);
+  html += row('Edad', r.edad + ' años');
+  html += row('Habitación', r.hab);
+  html += row('Mutualista', r.mutualista);
+  html += row('Ingreso al centro', r.ingreso);
+  html += row('Médico', r.medico);
+  html += row('Familiar', r.familiar_nom + (r.familiar_tel ? ' · ' + r.familiar_tel : ''));
+  html += '</div></div>';
+
+  // ALERTAS CRÍTICAS
+  if (r.alergias && r.alergias !== 'Sin alergias documentadas') {
+    html += '<div class="alerta">⚠️ ALERTAS: ' + r.alergias.replace(/\|/g, ' | ') + '</div>';
+  }
+
+  // SECCIÓN 2: DIAGNÓSTICOS
+  html += '<div class="section"><div class="stitle">2. DIAGNÓSTICOS PRINCIPALES</div>';
+  (r.diags || '').split('|').forEach(function(d) {
+    html += '<div style="padding:2px 0;border-bottom:1px solid #ede5d4;font-size:10px">• ' + d.trim() + '</div>';
+  });
+  html += '</div>';
+
+  // SECCIÓN 3: BARTHEL
+  html += '<div class="section"><div class="stitle">3. FUNCIONALIDAD — ÍNDICE DE BARTHEL</div>';
+  if (barthelScore !== null) {
+    html += '<div style="background:' + barthelCat.color + '20;border:1px solid ' + barthelCat.color + '40;' +
+      'border-radius:6px;padding:8px;margin-bottom:6px">' +
+      '<span style="font-weight:bold;color:' + barthelCat.color + ';font-size:13px">' + barthelScore + '/100</span>' +
+      ' — <span style="color:' + barthelCat.color + '">' + barthelCat.cat + '</span>' +
+      '<div style="font-size:9px;color:#555;margin-top:2px">Última evaluación: ' +
+      new Date(ultimoBarthel.created_at).toLocaleDateString('es-UY') + ' · ' + ultimoBarthel.usuario + '</div></div>';
+    if (barthelRecs.length > 1) {
+      html += '<div style="font-size:9px;color:#555">Evolución: ' +
+        barthelRecs.slice(0,5).map(function(b){
+          return new Date(b.created_at).toLocaleDateString('es-UY') + ': ' + (parseInt(b.vit_pa)||0) + ' pts';
+        }).join(' → ') + '</div>';
+    }
+  } else {
+    html += '<div style="color:#999;font-style:italic">Sin evaluación Barthel registrada</div>';
+  }
+  html += '<div style="margin-top:8px">' + row('Auxiliar de marcha', clinico.auxiliar) + '</div>';
+  html += row('Movilidad', r.cuid_movilidad);
+  html += row('Continencia', r.cuid_continencia);
+  html += row('Dieta', r.cuid_dieta);
+  html += row('Espesantes', r.cuid_espesantes);
+  html += row('Oxígeno', r.cuid_oxigeno);
+  html += '</div>';
+
+  // SECCIÓN 4: CONTENCIONES Y SALIDAS
+  html += '<div class="section"><div class="stitle">4. CONTENCIONES Y SALIDAS</div>';
+  html += '<div class="grid2">';
+  html += row('Contención física', clinico.cont_fis || 'No');
+  html += row('Contención farmacológica', clinico.cont_farm || 'No');
+  html += row('LPP', clinico.lpp || 'Sin lesiones activas');
+  html += row('Salidas del centro', clinico.salida || '—');
+  html += '</div>';
+  if (clinico.cont_obs) html += row('Obs. contenciones', clinico.cont_obs);
+  if (clinico.salidas_just) html += row('Justificación salidas', clinico.salidas_just);
+  if (clinico.lpp_desc) html += row('Descripción LPP', clinico.lpp_desc);
+  html += '</div>';
+
+  // SECCIÓN 5: CAÍDAS
+  html += '<div class="section"><div class="stitle">5. REGISTRO DE CAÍDAS</div>';
+  html += row('Total caídas registradas', caidas.length);
+  if (clinico.fr_caida) html += row('Factores de riesgo', clinico.fr_caida);
+  caidas.slice(0,3).forEach(function(c, i) {
+    html += '<div style="background:white;border:1px solid #ffcdd2;border-radius:4px;padding:6px;margin-top:5px">' +
+      '<div style="font-weight:bold;color:#c62828;font-size:9px">Caída #' + (i+1) + ' — ' +
+      new Date(c.created_at).toLocaleDateString('es-UY') + '</div>' +
+      '<div style="font-size:10px;color:#555">' + (c.texto || '').replace(/\n/g, '<br>') + '</div></div>';
+  });
+  html += '</div>';
+
+  // SECCIÓN 6: VACUNACIONES
+  html += '<div class="section"><div class="stitle">6. VACUNACIONES EN EL CENTRO</div>';
+  if (vacunas.length > 0) {
+    html += '<table><thead><tr><th>Vacuna</th><th>Fecha</th><th>Aplicó</th></tr></thead><tbody>';
+    vacunas.forEach(function(v) {
+      html += '<tr><td>' + v.texto + '</td><td>' + new Date(v.created_at).toLocaleDateString('es-UY') + '</td><td>' + v.usuario + '</td></tr>';
+    });
+    html += '</tbody></table>';
+  } else { html += '<div style="color:#999;font-style:italic">Sin vacunas registradas</div>'; }
+  html += '</div>';
+
+  // SECCIÓN 7: MEDICACIÓN ACTUAL
+  html += '<div class="section"><div class="stitle">7. MEDICACIÓN ACTUAL</div>';
+  if (meds.length > 0) {
+    html += '<table><thead><tr><th>Medicamento</th><th>Dosis</th><th>Horario</th><th>Notas</th></tr></thead><tbody>';
+    meds.forEach(function(m) {
+      html += '<tr><td style="font-weight:500">' + m.medicamento + '</td><td>' + m.dosis + '</td>' +
+        '<td>' + m.horario + '</td><td style="color:' + (m.nota.includes('⚠️')?'#c62828':'#555') + '">' + (m.nota||'') + '</td></tr>';
+    });
+    html += '</tbody></table>';
+  } else { html += '<div style="color:#999;font-style:italic">Sin medicación cargada</div>'; }
+  html += '</div>';
+
+  // SECCIÓN 8: FICHA DE SALIDA (solo si hay motivo)
+  if (motivo || pa || pulso) {
+    html += '<div class="section"><div class="stitle">8. EPISODIO ACTUAL DE SALIDA</div>';
+    html += row('Motivo de derivación', motivo);
+    html += row('Fecha/hora salida', fecha);
+    html += '<div style="margin-top:6px"><div style="font-size:10px;font-weight:bold;color:#555;margin-bottom:4px">SIGNOS VITALES:</div>';
+    html += '<div class="grid2">';
+    html += row('PA', pa); html += row('Pulso', pulso);
+    html += row('Temperatura', temp ? temp + '°C' : ''); html += row('Sat O₂', sat ? sat + '%' : '');
+    html += row('Glucemia', gluc ? gluc + ' mg/dL' : ''); html += row('Peso', peso ? peso + ' kg' : '');
+    html += '</div></div>';
+    if (cognObs) html += row('Estado cognitivo', cognObs);
+    html += '</div>';
+  }
+
+  // PIE
+  html += '<div style="border-top:1px solid #1a3d35;margin-top:14px;padding-top:8px;font-size:9px;color:#555;text-align:center">' +
+    'Carrasco Elderly Care SAS · Rafael Barradas 1527 · Montevideo · RUT 220257400017<br>' +
+    'Ficha generada el ' + hoy + ' por ' + currentUser.nombre + '</div>';
+
+  // Firmas
+  html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:40px;font-size:10px">' +
+    '<div style="text-align:center;border-top:1px solid #555;padding-top:6px">Firma responsable médico</div>' +
+    '<div style="text-align:center;border-top:1px solid #555;padding-top:6px">Firma dirección del centro</div>' +
+    '</div>';
+
+  html += '</body></html>';
+
+  hideLoading();
+
+  var w = window.open('', '_blank');
+  if (!w) { toast('⚠️ Permitir ventanas emergentes para generar PDF', 'error'); return; }
+  w.document.write(html);
+  w.document.close();
+  w.onload = function() { w.print(); };
+  toast('✅ Ficha PDF generada', 'ok');
+}
+
+// ── Actualizar abrirResidente para cargar ficha en formulario ──
+// (override partial de la función existente — llama cargarFichaEnFormulario)
+var _origAbrirResidente = typeof abrirResidente === 'function' ? abrirResidente : null;
+function abrirResidente(id) {
+  var r = DB.residentes.find(function(x){ return String(x.id) === String(id); });
+  if (!r) { toast('Residente no encontrado', 'error'); return; }
+
+  residenteActual = id;
+
+  // Header
+  var ini = r.nombre.split(' ').map(function(w){ return w[0]; }).slice(0,2).join('');
+  var elAv = document.getElementById('mr-av');
+  if (elAv) elAv.textContent = ini;
+  var elNom = document.getElementById('mr-nom');
+  if (elNom) elNom.textContent = r.nombre;
+  var elSub = document.getElementById('mr-sub');
+  if (elSub) elSub.textContent = r.edad + ' años · CI ' + r.ci + ' · Hab. ' + r.hab;
+
+  var bdg = document.getElementById('mr-badges');
+  if (bdg) {
+    bdg.innerHTML = '';
+    if (r.dem_estadio) bdg.innerHTML += '<span class="badge b-morado" style="margin-right:4px">' + r.dem_estadio + '</span>';
+    if (r.alergias && r.alergias.includes('ANTICOAG')) bdg.innerHTML += '<span class="badge b-azul" style="margin-right:4px">Anticoagulada</span>';
+    if (r.cuid_espesantes && r.cuid_espesantes.includes('OBLIGATORIO')) bdg.innerHTML += '<span class="badge b-critico">Espesantes ⚠️</span>';
+  }
+
+  // Cargar ficha en formulario editable
+  cargarFichaEnFormulario(r);
+
+  // Medicación desde DB
+  var meds = DB.medicacion.filter(function(m){ return String(m.residente_id) === String(id) && m.activo === 'Sí'; });
+  var medEl = document.getElementById('medicacion-content');
+  if (medEl) {
+    medEl.innerHTML = meds.length > 0 ?
+      '<table class="med-tabla"><thead><tr><th>Medicamento</th><th>Dosis</th><th>Horario</th><th>Notas</th></tr></thead><tbody>' +
+      meds.map(function(m){
+        return '<tr><td style="font-weight:500">' + m.medicamento + '</td><td>' + m.dosis + '</td>' +
+          '<td><span class="med-hora">' + m.horario + '</span></td>' +
+          '<td style="color:' + (m.nota && m.nota.includes('⚠️') ? 'var(--rojo)' : 'var(--suave)') + ';font-size:10px">' + (m.nota||'') + '</td></tr>';
+      }).join('') + '</tbody></table>' :
+      '<div style="color:var(--suave);padding:10px 0">Sin medicación cargada. Tocá ＋ Agregar medicamento.</div>';
+  }
+
+  // Nombre en modal nuevo registro
+  var elNrNom = document.getElementById('nr-res-nom');
+  if (elNrNom) elNrNom.textContent = r.nombre;
+
+  // Cargar historial
+  cargarYRenderHistorial(id);
+
+  // Cargar datos clínicos en la pestaña Salida/Clínico
+  cargarDatosClinicos(id);
+
+  // Control de acceso Salida/Clínico
+  var lock = document.getElementById('salida-clinico-lock');
+  var body = document.getElementById('salida-clinico-content');
+  if (lock && body) {
+    if (esDuenna()) {
+      lock.style.display = 'none';
+      body.style.display = 'block';
+    } else {
+      lock.style.display = 'block';
+      body.style.display = 'none';
+    }
+  }
+
+  // Pre-fill fecha de salida
+  var fsf = document.getElementById('fs-fecha');
+  if (fsf) {
+    var now = new Date();
+    fsf.value = new Date(now - now.getTimezoneOffset()*60000).toISOString().slice(0,16);
+  }
+
+  // Reset tabs
+  document.querySelectorAll('[id^="mt-mr-"]').forEach(function(t){ t.style.display='none'; });
+  var firstTab = document.getElementById('mt-mr-ficha');
+  if (firstTab) firstTab.style.display = 'block';
+  document.querySelectorAll('#modal-residente .mtab').forEach(function(t,i){ t.classList.toggle('active', i===0); });
+
+  resShowM('modal-residente');
+}
+
+// ═══════════════════════════════════════════════════════
+// ADELANTOS — con selector de mes y descuento automático
+// ═══════════════════════════════════════════════════════
+
+function poblarMesesAdelanto() {
+  var sel = document.getElementById('adelanto-mes');
+  if (!sel) return;
+  sel.innerHTML = '';
+  var hoy = new Date();
+  for (var i = 0; i <= 5; i++) {
+    var d = new Date(hoy.getFullYear(), hoy.getMonth() + i, 1);
+    var label = d.toLocaleString('es-UY', {month:'long', year:'numeric'});
+    label = label.charAt(0).toUpperCase() + label.slice(1);
+    var val   = d.toISOString().slice(0,7);
+    var opt = new Option(label, val);
+    if (i === 0) opt.selected = true;
+    sel.add(opt);
+  }
+}
+
+async function guardarAdelanto() {
+  var monto  = parseFloat((document.getElementById('adelanto-monto') || {}).value) || 0;
+  var mes    = (document.getElementById('adelanto-mes') || {}).value || new Date().toISOString().slice(0,7);
+  if (monto <= 0) { toast('Ingresá un monto válido', 'error'); return; }
+  var e = DB.empleadas.find(function(x){ return String(x.id) === String(empleadaActual); });
+  var data = {
+    empleada_id:  empleadaActual,
+    empleada_nom: e ? e.nombre : '',
+    fecha:        new Date().toISOString().split('T')[0],
+    monto:        monto,
+    mes:          mes,
+    descontado:   'No'
+  };
+  showLoading('Registrando adelanto...');
+  var result = await apiPost('adelantos', 'insert', data);
+  hideLoading();
+  if (result) {
+    DB.adelantos.push(result);
+    var total = DB.adelantos
+      .filter(function(a){ return String(a.empleada_id) === String(empleadaActual) && a.descontado === 'No'; })
+      .reduce(function(s,a){ return s + Number(a.monto); }, 0);
+    var el = document.getElementById('fe-adel-total');
+    if (el) el.textContent = '$' + total.toLocaleString('es-UY');
+    toast('✅ Adelanto de $' + monto.toLocaleString('es-UY') + ' registrado', 'ok');
+    var elM = document.getElementById('adelanto-monto'); if (elM) elM.value = '';
+    poblarMesesAdelanto();
+  } else toast('❌ Error al registrar adelanto', 'error');
+}
+
+// Corregir adelanto (marcar como descontado / eliminar)
+async function corregirAdelanto(id, accion) {
+  var desc = accion === 'descontar' ? 'Sí' : null;
+  var r;
+  if (accion === 'eliminar') {
+    if (!confirm('¿Eliminar este adelanto?')) return;
+    r = await apiPost('adelantos', 'delete', {}, id);
+    if (r) {
+      DB.adelantos = DB.adelantos.filter(function(a){ return String(a.id) !== String(id); });
+      toast('✅ Adelanto eliminado', 'ok');
+    }
+  } else {
+    r = await apiPost('adelantos', 'update', {descontado: desc}, id);
+    if (r) {
+      var a = DB.adelantos.find(function(x){ return String(x.id) === String(id); });
+      if (a) a.descontado = desc;
+      toast('✅ Adelanto marcado como descontado', 'ok');
+    }
+  }
+  if (r) renderListaAdelantos();
+}
+
+function renderListaAdelantos() {
+  var container = document.getElementById('adelantos-lista');
+  if (!container) return;
+  var pendientes = DB.adelantos.filter(function(a){
+    return String(a.empleada_id) === String(empleadaActual);
+  }).sort(function(a,b){ return b.fecha > a.fecha ? 1 : -1; });
+
+  if (pendientes.length === 0) {
+    container.innerHTML = '<div style="text-align:center;padding:14px;color:var(--suave);font-size:12px">Sin adelantos registrados</div>';
+    return;
+  }
+  container.innerHTML = pendientes.map(function(a) {
+    var mesLabel = a.mes ? new Date(a.mes+'-01').toLocaleString('es-UY',{month:'long',year:'numeric'}) : a.fecha;
+    mesLabel = mesLabel.charAt(0).toUpperCase() + mesLabel.slice(1);
+    var descontado = a.descontado === 'Sí';
+    return '<div style="display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--crema-o)">' +
+      '<div style="flex:1">' +
+        '<div style="font-weight:500;font-size:13px;color:' + (descontado?'var(--suave)':'var(--verde)') + '">$' + Number(a.monto).toLocaleString('es-UY') + '</div>' +
+        '<div style="font-size:11px;color:var(--suave)">' + mesLabel + (descontado?' · <span style="color:#2e7d32">✓ Descontado</span>':'') + '</div>' +
+      '</div>' +
+      (descontado ? '' :
+        '<button onclick="corregirAdelanto(\'' + a.id + '\',\'descontar\')" style="background:#2e7d32;color:white;border:none;border-radius:6px;padding:5px 8px;font-size:11px;cursor:pointer">✓ Descontar</button>'
+      ) +
+      '<button onclick="corregirAdelanto(\'' + a.id + '\',\'eliminar\')" style="background:#c0392b;color:white;border:none;border-radius:6px;padding:5px 8px;font-size:11px;cursor:pointer">✕</button>' +
+    '</div>';
+  }).join('');
+}
+
+// ── Descuento automático en calcLiq: suma adelantos del mes actual ──
+var _origCalcLiq = typeof calcLiq === 'function' ? calcLiq : null;
+function calcLiqConAdelantos() {
+  if (typeof calcLiq === 'function') calcLiq();
+  // Agregar adelantos pendientes del mes seleccionado
+  var mes = (document.getElementById('liq-mes') || {}).value || new Date().toISOString().slice(0,7);
+  var empId = (document.getElementById('liq-emp') || {}).value;
+  if (!empId) return;
+  var adelantosMes = DB.adelantos.filter(function(a){
+    return String(a.empleada_id) === String(empId) && a.mes === mes && a.descontado === 'No';
+  });
+  var totalAdelanto = adelantosMes.reduce(function(s,a){ return s+Number(a.monto); }, 0);
+  var elAdel = document.getElementById('liq-adelanto');
+  if (elAdel) elAdel.value = totalAdelanto;
+  if (typeof calcLiq === 'function') calcLiq();
+}
+
+// Inicializar selector de mes en adelantos al abrir modal empleada
+var _origAbrirEmpleada = typeof abrirEmpleada === 'function' ? abrirEmpleada : null;
+
+// ═══════════════════════════════════════════════════════
+// FIX: generarHistorialPDF — asegurar que abre ventana
+// ═══════════════════════════════════════════════════════
+async function generarHistorialPDF() {
+  if (!residenteActual) { toast('Sin residente seleccionado', 'error'); return; }
+  var r = DB.residentes.find(function(x){ return String(x.id) === String(residenteActual); });
+  if (!r) return;
+
+  showLoading('Cargando historial...');
+  var hist = await apiGet('historial');
+  hist = hist.filter(function(h){ return String(h.residente_id) === String(residenteActual); });
+  hist.sort(function(a,b){ return b.created_at > a.created_at ? 1 : -1; });
+  hideLoading();
+
+  var hoy = new Date().toLocaleDateString('es-UY');
+  var TIPO = {nota:'NOTA CLÍNICA',vital:'SIGNOS VITALES',incidente:'INCIDENTE',
+    medico:'CONSULTA MÉDICA',estudio:'ESTUDIO',medicacion:'MEDICACIÓN',
+    barthel:'ÍNDICE DE BARTHEL',vacuna:'VACUNACIÓN',caida:'CAÍDA'};
+
+  var html = '<!DOCTYPE html><html><head><meta charset="UTF-8">' +
+    '<style>body{font-family:Arial,sans-serif;font-size:11px;margin:0;padding:20px;line-height:1.5}' +
+    '@media print{@page{margin:10mm;size:A4}}</style>' +
+    '</head><body>';
+
+  html += '<div style="border-bottom:2px solid #1a3d35;padding-bottom:8px;margin-bottom:12px;' +
+    'display:flex;justify-content:space-between">' +
+    '<div><strong style="color:#1a3d35;font-size:14px">CARRASCO ELDERLY CARE SAS</strong>' +
+    '<div style="font-size:9px;color:#555">Rafael Barradas 1527 · Montevideo</div></div>' +
+    '<div style="text-align:right;font-size:10px"><strong>HISTORIAL CLÍNICO</strong><br>' + hoy + '</div></div>';
+
+  html += '<div style="background:#f5f0e8;border-left:3px solid #c9a84c;padding:8px;margin-bottom:10px">' +
+    '<strong>' + r.nombre + '</strong> · CI ' + r.ci + ' · ' + r.edad + ' años · Hab. ' + r.hab + '<br>' +
+    '<span style="font-size:9px;color:#555">' + (r.diags||'').replace(/\|/g,' · ').substring(0,120) + '</span></div>';
+
+  html += '<div style="font-size:10px;color:#555;margin-bottom:8px"><strong>Total registros: ' + hist.length + '</strong></div>';
+
+  if (hist.length === 0) {
+    html += '<div style="text-align:center;padding:30px;color:#999">Sin registros en el historial</div>';
+  } else {
+    hist.forEach(function(h) {
+      var label = TIPO[h.tipo] || h.tipo;
+      var fecha = new Date(h.created_at).toLocaleString('es-UY');
+      var color = h.tipo==='caida'?'#c62828':h.tipo==='vital'?'#1565c0':h.tipo==='barthel'?'#2e7d32':'#1a3d35';
+      html += '<div style="border-left:3px solid ' + color + ';padding:7px 10px;margin-bottom:7px;background:#fafafa;page-break-inside:avoid">' +
+        '<div style="display:flex;justify-content:space-between;margin-bottom:3px">' +
+          '<span style="background:' + color + ';color:white;padding:2px 6px;border-radius:3px;font-size:8px;font-weight:bold">' + label + '</span>' +
+          '<span style="font-size:9px;color:#555">' + fecha + '</span></div>' +
+        '<div style="font-size:9px;color:#444;margin-bottom:2px">👤 ' + h.usuario + (h.turno?' · '+h.turno:'') + '</div>' +
+        '<div style="font-size:10px;white-space:pre-wrap">' + (h.texto||'') + '</div>' +
+        (h.tipo==='vital' && h.vit_pa ? '<div style="margin-top:4px;font-size:9px;background:white;padding:3px 6px;border-radius:3px">PA: ' + h.vit_pa + ' · Pulso: ' + h.vit_pulso + ' · Temp: ' + h.vit_temp + '° · Sat: ' + h.vit_sat + '%</div>' : '') +
+        '</div>';
+    });
+  }
+
+  html += '<div style="border-top:1px solid #1a3d35;padding-top:6px;margin-top:12px;font-size:8px;color:#555;text-align:center">' +
+    'Carrasco Elderly Care SAS · Generado el ' + hoy + ' por ' + currentUser.nombre + '</div>';
+  html += '</body></html>';
+
+  var w = window.open('', '_blank');
+  if (!w) { toast('⚠️ Habilitá ventanas emergentes para generar PDF', 'error'); return; }
+  w.document.write(html);
+  w.document.close();
+  w.onload = function() { w.print(); };
+  toast('✅ Historial PDF generado', 'ok');
+}
+</script>
+</body>
+</html>
