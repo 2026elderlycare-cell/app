@@ -798,7 +798,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:19px;heigh
       <button class="pin-btn empty"></button><button class="pin-btn" onclick="pinPress('0')">0</button><button class="pin-btn del" onclick="pinDel()">⌫</button>
     </div>
   </div>
-  <div style="font-size:11px;color:rgba(255,255,255,.25)">PIN demo: 1234 · cualquier usuario</div>
+  <div style="font-size:11px;color:rgba(255,255,255,.25)">PIN individual por usuaria · Juliana: 1234</div>
 </div>
 
 <!-- HEADER -->
@@ -845,99 +845,6 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:19px;heigh
   <div class="alerta al-r">
     <div class="al-ico">⚠️</div>
     <div><div class="al-tit">Medicación de alto riesgo</div><div class="al-txt">Morgade, Tarrio, Rodríguez — anticoagulados. Farji — ERC G4 ajuste dosis</div></div>
-  </div>
-
-  <div class="sep">Lista de residentes</div>
-
-  <!-- TARJETAS RESIDENTES -->
-  <div class="res-card" onclick="abrirResidente('morgade')">
-    <div class="res-av">RM</div>
-    <div style="flex:1">
-      <div class="res-nom">Raúl Morgade</div>
-      <div class="res-sub">86 años · CI 755.443-4 · Hab. 1</div>
-      <div class="res-diag">ICC · FA · Vejiga neurógena · SV permanente</div>
-      <div><span class="badge b-critico">Dep. severa</span><span class="badge b-morado" style="margin-left:4px">GDS 5</span></div>
-    </div>
-  </div>
-
-  <div class="res-card" onclick="abrirResidente('sbrocca')">
-    <div class="res-av">MS</div>
-    <div style="flex:1">
-      <div class="res-nom">Miguel Sbrocca</div>
-      <div class="res-sub">88 años · CI 770.723-1 · Hab. 2</div>
-      <div class="res-diag">HTA · Hipotiroidismo · Dislipemia · 2025: CTI por IRB</div>
-      <div><span class="badge b-alerta">Dep. leve</span><span class="badge b-morado" style="margin-left:4px">GDS 4</span></div>
-    </div>
-  </div>
-
-  <div class="res-card" onclick="abrirResidente('conde')">
-    <div class="res-av">NC</div>
-    <div style="flex:1">
-      <div class="res-nom">Nelda Conde</div>
-      <div class="res-sub">80 años · CI 1.049.139-2 · Hab. 3</div>
-      <div class="res-diag">HTA · Hipotiroidismo · Fx cadera 2023 · Síndrome inmovilidad</div>
-      <div><span class="badge b-critico">Dep. total</span><span class="badge b-rojo" style="background:#fce4ec;color:#c62828;margin-left:4px">GDS 6-7</span></div>
-    </div>
-  </div>
-
-  <div class="res-card" onclick="abrirResidente('vanelli')">
-    <div class="res-av">SV</div>
-    <div style="flex:1">
-      <div class="res-nom">Sonia Vanelli</div>
-      <div class="res-sub">82 años · CI 984.930-4 · Hab. 4</div>
-      <div class="res-diag">ACV lacunar · HTA · Hipotiroidismo · Osteoporosis</div>
-      <div><span class="badge b-alerta">Dep. leve</span><span class="badge b-morado" style="margin-left:4px">GDS 5</span></div>
-    </div>
-  </div>
-
-  <div class="res-card" onclick="abrirResidente('farji')">
-    <div class="res-av">RF</div>
-    <div style="flex:1">
-      <div class="res-nom">Ruth Farji</div>
-      <div class="res-sub">89 años · CI 731.652-7 · Hab. 5</div>
-      <div class="res-diag">ACV isq. 7/25 · S. Parkinsoniano · IC · LLC · ERC G4</div>
-      <div><span class="badge b-alerta">Dep. moderada</span><span class="badge b-morado" style="margin-left:4px">GDS 5</span><span class="badge b-critico" style="margin-left:4px">ERC G4</span></div>
-    </div>
-  </div>
-
-  <div class="res-card" onclick="abrirResidente('tarrio')">
-    <div class="res-av">MT</div>
-    <div style="flex:1">
-      <div class="res-nom">Mabel Tarrio</div>
-      <div class="res-sub">90 años · CI 708.969-3 · Hab. 6</div>
-      <div class="res-diag">Artritis reumatoide · TVP (Rivaroxaban) · Anemia crónica + EPO</div>
-      <div><span class="badge b-critico">Dep. total</span><span class="badge b-morado" style="margin-left:4px">GDS 5</span><span class="badge b-azul" style="margin-left:4px">Anticoagulada</span></div>
-    </div>
-  </div>
-
-  <div class="res-card" onclick="abrirResidente('borsani')">
-    <div class="res-av">MB</div>
-    <div style="flex:1">
-      <div class="res-nom">Martha Borsani</div>
-      <div class="res-sub">88 años · CI 778.537-8 · Hab. 7</div>
-      <div class="res-diag">Hipotiroidismo · Anemia severa · Angiodisplasia colon?</div>
-      <div><span class="badge b-critico">Dep. total</span><span class="badge b-morado" style="margin-left:4px">GDS 5</span></div>
-    </div>
-  </div>
-
-  <div class="res-card" onclick="abrirResidente('fioritti')">
-    <div class="res-av">EF</div>
-    <div style="flex:1">
-      <div class="res-nom">Elsa Fioritti</div>
-      <div class="res-sub">86 años · CI 1.773.961-2 · Hab. 8</div>
-      <div class="res-diag">HTA · Anemia ferropénica · Neo mama 2015 · Fx coxofemoral 03/25</div>
-      <div><span class="badge b-critico">Dep. severa</span><span class="badge b-morado" style="margin-left:4px">GDS 5</span></div>
-    </div>
-  </div>
-
-  <div class="res-card" onclick="abrirResidente('rodriguez')">
-    <div class="res-av">LR</div>
-    <div style="flex:1">
-      <div class="res-nom">Leonor Rodríguez</div>
-      <div class="res-sub">86 años · CI 916.551-0 · Hab. 9</div>
-      <div class="res-diag">FA (Apixaban) · IC FEVI 40% · EPOC · T. deglutorio · E.Coli BLEE</div>
-      <div><span class="badge b-alerta">Dep. leve</span><span class="badge b-morado" style="margin-left:4px">GDS 4-5</span><span class="badge b-azul" style="margin-left:4px">Anticoagulada</span></div>
-    </div>
   </div>
 
   <div style="height:8px"></div>
@@ -2463,9 +2370,15 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:19px;heigh
         <div style="display:flex;justify-content:space-between;font-weight:700;font-size:14px"><span style="color:var(--verde)">Pendiente total</span><strong id="fe-adel-total" style="color:var(--rojo)">$0</strong></div>
       </div>
       <div class="divider"></div>
-      <div class="fg"><label class="fl">Nuevo adelanto ($)</label><input class="fi" type="number" placeholder="Monto"></div>
-      <div class="fg"><label class="fl">Cuotas de descuento</label><select class="fi"><option>1 cuota</option><option>2 cuotas</option><option>3 cuotas</option></select></div>
-      <button class="btn bd">💵 Registrar adelanto</button>
+      <div id="adelantos-lista"></div>
+      <div class="sep" style="margin-top:10px">Registrar nuevo adelanto</div>
+      <div class="fg"><label class="fl">Monto ($)</label>
+        <input class="fi" type="number" id="adelanto-monto" placeholder="Ej: 5000">
+      </div>
+      <div class="fg"><label class="fl">Se descuenta en</label>
+        <select class="fi" id="adelanto-mes"></select>
+      </div>
+      <button class="btn bv" style="width:100%;margin-top:6px" onclick="guardarAdelanto()">💵 Registrar adelanto</button>
     </div>
   </div>
 </div>
@@ -2478,7 +2391,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:19px;heigh
       <div class="mtit" style="margin-bottom:0">Recibo de sueldo</div>
       <div style="display:flex;gap:7px">
         <button class="btn bd btn-sm" onclick="imprimirRecibo()">🖨️ Imprimir</button>
-        <button class="btn bv btn-sm" onclick="compartirReciboWA()">📲 WA</button>
+        
       </div>
     </div>
     <div id="recibo-contenido"></div>
@@ -2507,26 +2420,105 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:19px;heigh
       <div class="mtab active" onclick="switchMtab('mr-ficha',this)">📋 Ficha</div>
       <div class="mtab" onclick="switchMtab('mr-historial',this)">📜 Historial</div>
       <div class="mtab" onclick="switchMtab('mr-medicacion',this)">💊 Medicación</div>
-      <div class="mtab" onclick="switchMtab('mr-salida',this)">🚑 Ficha de salida</div>
+      <div class="mtab" id="tab-mr-salida" onclick="switchMtab('mr-salida',this)">📄 Salida / Clínico</div>
     </div>
 
     <!-- TAB: FICHA -->
     <div id="mt-mr-ficha">
+      <!-- ── Datos filiatorios ── -->
       <div class="fs-section">
-        <div class="fs-titulo">🏷️ Datos filiatorios</div>
-        <div id="ficha-datos-content"></div>
+        <div class="fs-titulo">🏷️ Datos básicos</div>
+        <div class="fr">
+          <div class="fg"><label class="fl">CI</label>
+            <input class="fi" id="ef-ci" placeholder="X.XXX.XXX-X"></div>
+          <div class="fg"><label class="fl">Edad</label>
+            <input class="fi" type="number" id="ef-edad" placeholder="Años"></div>
+        </div>
+        <div class="fr">
+          <div class="fg"><label class="fl">Habitación</label>
+            <input class="fi" type="number" id="ef-hab" placeholder="Nro."></div>
+          <div class="fg"><label class="fl">Mutualista</label>
+            <select class="fi" id="ef-mutualista">
+              <option>ASSE</option><option>FONASA</option><option>SMI</option>
+              <option>Medicus</option><option>Particular</option>
+            </select>
+          </div>
+        </div>
+        <div class="fr">
+          <div class="fg"><label class="fl">Fecha ingreso</label>
+            <input class="fi" type="date" id="ef-ingreso"></div>
+          <div class="fg"><label class="fl">Médico</label>
+            <input class="fi" id="ef-medico" placeholder="Nombre médico"></div>
+        </div>
+        <div class="fg"><label class="fl">Familiar referencia</label>
+          <input class="fi" id="ef-familiar" placeholder="Nombre"></div>
+        <div class="fr">
+          <div class="fg"><label class="fl">Tel. familiar</label>
+            <input class="fi" id="ef-familiar-tel" placeholder="09X XXX XXX"></div>
+          <div class="fg"><label class="fl">Parentesco</label>
+            <input class="fi" id="ef-familiar-par" placeholder="Hijo/a, cónyuge..."></div>
+        </div>
       </div>
+
+      <!-- ── Diagnósticos ── -->
       <div class="fs-section">
         <div class="fs-titulo">🩺 Diagnósticos principales</div>
-        <div id="ficha-diag-content" style="font-size:13px;line-height:1.8"></div>
+        <div style="font-size:11px;color:var(--suave);margin-bottom:6px">Separá cada diagnóstico con |</div>
+        <textarea class="fi" id="ef-diags" style="min-height:90px;font-size:12px;line-height:1.6"
+          placeholder="TNCM GDS5 | HTA | FA con Apixaban..."></textarea>
       </div>
+
+      <!-- ── Alertas críticas ── -->
       <div class="fs-section">
-        <div class="fs-titulo">⚠️ Alergias e información crítica</div>
-        <div id="ficha-alergias-content" style="font-size:13px;line-height:1.8"></div>
+        <div class="fs-titulo">⚠️ Alertas críticas</div>
+        <div style="font-size:11px;color:var(--suave);margin-bottom:6px">Alergias, anticoagulantes, espesantes — aparecen destacadas en toda la app</div>
+        <textarea class="fi" id="ef-alergias" style="min-height:65px;font-size:12px"
+          placeholder="⚠️ ANTICOAGULADA | ⚠️ ESPESANTES OBLIGATORIO"></textarea>
       </div>
-      <div style="display:flex;gap:8px">
-        <button class="btn bs" style="flex:1" onclick="resCloseM('modal-residente')">Cerrar</button>
-        <button class="btn bv" style="flex:1">✅ Editar ficha</button>
+
+      <!-- ── Cuidados ── -->
+      <div class="fs-section">
+        <div class="fs-titulo">🛁 Cuidados y dependencia</div>
+        <div class="fr">
+          <div class="fg"><label class="fl">Dieta</label>
+            <select class="fi" id="ef-dieta">
+              <option>Normal</option><option>Blanda</option><option>Triturada</option>
+              <option>Normal adaptada</option>
+            </select>
+          </div>
+          <div class="fg"><label class="fl">Espesantes</label>
+            <select class="fi" id="ef-espesantes">
+              <option value="No">No</option>
+              <option value="Sí - OBLIGATORIO todos los líquidos">Sí — OBLIGATORIO</option>
+            </select>
+          </div>
+        </div>
+        <div class="fr">
+          <div class="fg"><label class="fl">Movilidad</label>
+            <input class="fi" id="ef-movilidad" placeholder="Ej: Marcha asistida"></div>
+          <div class="fg"><label class="fl">Continencia</label>
+            <input class="fi" id="ef-continencia" placeholder="Ej: Incontinente"></div>
+        </div>
+        <div class="fr">
+          <div class="fg"><label class="fl">Pañal</label>
+            <select class="fi" id="ef-panal">
+              <option>No</option><option>Sí 24hs</option><option>Solo noche</option>
+            </select>
+          </div>
+          <div class="fg"><label class="fl">Oxígeno domiciliario</label>
+            <select class="fi" id="ef-oxigeno">
+              <option>No</option><option>Sí</option><option>A evaluar</option>
+            </select>
+          </div>
+        </div>
+        <div class="fg"><label class="fl">Úlceras / LPP</label>
+          <input class="fi" id="ef-ulceras" placeholder="Ej: No activas / Riesgo alto"></div>
+      </div>
+
+      <!-- ── Botón guardar ── -->
+      <div style="display:flex;gap:8px;margin-top:8px;margin-bottom:8px">
+        <button class="btn bs" style="flex:1" onclick="resCloseM('modal-residente')">← Cerrar</button>
+        <button class="btn bv" style="flex:2" onclick="guardarFichaResidente()">✅ Guardar ficha</button>
       </div>
     </div>
 
@@ -2558,109 +2550,58 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:19px;heigh
 
     <!-- TAB: FICHA DE SALIDA -->
     <div id="mt-mr-salida" style="display:none">
-      <div class="norma">🚑 Completá el motivo de internación y los últimos vitales — el resto está precargado desde la ficha del residente.</div>
-
-      <div class="fs-section">
-        <div class="fs-titulo">📍 Episodio actual</div>
-        <div class="fg">
-          <label class="fl">Motivo de derivación / internación</label>
-          <div style="position:relative">
-            <textarea class="fi" id="fs-motivo" placeholder="Ej: Fiebre de 38.5°, tos productiva, sospecha de neumonía aspirativa..."></textarea>
-            <button style="position:absolute;right:8px;bottom:8px;background:none;border:none;font-size:20px;cursor:pointer" onclick="resStartVoice('fs-motivo')">🎤</button>
-          </div>
-          <div id="voice-status">🔴 Escuchando...</div>
-        </div>
-        <div class="fr">
-          <div class="fg"><label class="fl">Fecha y hora salida</label><input class="fi" type="datetime-local" id="fs-fecha"></div>
-          <div class="fg"><label class="fl">Destino</label><select class="fi" id="fs-destino"><option>Emergencia ASSE</option><option>Hospital Maciel</option><option>Hospital Militar</option><option>Clínica privada</option><option>CTI</option><option>Otro</option></select></div>
-        </div>
+      <!-- ══════════ SECCIÓN 1: DATOS CLÍNICOS ══════════ -->
+      <div id="salida-clinico-lock" style="display:none;text-align:center;padding:24px">
+        <div style="font-size:32px;margin-bottom:8px">🔒</div>
+        <div style="font-weight:500;color:var(--verde)">Solo para Juliana, Lucía y Flavia</div>
       </div>
+      <div id="salida-clinico-content">
 
-      <div class="fs-section">
-        <div class="fs-titulo">📊 Últimos signos vitales</div>
-        <div class="fr">
-          <div class="fg"><label class="fl">Presión arterial</label><input class="fi" id="fs-pa" placeholder="120/80 mmHg"></div>
-          <div class="fg"><label class="fl">Pulso</label><input class="fi" id="fs-pulso" placeholder="bpm" type="number"></div>
-        </div>
-        <div class="fr">
-          <div class="fg"><label class="fl">Temperatura</label><input class="fi" id="fs-temp" placeholder="°C" type="number" step="0.1"></div>
-          <div class="fg"><label class="fl">Saturación O₂</label><input class="fi" id="fs-sat" placeholder="%" type="number"></div>
-        </div>
-        <div class="fg"><label class="fl">Glucemia (si corresponde)</label><input class="fi" id="fs-gluc" placeholder="mg/dL o mmol/L"></div>
-      </div>
+        <div class="sep" style="margin-top:4px">🩺 Estado clínico actual</div>
 
-      <div class="fs-section">
-        <div class="fs-titulo">🧠 Estado mental al momento de salida</div>
-        <div class="fg">
-          <label class="fl">Nivel de consciencia</label>
-          <div class="chip-group">
-            <div class="chip sel" onclick="selChip(this,'nivel')">Alerta</div>
-            <div class="chip" onclick="selChip(this,'nivel')">Somnoliento</div>
-            <div class="chip" onclick="selChip(this,'nivel')">Confuso</div>
-            <div class="chip" onclick="selChip(this,'nivel')">Sin respuesta</div>
-          </div>
-        </div>
-        <div class="fg" style="margin-top:8px">
-          <label class="fl">¿Síndrome confusional agudo sobreagregado?</label>
-          <div class="chip-group">
-            <div class="chip" onclick="selChip(this,'sca')">No</div>
-            <div class="chip sel" onclick="selChip(this,'sca')">Sí</div>
-          </div>
-        </div>
-      </div>
-
-      <div style="display:flex;gap:8px;margin-top:4px">
-        <button class="btn bs" style="flex:1" onclick="verFichaSalida()">👁️ Vista previa</button>
-        <button class="btn bv" style="flex:1" onclick="generarFichaSalida()">⬇️ Generar PDF</button>
-      </div>
-      <div style="height:8px"></div>
-      <button class="btn bd" onclick="compartirFichaSalida()">📲 Enviar por WhatsApp</button>
-    </div>
-
-
-    <!-- ══════ TAB: CLÍNICO (solo dueñas) ══════ -->
-    <div id="mt-r-clinico" style="display:none">
-      <div id="clinico-lock" style="display:none;text-align:center;padding:30px">
-        <div style="font-size:32px;margin-bottom:10px">🔒</div>
-        <div style="font-weight:500;color:var(--verde)">Solo para dueñas</div>
-        <div style="font-size:12px;color:var(--suave);margin-top:5px">Iniciá sesión como Juliana, Lucía o Flavia</div>
-      </div>
-      <div id="clinico-content">
-
-        <!-- BARTHEL -->
+        <!-- Barthel -->
         <div class="fs-section" style="margin-bottom:10px">
-          <div class="fs-titulo" style="display:flex;justify-content:space-between;align-items:center">
-            <span>📊 Índice de Barthel</span>
-            <button class="btn bv btn-sm" onclick="abrirBarthel()">＋ Registrar</button>
+          <div class="fs-titulo">📊 Índice de Barthel</div>
+          <!-- Entrada rápida 0-100 -->
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+            <input type="number" id="barthel-input-rapido" min="0" max="100" placeholder="0–100"
+              class="fi" style="width:80px;font-size:22px;font-weight:600;text-align:center;padding:8px"
+              oninput="actualizarBarthelLabel(this.value)">
+            <div style="flex:1">
+              <div id="barthel-label-rapido" style="font-size:13px;font-weight:600;color:var(--verde)">—</div>
+              <div style="font-size:10px;color:var(--suave);margin-top:2px">0-20: Total · 21-60: Severa · 61-90: Moderada · 91-99: Leve · 100: Independiente</div>
+            </div>
+            <button class="btn bv btn-sm" onclick="guardarBarthelRapido()" style="white-space:nowrap">✅ Guardar</button>
           </div>
+          <!-- Display último score registrado -->
           <div id="barthel-actual" style="background:var(--verde);border-radius:10px;padding:12px;color:white;margin-bottom:8px">
-            <div style="font-size:10px;opacity:.7;letter-spacing:1px">BARTHEL ACTUAL</div>
+            <div style="font-size:10px;opacity:.7;letter-spacing:1px">BARTHEL REGISTRADO</div>
             <div style="font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:300;color:var(--dorado-c)" id="barthel-score">—</div>
             <div style="font-size:11px;opacity:.8" id="barthel-cat">Sin registros</div>
             <div style="font-size:10px;opacity:.6;margin-top:2px" id="barthel-fecha"></div>
           </div>
-          <div id="barthel-evolucion" style="font-size:12px;color:var(--suave);text-align:center;padding:8px">
-            Sin registros de evolución
-          </div>
+          <!-- Evolución -->
+          <div id="barthel-evolucion" style="font-size:12px;color:var(--suave);text-align:center;padding:8px">Sin registros</div>
         </div>
 
-        <!-- AUXILIARES DE MARCHA -->
+        <!-- Auxiliares de marcha -->
         <div class="fs-section" style="margin-bottom:10px">
           <div class="fs-titulo">🦯 Auxiliares de la marcha</div>
-          <div class="chip-group" id="auxiliares-grupo">
-            <div class="chip" onclick="toggleClinico(this,'aux')">No usa</div>
-            <div class="chip" onclick="toggleClinico(this,'aux')">Bastón</div>
-            <div class="chip" onclick="toggleClinico(this,'aux')">Andador</div>
-            <div class="chip" onclick="toggleClinico(this,'aux')">Silla de ruedas</div>
-            <div class="chip" onclick="toggleClinico(this,'aux')">Caminador</div>
+          <div class="fg">
+            <div class="chip-group" id="auxiliares-grupo">
+              <div class="chip" onclick="toggleClinico(this,'aux')">No usa</div>
+              <div class="chip" onclick="toggleClinico(this,'aux')">Bastón</div>
+              <div class="chip" onclick="toggleClinico(this,'aux')">Andador</div>
+              <div class="chip" onclick="toggleClinico(this,'aux')">Silla de ruedas</div>
+              <div class="chip" onclick="toggleClinico(this,'aux')">Caminador</div>
+            </div>
           </div>
         </div>
 
-        <!-- CONTENCIONES -->
+        <!-- Contenciones -->
         <div class="fs-section" style="margin-bottom:10px">
           <div class="fs-titulo">🔒 Contenciones</div>
-          <div class="fg">
-            <label class="fl">Física</label>
+          <div class="fg"><label class="fl">Física</label>
             <div class="chip-group">
               <div class="chip" onclick="toggleClinico(this,'cont-fis')">No</div>
               <div class="chip" onclick="toggleClinico(this,'cont-fis')">Cinturón pélvico</div>
@@ -2668,70 +2609,62 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:19px;heigh
               <div class="chip" onclick="toggleClinico(this,'cont-fis')">Otro</div>
             </div>
           </div>
-          <div class="fg" style="margin-top:8px">
-            <label class="fl">Farmacológica</label>
+          <div class="fg" style="margin-top:8px"><label class="fl">Farmacológica</label>
             <div class="chip-group">
               <div class="chip" onclick="toggleClinico(this,'cont-farm')">No</div>
               <div class="chip" onclick="toggleClinico(this,'cont-farm')">Sí — ver medicación</div>
             </div>
           </div>
-          <div class="fg" style="margin-top:8px">
-            <label class="fl">Observaciones</label>
-            <textarea class="fi" id="cont-obs" placeholder="Indicación médica, fecha, motivo..." style="min-height:55px"></textarea>
+          <div class="fg" style="margin-top:8px"><label class="fl">Observaciones</label>
+            <textarea class="fi" id="cont-obs" placeholder="Indicación médica, fecha..." style="min-height:55px"></textarea>
           </div>
         </div>
 
-        <!-- SALIDAS DEL CENTRO -->
+        <!-- Salidas -->
         <div class="fs-section" style="margin-bottom:10px">
           <div class="fs-titulo">🚪 Salidas del centro</div>
           <div class="chip-group" id="salidas-grupo">
-            <div class="chip" onclick="toggleClinico(this,'salida')">No permitidas</div>
-            <div class="chip" onclick="toggleClinico(this,'salida')">Solo acompañado</div>
-            <div class="chip" onclick="toggleClinico(this,'salida')">Solo — con aviso</div>
-            <div class="chip" onclick="toggleClinico(this,'salida')">Libre</div>
+            <div class="chip" onclick="selChipGrupo(this,'salida')">No permitidas</div>
+            <div class="chip" onclick="selChipGrupo(this,'salida')">Solo acompañado</div>
+            <div class="chip" onclick="selChipGrupo(this,'salida')">Solo — con aviso</div>
+            <div class="chip" onclick="selChipGrupo(this,'salida')">Libre</div>
           </div>
-          <div class="fg" style="margin-top:8px">
-            <label class="fl">Justificación / observaciones</label>
-            <textarea class="fi" id="salidas-just" placeholder="Ej: demencia GDS5 — riesgo de deambulación sin retorno" style="min-height:55px"></textarea>
+          <div class="fg" style="margin-top:8px"><label class="fl">Justificación</label>
+            <textarea class="fi" id="salidas-just" placeholder="Ej: Demencia GDS5 — riesgo de deambulación sin retorno" style="min-height:55px"></textarea>
           </div>
         </div>
 
-        <!-- LESIONES POR PRESIÓN -->
+        <!-- LPP -->
         <div class="fs-section" style="margin-bottom:10px">
           <div class="fs-titulo">⚠️ Lesiones por presión</div>
           <div class="chip-group">
-            <div class="chip" onclick="toggleClinico(this,'lpp')">Sin lesiones activas</div>
-            <div class="chip" onclick="toggleClinico(this,'lpp')">Estadío I</div>
-            <div class="chip" onclick="toggleClinico(this,'lpp')">Estadío II</div>
-            <div class="chip" onclick="toggleClinico(this,'lpp')">Estadío III</div>
-            <div class="chip" onclick="toggleClinico(this,'lpp')">Estadío IV</div>
+            <div class="chip" onclick="selChipGrupo(this,'lpp')">Sin lesiones activas</div>
+            <div class="chip" onclick="selChipGrupo(this,'lpp')">Estadío I</div>
+            <div class="chip" onclick="selChipGrupo(this,'lpp')">Estadío II</div>
+            <div class="chip" onclick="selChipGrupo(this,'lpp')">Estadío III</div>
+            <div class="chip" onclick="selChipGrupo(this,'lpp')">Estadío IV</div>
           </div>
-          <div class="fg" style="margin-top:8px">
-            <label class="fl">Ubicación y descripción</label>
+          <div class="fg" style="margin-top:8px"><label class="fl">Ubicación y descripción</label>
             <textarea class="fi" id="lpp-desc" placeholder="Ej: Sacro estadío II — cura con apósito..."></textarea>
           </div>
         </div>
 
-        <!-- VACUNACIONES -->
+        <!-- Vacunaciones -->
         <div class="fs-section" style="margin-bottom:10px">
           <div class="fs-titulo" style="display:flex;justify-content:space-between;align-items:center">
             <span>💉 Vacunaciones en el centro</span>
             <button class="btn bv btn-sm" onclick="agregarVacuna()">＋</button>
           </div>
-          <div id="vacunas-lista">
-            <div style="font-size:12px;color:var(--suave);text-align:center;padding:8px">Sin vacunas registradas</div>
-          </div>
+          <div id="vacunas-lista"><div style="font-size:12px;color:var(--suave);text-align:center;padding:8px">Sin vacunas registradas</div></div>
         </div>
 
-        <!-- CAÍDAS -->
+        <!-- Caídas -->
         <div class="fs-section" style="margin-bottom:10px">
           <div class="fs-titulo" style="display:flex;justify-content:space-between;align-items:center">
             <span>⚡ Caídas</span>
             <button class="btn bv btn-sm" onclick="abrirRegistroCaida()">＋ Registrar</button>
           </div>
-
-          <div class="fg">
-            <label class="fl">Factores de riesgo</label>
+          <div class="fg"><label class="fl">Factores de riesgo</label>
             <div class="chip-group">
               <div class="chip" onclick="toggleClinico(this,'fr-caida')">Demencia</div>
               <div class="chip" onclick="toggleClinico(this,'fr-caida')">Medicación de riesgo</div>
@@ -2742,41 +2675,66 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:19px;heigh
               <div class="chip" onclick="toggleClinico(this,'fr-caida')">Déficit visual</div>
             </div>
           </div>
+          <div id="caidas-lista" style="margin-top:8px"><div style="font-size:12px;color:var(--suave);text-align:center;padding:8px">Sin caídas registradas</div></div>
+        </div>
 
-          <div id="caidas-lista" style="margin-top:8px">
-            <div style="font-size:12px;color:var(--suave);text-align:center;padding:8px">Sin caídas registradas</div>
+        <!-- Guardar datos clínicos -->
+        <button class="btn bv" style="width:100%;margin-bottom:10px" onclick="guardarDatosClinicos()">✅ Guardar datos clínicos</button>
+
+        <!-- ══════ SECCIÓN 2: FICHA DE SALIDA ══════ -->
+        <div class="sep" style="margin-top:8px">🚑 Ficha de salida / internación</div>
+        <div class="norma" style="margin-bottom:10px">Completá el motivo de derivación y últimos vitales. Los datos del residente se completan automáticamente en el PDF.</div>
+
+        <div class="fs-section">
+          <div class="fs-titulo">📍 Episodio actual</div>
+          <div class="fg"><label class="fl">Motivo de derivación / internación</label>
+            <textarea class="fi" id="fs-motivo" style="min-height:65px" placeholder="Ej: Cuadro febril, disnea, caída..."></textarea>
+          </div>
+          <div class="fg"><label class="fl">Fecha y hora</label>
+            <input class="fi" type="datetime-local" id="fs-fecha">
           </div>
         </div>
 
-        <!-- BOTÓN GUARDAR -->
+        <div class="fs-section">
+          <div class="fs-titulo">💓 Signos vitales al momento de salida</div>
+          <div class="fr">
+            <div class="fg"><label class="fl">PA</label><input class="fi" id="fs-pa" placeholder="120/80"></div>
+            <div class="fg"><label class="fl">Pulso</label><input class="fi" id="fs-pulso" placeholder="80"></div>
+          </div>
+          <div class="fr">
+            <div class="fg"><label class="fl">Temp °C</label><input class="fi" id="fs-temp" placeholder="36.5"></div>
+            <div class="fg"><label class="fl">Sat O₂ %</label><input class="fi" id="fs-sat" placeholder="97"></div>
+          </div>
+          <div class="fr">
+            <div class="fg"><label class="fl">Glucemia</label><input class="fi" id="fs-gluc" placeholder="mg/dL"></div>
+            <div class="fg"><label class="fl">Peso kg</label><input class="fi" id="fs-peso" placeholder="kg"></div>
+          </div>
+        </div>
+
+        <div class="fs-section">
+          <div class="fs-titulo">🧠 Estado cognitivo al momento</div>
+          <div class="chip-group" style="margin-bottom:8px">
+            <div class="chip" onclick="selChipGrupo(this,'cogn')">Orientado en tiempo/espacio</div>
+            <div class="chip" onclick="selChipGrupo(this,'cogn')">Desorientado temporal</div>
+            <div class="chip" onclick="selChipGrupo(this,'cogn')">Desorientado</div>
+            <div class="chip" onclick="selChipGrupo(this,'cogn')">Sin respuesta</div>
+          </div>
+          <div class="fg"><label class="fl">Observaciones</label>
+            <textarea class="fi" id="fs-cogn-obs" style="min-height:50px" placeholder="Estado del paciente al momento de la salida..."></textarea>
+          </div>
+        </div>
+
+        <!-- Generar PDF -->
         <div style="display:flex;gap:8px;margin-top:4px;margin-bottom:8px">
-          <button class="btn bs" style="flex:1" onclick="resCloseM('modal-residente')">← Volver</button>
-          <button class="btn bv" style="flex:1" onclick="guardarDatosClinicos()">✅ Guardar cambios</button>
+          <button class="btn bs" style="flex:1" onclick="resCloseM('modal-residente')">← Cerrar</button>
+          <button class="btn bv" style="flex:2" onclick="generarFichaSalidaCompleta()">⬇️ Generar ficha PDF</button>
         </div>
 
-      </div><!-- /clinico-content -->
-    </div><!-- /mt-r-clinico -->
+      </div><!-- /salida-clinico-content -->
+    </div><!-- /mt-mr-salida -->
 
-    <!-- ══════ TAB: INFORME MSP ══════ -->
-    <div id="mt-r-msp" style="display:none">
-      <div id="msp-lock" style="display:none;text-align:center;padding:30px">
-        <div style="font-size:32px;margin-bottom:10px">🔒</div>
-        <div style="font-weight:500;color:var(--verde)">Solo para dueñas</div>
-      </div>
-      <div id="msp-content">
-        <div class="norma" style="margin-bottom:12px">📋 Informe de situación del residente para el Ministerio de Salud Pública. Incluye datos clínicos, funcionalidad, Barthel y caídas.</div>
-        <div style="display:flex;gap:8px;margin-bottom:12px">
-          <button class="btn bv" style="flex:1" onclick="generarInformeMSP()">⬇️ Descargar informe MSP</button>
-          <button class="btn bd btn-sm" onclick="compartirInformeMSP()">📲 WA</button>
-        </div>
-        <div id="msp-preview" style="border:1px solid var(--crema-o);border-radius:10px;padding:14px;font-size:12px;color:var(--suave);text-align:center;min-height:80px">
-          <div style="margin-top:20px">Tocá "Descargar informe MSP" para generar el documento</div>
-        </div>
-      </div>
-    </div><!-- /mt-r-msp -->
-
-  </div>
-</div>
+  </div><!-- /modal -->
+</div><!-- /modal-residente -->
 
 <!-- MODAL: NUEVO REGISTRO HISTORIAL -->
 <div class="moverlay" id="modal-nuevo-registro" onclick="resCloseO(event,'modal-nuevo-registro')">
@@ -3120,82 +3078,79 @@ function mostrarBotonReintento() {
 }
 
 async function cargarDatos() {
-  showLoading('Conectando con el servidor...');
-  var intentos = 0;
-  var maxIntentos = 3;
+  showLoading('Cargando datos...');
 
-  async function intentarCarga() {
-    intentos++;
+  // Intenta cargar con reintentos — sin ping previo para mayor compatibilidad
+  for (var intento = 1; intento <= 3; intento++) {
     try {
-      // Verificar conectividad primero con un ping rápido
-      var pingUrl = API_URL + '?token=' + API_TOKEN + '&sheet=config&action=ping';
-      var ping = await fetch(pingUrl, { method:'GET', redirect:'follow', credentials:'omit' });
-      if (!ping.ok) throw new Error('HTTP ' + ping.status);
-      var pingData = await ping.json();
-      if (!pingData.ok) throw new Error('API no responde');
+      showLoading(intento > 1 ? 'Reintentando (' + intento + '/3)...' : 'Cargando datos...');
 
-      // Cargar config (PINes)
-      var cfg = await apiGet('config');
+      // Cargar todo en paralelo — si config falla, igual continúa con datos
+      var results = await Promise.allSettled([
+        apiGet('config'),
+        apiGet('residentes'),
+        apiGet('empleadas'),
+        apiGet('medicacion'),
+        apiGet('gastos'),
+        apiGet('adelantos'),
+        apiGet('liquidaciones')
+      ]);
+
+      // Procesar config (PINes) — opcional, no bloquea
+      var cfg = results[0].status === 'fulfilled' ? results[0].value : [];
       cfg.forEach(function(r) {
         if (r.clave === 'pin_juliana') PINES['Juliana'] = String(r.valor);
         if (r.clave === 'pin_lucia')   PINES['Lucía']   = String(r.valor);
         if (r.clave === 'pin_flavia')  PINES['Flavia']  = String(r.valor);
       });
 
-      // Cargar todo en paralelo
-      showLoading('Cargando datos...');
-      var results = await Promise.all([
-        apiGet('residentes'), apiGet('empleadas'), apiGet('medicacion'),
-        apiGet('gastos'), apiGet('adelantos'), apiGet('liquidaciones')
-      ]);
-      DB.residentes    = results[0] || [];
-      DB.empleadas     = results[1] || [];
-      DB.medicacion    = results[2] || [];
-      DB.gastos        = results[3] || [];
-      DB.adelantos     = results[4] || [];
-      DB.liquidaciones = results[5] || [];
+      // Asignar datos — si alguno falla, queda vacío
+      DB.residentes    = results[1].status === 'fulfilled' ? results[1].value : [];
+      DB.empleadas     = results[2].status === 'fulfilled' ? results[2].value : [];
+      DB.medicacion    = results[3].status === 'fulfilled' ? results[3].value : [];
+      DB.gastos        = results[4].status === 'fulfilled' ? results[4].value : [];
+      DB.adelantos     = results[5].status === 'fulfilled' ? results[5].value : [];
+      DB.liquidaciones = results[6].status === 'fulfilled' ? results[6].value : [];
 
+      var totalOk = DB.residentes.length + DB.empleadas.length;
+
+      // Si NO cargó nada y todavía hay intentos, reintentar
+      if (totalOk === 0 && intento < 3) {
+        console.warn('cargarDatos intento ' + intento + ': sin datos, reintentando...');
+        await new Promise(function(r){ setTimeout(r, 1500 * intento); });
+        continue;
+      }
+
+      // Éxito (con o sin datos)
       hideLoading();
       renderListaResidentes();
       renderListaEmpleadas();
       renderGastos();
       try { renderSocias(); } catch(e) {}
-      renderPastillero();
+      try { renderPastillero(); } catch(e) {}
       try { refreshLiqEmpDropdown(); } catch(e) {}
       try { refreshEgEmpDropdown(); } catch(e) {}
 
-      var totalOk = DB.residentes.length + DB.empleadas.length;
       if (totalOk > 0) {
         toast('✅ ' + DB.residentes.length + ' residentes · ' + DB.empleadas.length + ' empleadas', 'ok');
       } else {
-        toast('⚠️ Conectado pero sin datos en Sheets', 'warn');
+        toast('⚠️ Conectado pero sin datos. Verificá el Apps Script.', 'warn');
       }
       return true;
 
     } catch(e) {
-      console.warn('cargarDatos intento ' + intentos + ':', e.message || e);
-      if (intentos < maxIntentos) {
-        showLoading('Reintentando... (' + intentos + '/' + maxIntentos + ')');
-        await new Promise(function(r){ setTimeout(r, 1500 * intentos); });
-        return intentarCarga();
-      } else {
-        hideLoading();
-        // Mostrar error claro al usuario
-        var errMsg = '⚠️ Sin conexión al servidor. ';
-        if (e.message && e.message.includes('Load failed')) {
-          errMsg += 'Verificá tu conexión a internet.';
-        } else {
-          errMsg += 'Intentá recargar la página.';
-        }
-        toast(errMsg, 'error');
-        // Mostrar botón de reintento en la pantalla principal
-        mostrarBotonReintento();
-        return false;
+      console.warn('cargarDatos intento ' + intento + ':', e.message || e);
+      if (intento < 3) {
+        await new Promise(function(r){ setTimeout(r, 1500 * intento); });
       }
     }
   }
 
-  return intentarCarga();
+  // Todos los intentos fallaron
+  hideLoading();
+  toast('⚠️ Sin conexión al servidor. Intentá recargar la página.', 'error');
+  mostrarBotonReintento();
+  return false;
 }
 
 // ═══════════════════════════════════════════════════════
@@ -3232,66 +3187,6 @@ function renderListaResidentes() {
       '</div>' +
     '</div>';
   }).join('');
-}
-
-function abrirResidente(id) {
-  var r = DB.residentes.find(function(x){ return String(x.id) === String(id); });
-  if (!r) { toast('Residente no encontrado', 'error'); return; }
-  residenteActual = id;
-
-  var ini = r.nombre.split(' ').map(function(w){ return w[0]; }).slice(0,2).join('');
-  document.getElementById('mr-av').textContent  = ini;
-  document.getElementById('mr-nom').textContent = r.nombre;
-  document.getElementById('mr-sub').textContent = r.edad + ' años · CI ' + r.ci + ' · Hab. ' + r.hab;
-
-  var bdg = document.getElementById('mr-badges');
-  bdg.innerHTML = '';
-  if (r.dem_estadio)  bdg.innerHTML += '<span class="badge b-morado" style="margin-right:4px">' + r.dem_estadio + '</span>';
-  if (r.alergias && r.alergias.includes('ANTICOAG'))  bdg.innerHTML += '<span class="badge b-azul" style="margin-right:4px">Anticoagulada</span>';
-  if (r.cuid_espesantes && r.cuid_espesantes.includes('OBLIGATORIO')) bdg.innerHTML += '<span class="badge b-critico">Espesantes ⚠️</span>';
-
-  document.getElementById('ficha-datos-content').innerHTML =
-    '<div class="fs-row"><span class="fs-lbl">Habitación</span><span class="fs-val">' + r.hab + '</span></div>' +
-    '<div class="fs-row"><span class="fs-lbl">Mutualista</span><span class="fs-val">' + r.mutualista + '</span></div>' +
-    '<div class="fs-row"><span class="fs-lbl">Ingreso</span><span class="fs-val">' + r.ingreso + '</span></div>' +
-    '<div class="fs-row"><span class="fs-lbl">Familiar</span><span class="fs-val">' + (r.familiar_nom || 'Sin cargar') + '</span></div>' +
-    '<div class="fs-row"><span class="fs-lbl">Tel. familiar</span><span class="fs-val">' + (r.familiar_tel || 'Sin cargar') + '</span></div>' +
-    '<div class="fs-row"><span class="fs-lbl">Médico</span><span class="fs-val">' + (r.medico || 'Sin cargar') + '</span></div>';
-
-  var diags = (r.diags || '').split('|').map(function(d){
-    return '<div style="padding:3px 0;border-bottom:1px solid var(--crema-o)">• ' + d.trim() + '</div>';
-  }).join('');
-  document.getElementById('ficha-diag-content').innerHTML = diags || '<div style="color:var(--suave)">Sin diagnósticos cargados</div>';
-
-  var alrgs = (r.alergias || '').split('|').map(function(a){
-    return '<div style="padding:3px 0;color:var(--rojo);font-weight:500;border-bottom:1px solid var(--crema-o)">⚠️ ' + a.trim() + '</div>';
-  }).join('');
-  document.getElementById('ficha-alergias-content').innerHTML = alrgs || '<div style="color:var(--suave)">Sin alertas documentadas</div>';
-
-  // Medicación
-  var meds = DB.medicacion.filter(function(m){ return String(m.residente_id) === String(id) && m.activo === 'Sí'; });
-  document.getElementById('medicacion-content').innerHTML = meds.length > 0 ?
-    '<table class="med-tabla"><thead><tr><th>Medicamento</th><th>Dosis</th><th>Horario</th><th>Notas</th></tr></thead><tbody>' +
-    meds.map(function(m){
-      return '<tr><td style="font-weight:500">' + m.medicamento + '</td><td>' + m.dosis + '</td>' +
-        '<td><span class="med-hora">' + m.horario + '</span></td>' +
-        '<td style="color:' + (m.nota && m.nota.includes('⚠️') ? 'var(--rojo)' : 'var(--suave)') + ';font-size:10px">' + (m.nota||'') + '</td></tr>';
-    }).join('') + '</tbody></table>' :
-    '<div style="color:var(--suave);padding:10px 0">Sin medicación cargada.</div>';
-
-  document.getElementById('nr-res-nom').textContent = r.nombre;
-  cargarYRenderHistorial(id);
-
-  var fsf = document.getElementById('fs-fecha');
-  if (fsf) {
-    var now = new Date();
-    fsf.value = new Date(now - now.getTimezoneOffset()*60000).toISOString().slice(0,16);
-  }
-
-  document.querySelectorAll('[id^="mt-mr-"]').forEach(function(t){ t.style.display='none'; });
-  document.getElementById('mt-mr-ficha').style.display = 'block';
-  document.querySelectorAll('#modal-residente .mtab').forEach(function(t,i){ t.classList.toggle('active', i===0); });
-  resShowM('modal-residente');
 }
 
 async function cargarYRenderHistorial(resId) {
@@ -3488,6 +3383,8 @@ function abrirEmpleada(id) {
 
   document.querySelectorAll('[id^="mt-fe-"]').forEach(function(t){ t.style.display = t.id==='mt-fe-datos' ? 'block' : 'none'; });
   document.querySelectorAll('#modal-ficha-emp .mtab').forEach(function(t,i){ t.classList.toggle('active', i===0); });
+  // Initialize adelantos
+  try { poblarMesesAdelanto(); renderListaAdelantos(); } catch(e) {}
   perShowM('modal-ficha-emp');
 }
 
@@ -3583,31 +3480,6 @@ function renderPastillero() {
 // ═══════════════════════════════════════════════════════
 // ADELANTOS
 // ═══════════════════════════════════════════════════════
-async function guardarAdelanto() {
-  var monto  = parseFloat((document.getElementById('adelanto-monto') || {}).value) || 0;
-  var cuotas = parseInt((document.getElementById('adelanto-cuotas') || {}).value) || 1;
-  if (monto <= 0) { toast('Ingresá un monto válido', 'error'); return; }
-  var e = DB.empleadas.find(function(x){ return String(x.id) === String(empleadaActual); });
-  var data = {
-    empleada_id: empleadaActual, empleada_nom: e ? e.nombre : '',
-    fecha: new Date().toISOString().split('T')[0], monto: monto,
-    cuotas: cuotas, descontado: 'No'
-  };
-  showLoading('Registrando adelanto...');
-  var result = await apiPost('adelantos', 'insert', data);
-  hideLoading();
-  if (result) {
-    DB.adelantos.push(result);
-    var total = DB.adelantos
-      .filter(function(a){ return String(a.empleada_id) === String(empleadaActual) && a.descontado === 'No'; })
-      .reduce(function(s,a){ return s + Number(a.monto); }, 0);
-    var el = document.getElementById('fe-adel-total');
-    if (el) el.textContent = '$' + total.toLocaleString('es-UY');
-    toast('✅ Adelanto registrado', 'ok');
-    var elA = document.getElementById('adelanto-monto'); if (elA) elA.value = '';
-  } else toast('❌ Error al guardar', 'error');
-}
-
 // ═══════════════════════════════════════════════════════
 // NUEVA EMPLEADA — IDs en modal-nueva-emp
 // ═══════════════════════════════════════════════════════
@@ -3633,16 +3505,19 @@ function selUser(el,ini,nom){
 }
 function pinPress(d){
   if(pin.length>=4)return; pin+=d; updateDots();
-  if(pin.length===4){setTimeout(()=>{
-    if(pin==='1234'){
+  if(pin.length===4){setTimeout(function(){
+    // Verificar contra PINES del usuario seleccionado (cargado desde Sheets o default)
+    var pinEsperado = PINES[currentUser.nombre] || '1234';
+    if(pin === pinEsperado){
       document.getElementById('splash').classList.add('hidden');
-      document.getElementById('header-user-btn').textContent=currentUser.ini;
-      document.getElementById('header-info').textContent=`Bienvenida, ${currentUser.nombre} · Lun 14 abr`;
+      document.getElementById('header-user-btn').textContent = currentUser.ini;
+      var hoy = new Date().toLocaleDateString('es-UY', {weekday:'short', day:'numeric', month:'short'});
+      document.getElementById('header-info').textContent = 'Bienvenida, ' + currentUser.nombre + ' · ' + hoy;
     } else {
       pin=''; updateDots();
-      const dots=document.querySelectorAll('.pin-dot');
-      dots.forEach(d=>{d.style.background='#c0392b';d.style.borderColor='#c0392b';});
-      setTimeout(()=>dots.forEach(d=>{d.style.background='';d.style.borderColor='';}),500);
+      var dots=document.querySelectorAll('.pin-dot');
+      dots.forEach(function(d){d.style.background='#c0392b';d.style.borderColor='#c0392b';});
+      setTimeout(function(){dots.forEach(function(d){d.style.background='';d.style.borderColor='';});},500);
     }
   },150);}
 }
@@ -4413,185 +4288,8 @@ calcLiq();
 calcEgreso();
 
 
-// ═══════ RESIDENTES MODULE JS ═══════
-
-// ══ BASE DE DATOS RESIDENTES ══
-const RESIDENTES = {
-  morgade: {
-    av:'RM', nom:'Raúl Morgade', ci:'755.443-4', edad:86, hab:'1',
-    mutualista:'ASSE', ingreso:'2024-08-01',
-    familiar:'Contacto familiar — pendiente de carga',
-    medico:'Médico ASSE — pendiente',
-    diags:['TNCM GDS 5 (demencia moderada) con trastornos psicoconductuales','Trastorno de personalidad desde juventud','DMNIR','ICC con FEVI conservada','FA con ACOD (Apixaban) ⚠️ ANTICOAGULADO','Vejiga neurógena con RPM aumentado — SV a permanencia','Episodios de hematuria autolimitados','Pólipos vesicales en estudio','ITUs a repetición por MO multirresistentes y cándida','Adulto mayor frágil'],
-    alergias:['Sin alergias documentadas — verificar con familia'],
-    demencia:{tiene:true,estadio:'Moderada (GDS 5)',etiologia:'Etiología no especificada',compensada:false,sintomas:'Trastornos psicoconductuales activos',antipsic:true,antipsic_det:'Consultar planilla de medicación'},
-    cuidados:{
-      dieta:'Blanda / Adaptada',trastorno_degl:'No documentado',espesantes:'No',ayuda_comer:'Asistencia',
-      continencia_v:'Sonda vesical permanente',continencia_i:'Incontinencia fecal ocasional',panal:'Sí (24hs)',
-      movilidad:'Marcha bajo vigilancia',riesgo_caida:'Alto',ulceras:'No documentadas',
-      cognicion:'Desorientado temporoespacialmente',oxigeno:'No',cpap:'No',contencion:'Evaluar según situación'
-    },
-    medicacion:[
-      {med:'Apixaban 5mg',dosis:'1 comp',horario:'H8 y H20',nota:'⚠️ ANTICOAGULADO'},
-      {med:'Ver planilla completa',dosis:'—',horario:'—',nota:'Cargar desde foto de planilla'}
-    ],
-    badges:['b-critico:Dep. severa','b-morado:GDS 5','b-azul:Anticoagulado']
-  },
-  sbrocca: {
-    av:'MS', nom:'Miguel Sbrocca', ci:'770.723-1', edad:88, hab:'2',
-    mutualista:'Pendiente', ingreso:'2024-09-01',
-    familiar:'Contacto familiar — pendiente',
-    medico:'Médico de cabecera — pendiente',
-    diags:['TNCM GDS 4 (demencia leve)','Microangiopatía crónica','HTA','Hipotiroidismo','Hiperuricemia','Dislipemia','2025: Ingreso sanatorial CTI por IRB — IOT + inotrópicos','Hipoacusia moderada — usa audioprótesis','Colecistectomizado'],
-    alergias:['Sin alergias documentadas'],
-    demencia:{tiene:true,estadio:'Leve (GDS 4)',etiologia:'Microangiopatía crónica (vascular)',compensada:true,sintomas:'Sin trastornos psicoconductuales activos',antipsic:false},
-    cuidados:{
-      dieta:'Normal adaptada',trastorno_degl:'No',espesantes:'No',ayuda_comer:'Supervisión',
-      continencia_v:'INU leve',continencia_i:'Continente',panal:'Ocasional noche',
-      movilidad:'Independiente con supervisión',riesgo_caida:'Moderado',ulceras:'No',
-      cognicion:'Orientado parcialmente',oxigeno:'No',cpap:'No',contencion:'No'
-    },
-    medicacion:[{med:'Ver planilla',dosis:'—',horario:'—',nota:'Cargar desde foto'}],
-    badges:['b-alerta:Dep. leve','b-morado:GDS 4','b-azul:Antecedente CTI']
-  },
-  conde: {
-    av:'NC', nom:'Nelda Conde', ci:'1.049.139-2', edad:80, hab:'3',
-    mutualista:'Pendiente', ingreso:'2024-10-01',
-    familiar:'Contacto familiar — pendiente',
-    medico:'Médico de cabecera — pendiente',
-    diags:['TNCM GDS 6-7 (demencia severa) — sin trastornos conductuales','No trastorno deglutorio','HTA — actualmente sin tratamiento farmacológico, cifras en rango','Hipotiroidismo','Fractura de cadera izquierda 2023 — artroplastia','Síndrome de inmovilidad','Fragilidad severa'],
-    alergias:['Sin alergias documentadas'],
-    demencia:{tiene:true,estadio:'Severa (GDS 6-7)',etiologia:'Sin etiología específica documentada',compensada:true,sintomas:'Sin trastornos conductuales',antipsic:false},
-    cuidados:{
-      dieta:'Blanda',trastorno_degl:'No',espesantes:'No',ayuda_comer:'Asistencia total',
-      continencia_v:'Incontinente',continencia_i:'Incontinente',panal:'Sí (24hs)',
-      movilidad:'Sedesta asistida — no deambula',riesgo_caida:'Muy alto',ulceras:'Control permanente por síndrome de inmovilidad',
-      cognicion:'No orientada — demencia severa',oxigeno:'No',cpap:'No',contencion:'No'
-    },
-    medicacion:[{med:'Ver planilla',dosis:'—',horario:'—',nota:'Cargar desde foto'}],
-    badges:['b-critico:Dep. total','b-rojo:GDS 6-7','b-alerta:Fragilidad severa']
-  },
-  vanelli: {
-    av:'SV', nom:'Sonia Vanelli', ci:'984.930-4', edad:82, hab:'4',
-    mutualista:'Pendiente', ingreso:'2024-10-01',
-    familiar:'Contacto familiar — pendiente',
-    medico:'Médico de cabecera — pendiente',
-    diags:['TNCM GDS 5 (demencia moderada) con trastornos conductuales controlados','Requiere antipsicóticos múltiples','ACV lacunar','Hipotiroidismo','Diverticulosis colónica','Gastritis no atrófica','Espondiloartrosis — pinzamiento C5-C6','Osteoporosis','Adulta mayor frágil'],
-    alergias:['Sin alergias documentadas'],
-    demencia:{tiene:true,estadio:'Moderada (GDS 5)',etiologia:'Vascular (ACV lacunar)',compensada:true,sintomas:'Trastornos conductuales controlados con antipsicóticos',antipsic:true,antipsic_det:'Múltiples antipsicóticos — ver planilla de medicación'},
-    cuidados:{
-      dieta:'Normal adaptada',trastorno_degl:'No documentado',espesantes:'No',ayuda_comer:'Supervisión',
-      continencia_v:'INU leve',continencia_i:'Continente',panal:'Ocasional',
-      movilidad:'Marcha sin asistencia',riesgo_caida:'Moderado',ulceras:'No',
-      cognicion:'Parcialmente orientada',oxigeno:'No',cpap:'No',contencion:'No'
-    },
-    medicacion:[{med:'Ver planilla',dosis:'—',horario:'—',nota:'Cargar desde foto'}],
-    badges:['b-alerta:Dep. leve','b-morado:GDS 5','b-naranja:Antipsicóticos múltiples']
-  },
-  farji: {
-    av:'RF', nom:'Ruth Farji', ci:'731.652-7', edad:89, hab:'5',
-    mutualista:'Pendiente', ingreso:'2024-11-01',
-    familiar:'Contacto familiar — pendiente',
-    medico:'Médico de cabecera — pendiente',
-    diags:['TNCM GDS 5 (demencia moderada)','Trastorno depresivo en tratamiento','HTA','DMNIR','ACV isquémico 07/2025','Síndrome Parkinsoniano','IC con FEVI conservada','LLC estadio 0A W&W (Hematología)','Anemia crónica leve NN','ERC G4 ⚠️ AJUSTE DE DOSIS DE FÁRMACOS','Ooforectomía izquierda por patología benigna','Fragilidad severa'],
-    alergias:['Sin alergias documentadas — ERC G4: revisar todos los fármacos nefrotóxicos'],
-    demencia:{tiene:true,estadio:'Moderada (GDS 5)',etiologia:'Vascular (ACV isquémico) + Parkinsonismo',compensada:true,sintomas:'Sin trastornos psicoconductuales activos',antipsic:false,antipsic_det:'Precaución: Parkinsonismo — evitar antipsicóticos típicos'},
-    cuidados:{
-      dieta:'Blanda — disfagia a evaluar por Parkinsonismo',trastorno_degl:'A evaluar (Parkinsonismo)',espesantes:'A evaluar',ayuda_comer:'Asistencia parcial',
-      continencia_v:'Incontinente noche',continencia_i:'Continente',panal:'Sí nocturno',
-      movilidad:'Marcha asistida — Parkinsonismo',riesgo_caida:'Muy alto (Parkinsonismo + ACV)',ulceras:'No',
-      cognicion:'Parcialmente orientada — demencia moderada + depresión',oxigeno:'No',cpap:'No',contencion:'No'
-    },
-    medicacion:[{med:'Ver planilla',dosis:'—',horario:'—',nota:'⚠️ ERC G4 — revisar dosis'}],
-    badges:['b-alerta:Dep. moderada','b-morado:GDS 5','b-critico:ERC G4','b-naranja:ACV 07/25']
-  },
-  tarrio: {
-    av:'MT', nom:'Mabel Tarrio', ci:'708.969-3', edad:90, hab:'6',
-    mutualista:'Pendiente', ingreso:'2024-09-01',
-    familiar:'Contacto familiar — pendiente',
-    medico:'Médico de cabecera — pendiente',
-    diags:['TNCM GDS 5 (demencia moderada)','Hipotiroidismo','Artritis reumatoide','TVP con ACOD (Rivaroxaban) ⚠️ ANTICOAGULADA','Anemia crónica — múltiples transfusiones','Tratamiento con EPO bisemanal','Fragilidad severa'],
-    alergias:['Sin alergias documentadas — ANTICOAGULADA con Rivaroxaban'],
-    demencia:{tiene:true,estadio:'Moderada (GDS 5)',etiologia:'Sin etiología específica documentada',compensada:true,sintomas:'Sin trastornos psicoconductuales activos',antipsic:false},
-    cuidados:{
-      dieta:'Adaptada',trastorno_degl:'No documentado',espesantes:'No',ayuda_comer:'Asistencia total',
-      continencia_v:'Incontinente',continencia_i:'Incontinente',panal:'Sí (24hs)',
-      movilidad:'Silla de ruedas — no deambula',riesgo_caida:'Alto al trasladar',ulceras:'Prevención activa por silla de ruedas',
-      cognicion:'Parcialmente orientada',oxigeno:'No',cpap:'No',contencion:'No'
-    },
-    medicacion:[{med:'Rivaroxaban',dosis:'Dosis indicada',horario:'Ver planilla',nota:'⚠️ ANTICOAGULADA'},{med:'EPO bisemanal',dosis:'Ver indicación',horario:'Bisemanal',nota:'Anemia crónica'}],
-    badges:['b-critico:Dep. total','b-morado:GDS 5','b-azul:Anticoagulada','b-alerta:EPO bisemanal']
-  },
-  borsani: {
-    av:'MB', nom:'Martha Borsani', ci:'778.537-8', edad:88, hab:'7',
-    mutualista:'Pendiente', ingreso:'2024-10-01',
-    familiar:'Contacto familiar — pendiente',
-    medico:'Médico de cabecera — pendiente',
-    diags:['TNCM GDS 5 (demencia moderada)','Hipotiroidismo','Anemia severa — etiología en estudio (¿Angiodisplasia de colon?)','Fragilidad severa'],
-    alergias:['Sin alergias documentadas'],
-    demencia:{tiene:true,estadio:'Moderada (GDS 5)',etiologia:'Sin etiología específica documentada',compensada:true,sintomas:'Sin trastornos psicoconductuales documentados',antipsic:false},
-    cuidados:{
-      dieta:'Blanda',trastorno_degl:'No documentado',espesantes:'No',ayuda_comer:'Asistencia total',
-      continencia_v:'Incontinente',continencia_i:'Incontinente',panal:'Sí (24hs)',
-      movilidad:'Marcha asistida',riesgo_caida:'Alto',ulceras:'No',
-      cognicion:'Parcialmente orientada',oxigeno:'No',cpap:'No',contencion:'No'
-    },
-    medicacion:[{med:'Ver planilla',dosis:'—',horario:'—',nota:'Anemia severa en estudio'}],
-    badges:['b-critico:Dep. total','b-morado:GDS 5','b-alerta:Anemia severa']
-  },
-  fioritti: {
-    av:'EF', nom:'Elsa Fioritti', ci:'1.773.961-2', edad:86, hab:'8',
-    mutualista:'Pendiente', ingreso:'2025-01-01',
-    familiar:'Contacto familiar — pendiente',
-    medico:'Médico de cabecera — pendiente',
-    diags:['TNCM GDS 5 (demencia moderada) — trastornos psicoconductuales de muy difícil control','HTA — actualmente sin tratamiento farmacológico','Anemia ferropénica — Hb 9.2 (11/2025)','Neoplasia de mama izquierda 2015 — mastectomía parcial + RT','Fractura coxofemoral izquierda — osteosíntesis 03/2025','Colecistectomizada','Fragilidad severa'],
-    alergias:['Sin alergias documentadas'],
-    demencia:{tiene:true,estadio:'Moderada (GDS 5)',etiologia:'Sin etiología específica documentada',compensada:false,sintomas:'Trastornos psicoconductuales de muy difícil control',antipsic:true,antipsic_det:'Requiere antipsicóticos — ver planilla de medicación'},
-    cuidados:{
-      dieta:'Adaptada',trastorno_degl:'No documentado',espesantes:'No',ayuda_comer:'Asistencia',
-      continencia_v:'Incontinente',continencia_i:'Incontinente',panal:'Sí (24hs)',
-      movilidad:'No deambula — tolera sedestación',riesgo_caida:'Muy alto',ulceras:'Riesgo por inmovilidad y fx reciente',
-      cognicion:'Desorientada — trastornos conductuales severos',oxigeno:'No',cpap:'No',contencion:'Evaluar según conducta'
-    },
-    medicacion:[{med:'Ver planilla',dosis:'—',horario:'—',nota:'Antipsicóticos por trastornos conductuales severos'}],
-    badges:['b-critico:Dep. severa','b-morado:GDS 5','b-rojo:Conducta muy difícil']
-  },
-  rodriguez: {
-    av:'LR', nom:'Leonor Rodríguez', ci:'916.551-0', edad:86, hab:'9',
-    mutualista:'Pendiente', ingreso:'2024-08-01',
-    familiar:'Contacto familiar — pendiente de carga',
-    medico:'Médico de cabecera — pendiente',
-    diags:['TNCM GDS 4-5 (demencia leve-moderada) con trastornos psicoconductuales controlados','Trastorno deglutorio ⚠️ LÍQUIDOS CON ESPESANTES — NAC aspirativas previas','HTA','FA con ACOD (Apixaban/Mantixa) ⚠️ ANTICOAGULADA','Cardiopatía isquémica — 4 bypass','IC FEVI moderadamente reducida 40%','EPOC','Osteoporosis','Fracturas múltiples (vertebrales, cadera, hombro D)','Colonizada con E.Coli BLEE','Adulta mayor frágil'],
-    alergias:['⚠️ TRASTORNO DEGLUTORIO — LÍQUIDOS CON ESPESANTES OBLIGATORIO','⚠️ ANTICOAGULADA — Apixaban/Mantixa','⚠️ Colonizada E.Coli BLEE — precauciones de contacto'],
-    demencia:{tiene:true,estadio:'Leve-moderada (GDS 4-5)',etiologia:'Sin etiología específica — probable vascular',compensada:true,sintomas:'Trastornos psicoconductuales controlados',antipsic:true,antipsic_det:'Quetiapina 100mg ½ comp H20'},
-    cuidados:{
-      dieta:'Blanda',trastorno_degl:'Sí — SEVERO',espesantes:'Sí — OBLIGATORIO (todos los líquidos)',ayuda_comer:'Asistencia',
-      continencia_v:'INU mixta severa',continencia_i:'Continente',panal:'Sí (24hs)',
-      movilidad:'Dependencia leve — asistencia para movilización',riesgo_caida:'Alto (fracturas múltiples)',ulceras:'No activas — riesgo por dependencia',
-      cognicion:'Parcialmente orientada — demencia leve-moderada controlada',oxigeno:'EPOC — evaluar necesidad',cpap:'No documentado',contencion:'No'
-    },
-    medicacion:[
-      {med:'Esomeprazol 20mg',dosis:'1 comp',horario:'H8 — ayunas',nota:''},
-      {med:'Flixovent 2 puff',dosis:'2 puff',horario:'H8 y H20',nota:'EPOC'},
-      {med:'Bisoprolol 5mg',dosis:'1 comp',horario:'H8',nota:'FA + IC'},
-      {med:'Memantina 10mg',dosis:'1 comp',horario:'H8',nota:'Demencia'},
-      {med:'Amiodarona 200mg',dosis:'1 comp',horario:'H8',nota:'FA'},
-      {med:'Apixaban 5mg',dosis:'1 comp',horario:'H8 y H20',nota:'⚠️ ANTICOAG. FA'},
-      {med:'Digoxina 0.25mg',dosis:'¾ comp',horario:'H8 — Lun/Mié/Vie',nota:'FA — solo 3 días/semana'},
-      {med:'Empagliflozina 10mg',dosis:'1 comp',horario:'H8',nota:'DMNIR'},
-      {med:'Espironolactona 25mg',dosis:'2 comp',horario:'H14',nota:'IC'},
-      {med:'Hierro Maltofer',dosis:'1 comp',horario:'H16',nota:'Anemia'},
-      {med:'Solifenacina 10mg',dosis:'1 comp',horario:'H20',nota:'INU'},
-      {med:'Duloxetina 60mg',dosis:'1 comp',horario:'H20',nota:'Dolor / ánimo'},
-      {med:'Atorvastatina 40mg',dosis:'1 comp',horario:'H20',nota:'Dislipemia'},
-      {med:'Quetiapina 100mg',dosis:'½ comp',horario:'H20',nota:'Trastornos psicoconductuales'},
-      {med:'Melatonina 5mg',dosis:'1 comp',horario:'H0',nota:'Sueño'}
-    ],
-    badges:['b-alerta:Dep. leve','b-morado:GDS 4-5','b-azul:Anticoagulada','b-critico:T.Deglutorio']
-  }
-};
-
-let residenteActual = 'rodriguez';
+// ═══════ ESTADO RESIDENTES ═══════
+var residenteActual = null;
 
 // ══ NAVEGACIÓN ══
 function resSwitchTab(name, el) {
@@ -4631,7 +4329,7 @@ function selTipo(el, tipo) {
 
 // ══ GENERAR FICHA DE SALIDA ══
 function generarFichaSalida() {
-  const r = RESIDENTES[residenteActual];
+  var r = DB.residentes.find(function(x){ return String(x.id) === String(residenteActual); }) || {};
   const motivo = document.getElementById('fs-motivo').value || 'Pendiente de completar';
   const pa = document.getElementById('fs-pa').value || 'No registrada';
   const pulso = document.getElementById('fs-pulso').value || 'No registrado';
@@ -4774,7 +4472,7 @@ function imprimirFichaSalida() {
   const c = document.getElementById('fs-print');
   if (!c) { generarFichaSalida(); setTimeout(imprimirFichaSalida, 300); return; }
   const w = window.open('', '_blank');
-  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Ficha de Salida — ${RESIDENTES[residenteActual].nom}</title>
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Ficha de Salida — ${r.nombre || 'Residente'}</title>
   <style>
     body{font-family:Arial,sans-serif;padding:16px;max-width:800px;margin:0 auto;font-size:11px;color:#000;line-height:1.5;}
     .pdf-logo-row{display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid #1a3d35;padding-bottom:8px;margin-bottom:10px;}
@@ -4800,7 +4498,7 @@ function imprimirFichaSalida() {
 }
 
 function compartirFichaSalida() {
-  const r = RESIDENTES[residenteActual];
+  var r = DB.residentes.find(function(x){ return String(x.id) === String(residenteActual); }) || {};
   const motivo = document.getElementById('fs-motivo')?.value || 'Ver ficha completa';
   let txt = `🚑 *FICHA DE SALIDA — ELDERLY CARE CARRASCO*\n\n`;
   txt += `*Residente:* ${r.nom}\n`;
@@ -5298,88 +4996,6 @@ function showM_addMed() {
 // ═══════════════════════════════════════════════════════
 // HISTORIAL → PDF + WhatsApp
 // ═══════════════════════════════════════════════════════
-async function generarHistorialPDF() {
-  if (!residenteActual) return;
-  var r = DB.residentes.find(function(x){ return String(x.id) === String(residenteActual); });
-  if (!r) return;
-
-  showLoading('Generando historial...');
-  var hist = await apiGet('historial');
-  hist = hist.filter(function(h){ return String(h.residente_id) === String(residenteActual); });
-  hist.sort(function(a,b){ return b.created_at > a.created_at ? 1 : -1; });
-  hideLoading();
-
-  var hoy = new Date().toLocaleDateString('es-UY');
-
-  var TIPO_LABELS = {
-    nota:'NOTA CLÍNICA', vital:'SIGNOS VITALES', incidente:'INCIDENTE',
-    medico:'CONSULTA MÉDICA', estudio:'ESTUDIO', medicacion:'MEDICACIÓN',
-    barthel:'ÍNDICE DE BARTHEL', vacuna:'VACUNACIÓN', caida:'CAÍDA'
-  };
-
-  var html = `
-  <div style="font-family:Arial,sans-serif;font-size:11px;color:#000;line-height:1.5;max-width:720px;margin:0 auto;padding:20px">
-
-    <div style="border-bottom:2px solid #1a3d35;padding-bottom:10px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:flex-end">
-      <div>
-        <div style="font-size:15px;font-weight:bold;color:#1a3d35">CARRASCO ELDERLY CARE SAS</div>
-        <div style="font-size:10px;color:#555">Rafael Barradas 1527 · Montevideo</div>
-      </div>
-      <div style="text-align:right;font-size:10px;color:#555">
-        <div style="font-weight:bold;font-size:11px">HISTORIAL CLÍNICO</div>
-        <div>Generado: ${hoy}</div>
-      </div>
-    </div>
-
-    <div style="background:#f5f0e8;padding:10px;border-left:3px solid #c9a84c;margin-bottom:12px">
-      <div style="font-size:13px;font-weight:bold;color:#1a3d35">${r.nombre}</div>
-      <div style="font-size:11px;color:#555">CI ${r.ci} · ${r.edad} años · Hab. ${r.hab} · Ingreso ${r.ingreso || '—'}</div>
-      ${r.diags ? '<div style="font-size:10px;margin-top:4px;color:#666">' + r.diags.replace(/\|/g, ' · ') + '</div>' : ''}
-    </div>
-
-    <div style="font-size:11px;color:#555;margin-bottom:8px">Total de registros: <strong>${hist.length}</strong></div>
-
-    ${hist.length === 0 ?
-      '<div style="text-align:center;padding:30px;color:#999">Sin registros en el historial.</div>' :
-      hist.map(function(h) {
-        var fecha = new Date(h.created_at).toLocaleString('es-UY');
-        var label = TIPO_LABELS[h.tipo] || h.tipo;
-        var vitales = '';
-        if (h.tipo === 'vital' && h.vit_pa) {
-          vitales = '<div style="margin-top:4px;font-size:10px;background:#fff;padding:5px;border-radius:4px">' +
-            'PA: ' + h.vit_pa + ' · Pulso: ' + h.vit_pulso + ' · Temp: ' + h.vit_temp + '° · Sat: ' + h.vit_sat + '%' +
-            (h.vit_gluc ? ' · Gluc: ' + h.vit_gluc : '') + (h.vit_peso ? ' · Peso: ' + h.vit_peso + ' kg' : '') +
-            '</div>';
-        }
-        return '<div style="border-left:3px solid #1a3d35;padding:8px 12px;margin-bottom:8px;background:#fafafa;page-break-inside:avoid">' +
-          '<div style="display:flex;justify-content:space-between;font-size:9px;color:#666;margin-bottom:4px">' +
-            '<span style="background:#1a3d35;color:white;padding:2px 6px;border-radius:3px;font-weight:bold">' + label + '</span>' +
-            '<span>' + fecha + '</span>' +
-          '</div>' +
-          '<div style="font-size:10px;color:#444;margin-bottom:3px">👤 ' + h.usuario + (h.turno ? ' · ' + h.turno : '') + '</div>' +
-          '<div style="font-size:11px;color:#000;white-space:pre-wrap">' + (h.texto || '') + '</div>' +
-          vitales +
-        '</div>';
-      }).join('')
-    }
-
-    <div style="border-top:1px solid #1a3d35;padding-top:8px;margin-top:14px;font-size:9px;color:#555;text-align:center">
-      <div>Carrasco Elderly Care SAS · Rafael Barradas 1527, Montevideo · RUT 220257400017</div>
-      <div style="margin-top:2px">Generado el ${hoy} por ${currentUser.nombre}</div>
-    </div>
-
-  </div>`;
-
-  var w = window.open('', '_blank');
-  w.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Historial — ' + r.nombre + '</title>' +
-    '<style>body{margin:0;padding:0;}@media print{@page{margin:10mm;}}' +
-    '</style></head><body>' + html +
-    '<scr' + 'ipt>window.onload=function(){window.print();};<\/scr' + 'ipt>' +
-    '</body></html>');
-  w.document.close();
-  toast('✅ Historial generado', 'ok');
-}
-
 // Compartir historial por WhatsApp (resumen + URL para descargar)
 async function compartirHistorialWA() {
   var r = DB.residentes.find(function(x){ return String(x.id) === String(residenteActual); });
@@ -5401,796 +5017,4 @@ async function compartirHistorialWA() {
 // ═══════════════════════════════════════════════════════
 function generarReciboPDF() {
   var liqData = window._liqData;
-  if (!liqData) { toast('Calculá primero la liquidación', 'error'); return; }
-  var empSel = document.getElementById('liq-emp');
-  var empNom = empSel ? (empSel.options[empSel.selectedIndex].text || '') : '';
-  var empId  = empSel ? empSel.value : '';
-  var emp    = DB.empleadas.find(function(e){ return String(e.id) === String(empId); }) || {};
-
-  var mes = (document.getElementById('liq-mes') || {}).value || new Date().toISOString().slice(0,7);
-  var mesLabel = new Date(mes + '-01').toLocaleString('es-UY', {month:'long', year:'numeric'});
-  mesLabel = mesLabel.charAt(0).toUpperCase() + mesLabel.slice(1);
-
-  var hoy = new Date().toLocaleDateString('es-UY');
-
-  function fmt(n) { return '$' + Math.round(n).toLocaleString('es-UY'); }
-
-  var html = `
-  <div style="font-family:Arial,sans-serif;font-size:11px;color:#000;line-height:1.6;max-width:720px;margin:0 auto;padding:20px">
-
-    <!-- ENCABEZADO -->
-    <div style="border-bottom:2px solid #1a3d35;padding-bottom:10px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:flex-end">
-      <div>
-        <div style="font-size:15px;font-weight:bold;color:#1a3d35">CARRASCO ELDERLY CARE SAS</div>
-        <div style="font-size:10px;color:#555">Rafael Barradas 1527 · Montevideo</div>
-        <div style="font-size:10px;color:#555">RUT 220257400017 · BPS 8831922</div>
-      </div>
-      <div style="text-align:right;font-size:10px;color:#555">
-        <div style="font-weight:bold;font-size:13px;color:#1a3d35">RECIBO DE SUELDO</div>
-        <div>Período: <strong>${mesLabel}</strong></div>
-        <div>Emitido: ${hoy}</div>
-      </div>
-    </div>
-
-    <!-- DATOS DE LA EMPLEADA -->
-    <div style="background:#f5f0e8;padding:10px;border-left:3px solid #c9a84c;margin-bottom:12px">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
-        <div><span style="color:#555">Empleada:</span> <strong>${emp.nombre || empNom}</strong></div>
-        <div><span style="color:#555">CI:</span> <strong>${emp.ci || '—'}</strong></div>
-        <div><span style="color:#555">Categoría:</span> <strong>Cuidadora — Grupo 15/200</strong></div>
-        <div><span style="color:#555">Turno:</span> <strong>${emp.turno || '—'}</strong></div>
-        <div><span style="color:#555">Fecha ingreso:</span> <strong>${emp.ingreso || '—'}</strong></div>
-        <div><span style="color:#555">Antigüedad:</span> <strong>${emp.antig_pct || 0}%</strong></div>
-      </div>
-    </div>
-
-    <!-- LIQUIDACIÓN -->
-    <table style="width:100%;border-collapse:collapse;margin-bottom:10px;font-size:11px">
-      <thead>
-        <tr style="background:#1a3d35;color:white">
-          <th style="padding:6px 10px;text-align:left">Concepto</th>
-          <th style="padding:6px 10px;text-align:right">Importe</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr style="border-bottom:1px solid #ede5d4"><td style="padding:5px 10px">Sueldo base laudo</td><td style="padding:5px 10px;text-align:right">${fmt(liqData.sueldo)}</td></tr>
-        <tr style="border-bottom:1px solid #ede5d4"><td style="padding:5px 10px">Presentismo</td><td style="padding:5px 10px;text-align:right">${fmt(liqData.pres)}</td></tr>
-        ${liqData.compl_noc > 0 ? '<tr style="border-bottom:1px solid #ede5d4"><td style="padding:5px 10px">Complemento nocturno</td><td style="padding:5px 10px;text-align:right">' + fmt(liqData.compl_noc) + '</td></tr>' : ''}
-        ${liqData.h_extra > 0 ? '<tr style="border-bottom:1px solid #ede5d4"><td style="padding:5px 10px">Horas extras</td><td style="padding:5px 10px;text-align:right">' + fmt(liqData.h_extra) + '</td></tr>' : ''}
-        ${liqData.antig > 0 ? '<tr style="border-bottom:1px solid #ede5d4"><td style="padding:5px 10px">Prima antigüedad</td><td style="padding:5px 10px;text-align:right">' + fmt(liqData.antig) + '</td></tr>' : ''}
-        ${liqData.faltax > 0 ? '<tr style="border-bottom:1px solid #ede5d4"><td style="padding:5px 10px">Faltas (días previos al ingreso)</td><td style="padding:5px 10px;text-align:right;color:#c62828">- ' + fmt(liqData.faltax) + '</td></tr>' : ''}
-        <tr style="background:#fafafa;border-top:1px solid #1a3d35;border-bottom:1px solid #1a3d35"><td style="padding:7px 10px;font-weight:bold">NOMINAL</td><td style="padding:7px 10px;text-align:right;font-weight:bold">${fmt(liqData.nominal)}</td></tr>
-        <tr style="border-bottom:1px solid #ede5d4"><td style="padding:5px 10px">BPS Jubilatorio (15%)</td><td style="padding:5px 10px;text-align:right;color:#c62828">- ${fmt(liqData.bps)}</td></tr>
-        <tr style="border-bottom:1px solid #ede5d4"><td style="padding:5px 10px">FRL (0,1%)</td><td style="padding:5px 10px;text-align:right;color:#c62828">- ${fmt(liqData.frl)}</td></tr>
-        <tr style="border-bottom:1px solid #ede5d4"><td style="padding:5px 10px">SNIS Salud (3%)</td><td style="padding:5px 10px;text-align:right;color:#c62828">- ${fmt(liqData.snis)}</td></tr>
-        ${liqData.snisad > 0 ? '<tr style="border-bottom:1px solid #ede5d4"><td style="padding:5px 10px">SNIS Adicional</td><td style="padding:5px 10px;text-align:right;color:#c62828">- ' + fmt(liqData.snisad) + '</td></tr>' : ''}
-        ${liqData.sniscony > 0 ? '<tr style="border-bottom:1px solid #ede5d4"><td style="padding:5px 10px">SNIS Cónyuge</td><td style="padding:5px 10px;text-align:right;color:#c62828">- ' + fmt(liqData.sniscony) + '</td></tr>' : ''}
-        ${liqData.adelanto > 0 ? '<tr style="border-bottom:1px solid #ede5d4"><td style="padding:5px 10px">Adelantos descontados</td><td style="padding:5px 10px;text-align:right;color:#c62828">- ' + fmt(liqData.adelanto) + '</td></tr>' : ''}
-        <tr style="background:#1a3d35;color:white"><td style="padding:9px 10px;font-weight:bold;font-size:13px">LÍQUIDO A COBRAR</td><td style="padding:9px 10px;text-align:right;font-weight:bold;font-size:13px;color:#e8d08a">${fmt(liqData.liquido)}</td></tr>
-      </tbody>
-    </table>
-
-    <!-- FIRMAS -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-top:30px;font-size:10px">
-      <div style="text-align:center;border-top:1px solid #555;padding-top:6px">
-        <div>Firma empleadora</div>
-        <div style="margin-top:18px;color:#555">Carrasco Elderly Care SAS</div>
-      </div>
-      <div style="text-align:center;border-top:1px solid #555;padding-top:6px">
-        <div>Firma empleada</div>
-        <div style="margin-top:18px;color:#555">${emp.nombre || empNom}</div>
-        <div style="font-size:9px;color:#888">CI ${emp.ci || ''}</div>
-      </div>
-    </div>
-
-    <!-- PIE -->
-    <div style="border-top:1px solid #1a3d35;padding-top:8px;margin-top:18px;font-size:9px;color:#555;text-align:center">
-      <div>Carrasco Elderly Care SAS · RUT 220257400017 · BPS 8831922</div>
-      <div style="margin-top:2px">Recibo emitido el ${hoy} · Válido sin firma para presentación bancaria</div>
-    </div>
-
-  </div>`;
-
-  var w = window.open('', '_blank');
-  w.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Recibo — ' + (emp.nombre || empNom) + '</title>' +
-    '<style>body{margin:0;padding:0;}@media print{@page{margin:10mm;}}' +
-    '</style></head><body>' + html +
-    '<scr' + 'ipt>window.onload=function(){window.print();};<\/scr' + 'ipt>' +
-    '</body></html>');
-  w.document.close();
-  toast('✅ Recibo generado', 'ok');
-}
-
-function compartirReciboWA() {
-  var liqData = window._liqData;
-  if (!liqData) { toast('Calculá primero la liquidación', 'error'); return; }
-  var empSel = document.getElementById('liq-emp');
-  var empNom = empSel ? (empSel.options[empSel.selectedIndex].text || '') : '';
-  var mes = (document.getElementById('liq-mes') || {}).value || new Date().toISOString().slice(0,7);
-  var mesLabel = new Date(mes + '-01').toLocaleString('es-UY', {month:'long', year:'numeric'});
-
-  var txt = '💼 *RECIBO DE SUELDO — Elderly Care*\n\n' +
-    '*Empleada:* ' + empNom + '\n' +
-    '*Período:* ' + mesLabel + '\n\n' +
-    '• Nominal: $' + Math.round(liqData.nominal).toLocaleString('es-UY') + '\n' +
-    '• Líquido a cobrar: *$' + Math.round(liqData.liquido).toLocaleString('es-UY') + '*\n\n' +
-    '_Carrasco Elderly Care SAS · Rafael Barradas 1527_\n' +
-    'Recibo formal disponible en PDF en el sistema.';
-  window.open('https://wa.me/?text=' + encodeURIComponent(txt), '_blank');
-}
-
-// ── Egreso PDF ──
-function generarReciboEgresoPDF() {
-  // Use existing egreso calculation
-  if (typeof calcEgreso !== 'function') { toast('Recalculá el egreso', 'error'); return; }
-  calcEgreso();
-  var empSel = document.getElementById('eg-emp');
-  var empNom = empSel ? (empSel.options[empSel.selectedIndex].text || '') : '';
-  var ing  = (document.getElementById('eg-ing')  || {}).value || '';
-  var sal  = (document.getElementById('eg-sal')  || {}).value || '';
-
-  // Read calculated values from DOM
-  var vacac    = parseFloat((document.getElementById('eg-out-vac')   || {}).textContent.replace(/[^\d.-]/g,'')) || 0;
-  var nogoz    = parseFloat((document.getElementById('eg-out-nogoz') || {}).textContent.replace(/[^\d.-]/g,'')) || 0;
-  var aguin    = parseFloat((document.getElementById('eg-out-agu')   || {}).textContent.replace(/[^\d.-]/g,'')) || 0;
-  var nominal  = parseFloat((document.getElementById('eg-out-nom')   || {}).textContent.replace(/[^\d.-]/g,'')) || 0;
-  var liquido  = parseFloat((document.getElementById('eg-out-liq')   || {}).textContent.replace(/[^\d.-]/g,'')) || 0;
-
-  var hoy = new Date().toLocaleDateString('es-UY');
-  function fmt(n){ return '$' + Math.round(n).toLocaleString('es-UY'); }
-
-  var html = `
-  <div style="font-family:Arial,sans-serif;font-size:11px;color:#000;line-height:1.6;max-width:720px;margin:0 auto;padding:20px">
-
-    <div style="border-bottom:2px solid #1a3d35;padding-bottom:10px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:flex-end">
-      <div>
-        <div style="font-size:15px;font-weight:bold;color:#1a3d35">CARRASCO ELDERLY CARE SAS</div>
-        <div style="font-size:10px;color:#555">Rafael Barradas 1527 · Montevideo · RUT 220257400017</div>
-      </div>
-      <div style="text-align:right;font-size:10px;color:#555">
-        <div style="font-weight:bold;font-size:13px;color:#1a3d35">RECIBO DE EGRESO</div>
-        <div>Emitido: ${hoy}</div>
-      </div>
-    </div>
-
-    <div style="background:#f5f0e8;padding:10px;border-left:3px solid #c9a84c;margin-bottom:12px">
-      <div style="font-size:13px;font-weight:bold">${empNom}</div>
-      <div style="font-size:10px;color:#555;margin-top:3px">Período: ${ing} → ${sal}</div>
-    </div>
-
-    <table style="width:100%;border-collapse:collapse;margin-bottom:10px;font-size:11px">
-      <thead><tr style="background:#1a3d35;color:white"><th style="padding:6px 10px;text-align:left">Concepto</th><th style="padding:6px 10px;text-align:right">Importe</th></tr></thead>
-      <tbody>
-        <tr style="border-bottom:1px solid #ede5d4"><td style="padding:5px 10px">Vacacional proporcional</td><td style="padding:5px 10px;text-align:right">${fmt(vacac)}</td></tr>
-        <tr style="border-bottom:1px solid #ede5d4"><td style="padding:5px 10px">Licencia no gozada</td><td style="padding:5px 10px;text-align:right">${fmt(nogoz)}</td></tr>
-        <tr style="border-bottom:1px solid #ede5d4"><td style="padding:5px 10px">Aguinaldo proporcional</td><td style="padding:5px 10px;text-align:right">${fmt(aguin)}</td></tr>
-        <tr style="background:#fafafa;border-top:1px solid #1a3d35;border-bottom:1px solid #1a3d35"><td style="padding:7px 10px;font-weight:bold">NOMINAL</td><td style="padding:7px 10px;text-align:right;font-weight:bold">${fmt(nominal)}</td></tr>
-        <tr style="background:#1a3d35;color:white"><td style="padding:9px 10px;font-weight:bold;font-size:13px">LÍQUIDO A COBRAR</td><td style="padding:9px 10px;text-align:right;font-weight:bold;font-size:13px;color:#e8d08a">${fmt(liquido)}</td></tr>
-      </tbody>
-    </table>
-
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-top:30px;font-size:10px">
-      <div style="text-align:center;border-top:1px solid #555;padding-top:6px"><div>Firma empleadora</div><div style="margin-top:18px;color:#555">Carrasco Elderly Care SAS</div></div>
-      <div style="text-align:center;border-top:1px solid #555;padding-top:6px"><div>Firma empleada</div><div style="margin-top:18px;color:#555">${empNom}</div></div>
-    </div>
-
-    <div style="border-top:1px solid #1a3d35;padding-top:8px;margin-top:18px;font-size:9px;color:#555;text-align:center">
-      <div>Carrasco Elderly Care SAS · RUT 220257400017 · BPS 8831922</div>
-      <div style="margin-top:2px">Recibo de egreso emitido el ${hoy}</div>
-    </div>
-
-  </div>`;
-
-  var w = window.open('', '_blank');
-  w.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Egreso — ' + empNom + '</title>' +
-    '<style>body{margin:0;padding:0;}@media print{@page{margin:10mm;}}' +
-    '</style></head><body>' + html +
-    '<scr' + 'ipt>window.onload=function(){window.print();};<\/scr' + 'ipt>' +
-    '</body></html>');
-  w.document.close();
-  toast('✅ Recibo de egreso generado', 'ok');
-}
-
-
-
-// ═══════════════════════════════════════════════════════
-// MÓDULO CLÍNICO
-// ═══════════════════════════════════════════════════════
-// ═══════════════════════════════════════════════════════
-// MÓDULO CLÍNICO — Barthel, Vacunas, Caídas, MSP
-// Solo accesible para Juliana, Lucía, Flavia
-// ═══════════════════════════════════════════════════════
-
-var DUENNAS = ['Juliana', 'Lucía', 'Flavia'];
-
-function esDuenna() {
-  return DUENNAS.includes(currentUser.nombre);
-}
-
-// ── Mostrar tab clínico solo a dueñas ──
-function switchMtabSociaDuenna(name, el) {
-  if (!esDuenna()) {
-    toast('Solo Juliana, Lucía y Flavia pueden acceder a esta sección', 'error');
-    return;
-  }
-  switchMtab(name, el);
-  // Cargar datos clínicos al abrir
-  if (name === 'r-clinico') cargarDatosClinicos(residenteActual);
-  if (name === 'r-msp')     renderMSPPreview(residenteActual);
-}
-
-// ── Chip toggle único por grupo ──
-function selChipGrupo(el, grupo) {
-  el.closest('.chip-group').querySelectorAll('.chip').forEach(function(c) {
-    c.classList.remove('sel');
-  });
-  el.classList.add('sel');
-}
-
-// ── Chip toggle múltiple ──
-function toggleClinico(el, grupo) {
-  el.classList.toggle('sel');
-  // Actualizar cálculo Barthel si aplica
-  if (['b-alimentacion','b-bano','b-aseo','b-vestido','b-deposiciones',
-       'b-miccion','b-retrete','b-traslado','b-deambulacion','b-escaleras'].includes(grupo)) {
-    calcularBarthel();
-  }
-}
-
-// ── Chips select on change for barthel selects ──
-document.addEventListener('change', function(e) {
-  var barthelIds = ['b-alimentacion','b-bano','b-aseo','b-vestido','b-deposiciones',
-                    'b-miccion','b-retrete','b-traslado','b-deambulacion','b-escaleras'];
-  if (barthelIds.includes(e.target.id)) calcularBarthel();
-});
-
-function calcularBarthel() {
-  var campos = ['b-alimentacion','b-bano','b-aseo','b-vestido','b-deposiciones',
-                'b-miccion','b-retrete','b-traslado','b-deambulacion','b-escaleras'];
-  var total = 0;
-  campos.forEach(function(id) {
-    var el = document.getElementById(id);
-    if (el) total += parseInt(el.value) || 0;
-  });
-  var el = document.getElementById('barthel-total-calc');
-  if (el) el.textContent = total;
-  return total;
-}
-
-function categoriaBarthel(score) {
-  score = parseInt(score);
-  if (score === 100) return { cat: 'Independiente', color: '#2e7d32' };
-  if (score >= 91)  return { cat: 'Dependencia leve', color: '#388e3c' };
-  if (score >= 61)  return { cat: 'Dependencia moderada', color: '#f57f17' };
-  if (score >= 21)  return { cat: 'Dependencia severa', color: '#e65100' };
-  return { cat: 'Dependencia total', color: '#c62828' };
-}
-
-// ── ABRIR MODAL BARTHEL ──
-function abrirBarthel() {
-  var r = DB.residentes.find(function(x){ return String(x.id) === String(residenteActual); });
-  var nom = document.getElementById('barthel-res-nom');
-  if (nom) nom.textContent = r ? r.nombre : '';
-  var fec = document.getElementById('barthel-fecha-eval');
-  if (fec) fec.value = new Date().toISOString().split('T')[0];
-  var ev = document.getElementById('barthel-evaluador');
-  if (ev) ev.value = currentUser.nombre;
-  calcularBarthel();
-  resShowM('modal-barthel');
-}
-
-// ── GUARDAR BARTHEL ──
-async function guardarBarthel() {
-  var score = calcularBarthel();
-  var campos = ['b-alimentacion','b-bano','b-aseo','b-vestido','b-deposiciones',
-                'b-miccion','b-retrete','b-traslado','b-deambulacion','b-escaleras'];
-  var detalle = {};
-  campos.forEach(function(id) {
-    var el = document.getElementById(id);
-    if (el) detalle[id] = parseInt(el.value) || 0;
-  });
-  var data = {
-    residente_id:  residenteActual,
-    tipo:          'barthel',
-    usuario:       (document.getElementById('barthel-evaluador') || {}).value || currentUser.nombre,
-    fecha:         (document.getElementById('barthel-fecha-eval') || {}).value || new Date().toISOString().split('T')[0],
-    texto:         'Barthel: ' + score + ' pts — ' + categoriaBarthel(score).cat,
-    vit_pa:        String(score),    // usamos vit_pa para guardar el score
-    adjunto:       JSON.stringify(detalle),
-    turno:         ''
-  };
-  showLoading('Guardando Barthel...');
-  var result = await apiPost('historial', 'insert', data);
-  hideLoading();
-  if (result) {
-    toast('✅ Barthel ' + score + ' pts guardado', 'ok');
-    resCloseM('modal-barthel');
-    cargarDatosClinicos(residenteActual);
-  } else {
-    toast('❌ Error al guardar', 'error');
-  }
-}
-
-// ── CARGAR DATOS CLÍNICOS (Barthel, vacunas, caídas) ──
-async function cargarDatosClinicos(resId) {
-  var hist = await apiGet('historial');
-  var resHist = hist.filter(function(h){ return String(h.residente_id) === String(resId); });
-
-  // Barthel
-  var barthelRecs = resHist
-    .filter(function(h){ return h.tipo === 'barthel'; })
-    .sort(function(a,b){ return b.created_at > a.created_at ? 1 : -1; });
-
-  if (barthelRecs.length > 0) {
-    var ultimo = barthelRecs[0];
-    var score  = parseInt(ultimo.vit_pa) || 0;
-    var cat    = categoriaBarthel(score);
-    var elS = document.getElementById('barthel-score');
-    var elC = document.getElementById('barthel-cat');
-    var elF = document.getElementById('barthel-fecha');
-    if (elS) elS.textContent = score + ' / 100';
-    if (elC) { elC.textContent = cat.cat; }
-    if (elF) elF.textContent = 'Evaluado: ' + new Date(ultimo.created_at).toLocaleDateString('es-UY') + ' — por ' + ultimo.usuario;
-
-    // Evolución
-    var evDiv = document.getElementById('barthel-evolucion');
-    if (evDiv && barthelRecs.length > 1) {
-      evDiv.innerHTML = '<div style="font-size:11px;font-weight:600;color:var(--verde);margin-bottom:6px;letter-spacing:.5px">EVOLUCIÓN</div>' +
-        barthelRecs.slice(0,6).map(function(b) {
-          var sc  = parseInt(b.vit_pa) || 0;
-          var ct  = categoriaBarthel(sc);
-          var dt  = new Date(b.created_at).toLocaleDateString('es-UY');
-          var pct = sc;
-          return '<div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid var(--crema-o)">' +
-            '<div style="font-size:11px;color:var(--suave);min-width:65px">' + dt + '</div>' +
-            '<div style="flex:1;height:8px;background:var(--crema-o);border-radius:4px">' +
-              '<div style="height:8px;border-radius:4px;background:' + ct.color + ';width:' + pct + '%"></div>' +
-            '</div>' +
-            '<div style="font-size:12px;font-weight:600;color:' + ct.color + ';min-width:35px;text-align:right">' + sc + '</div>' +
-          '</div>';
-        }).join('');
-    } else if (evDiv) {
-      evDiv.innerHTML = '<div style="font-size:12px;color:var(--suave);text-align:center;padding:8px">Solo 1 registro — la evolución se verá con más registros</div>';
-    }
-  }
-
-  // Vacunas
-  var vacunas = resHist
-    .filter(function(h){ return h.tipo === 'vacuna'; })
-    .sort(function(a,b){ return b.created_at > a.created_at ? 1 : -1; });
-  var vacDiv = document.getElementById('vacunas-lista');
-  if (vacDiv) {
-    vacDiv.innerHTML = vacunas.length > 0 ?
-      vacunas.map(function(v) {
-        var dt = new Date(v.created_at).toLocaleDateString('es-UY');
-        return '<div style="padding:7px 0;border-bottom:1px solid var(--crema-o);display:flex;justify-content:space-between">' +
-          '<div><div style="font-size:13px;font-weight:500">' + v.texto + '</div>' +
-          '<div style="font-size:11px;color:var(--suave)">' + dt + ' · ' + v.usuario + '</div></div>' +
-          '<div style="font-size:11px;color:var(--verde)">💉</div>' +
-        '</div>';
-      }).join('') :
-      '<div style="font-size:12px;color:var(--suave);text-align:center;padding:8px">Sin vacunas registradas</div>';
-  }
-
-  // Caídas
-  var caidas = resHist
-    .filter(function(h){ return h.tipo === 'caida'; })
-    .sort(function(a,b){ return b.created_at > a.created_at ? 1 : -1; });
-  var caidaDiv = document.getElementById('caidas-lista');
-  if (caidaDiv) {
-    caidaDiv.innerHTML = caidas.length > 0 ?
-      '<div style="font-size:12px;color:var(--rojo);font-weight:600;margin-bottom:6px">⚡ ' + caidas.length + ' caída(s) registrada(s)</div>' +
-      caidas.map(function(c) {
-        var dt = c.turno || new Date(c.created_at).toLocaleDateString('es-UY');
-        return '<div style="background:#fff8f8;border:1px solid #ffcdd2;border-radius:8px;padding:10px;margin-bottom:6px">' +
-          '<div style="font-size:12px;font-weight:500;color:var(--rojo)">' + (c.texto || 'Caída registrada') + '</div>' +
-          '<div style="font-size:11px;color:var(--suave);margin-top:3px">' + dt + ' · ' + c.usuario + '</div>' +
-        '</div>';
-      }).join('') :
-      '<div style="font-size:12px;color:var(--suave);text-align:center;padding:8px">Sin caídas registradas</div>';
-  }
-
-  // Datos clínicos del residente (contenciones, salidas, etc)
-  var r = DB.residentes.find(function(x){ return String(x.id) === String(resId); });
-  if (r && r.clinico_json) {
-    try {
-      var clinico = JSON.parse(r.clinico_json);
-      // Restore chips
-      if (clinico.auxiliar)   preselChip('auxiliares-grupo', clinico.auxiliar);
-      if (clinico.salida)     preselChip('salidas-grupo', clinico.salida);
-      if (clinico.lpp)        preselChipMulti('lpp', clinico.lpp);
-      if (clinico.cont_obs)   { var el = document.getElementById('cont-obs');   if(el) el.value = clinico.cont_obs; }
-      if (clinico.salidas_just){ var el = document.getElementById('salidas-just'); if(el) el.value = clinico.salidas_just; }
-      if (clinico.lpp_desc)   { var el = document.getElementById('lpp-desc');   if(el) el.value = clinico.lpp_desc; }
-    } catch(e) {}
-  }
-}
-
-function preselChip(groupId, value) {
-  var group = document.getElementById(groupId);
-  if (!group) return;
-  group.querySelectorAll('.chip').forEach(function(c) {
-    if (c.textContent.trim() === value) c.classList.add('sel');
-    else c.classList.remove('sel');
-  });
-}
-
-// ── GUARDAR DATOS CLÍNICOS ──
-async function guardarDatosClinicos() {
-  var clinico = {
-    auxiliar:     getSelChip('auxiliares-grupo'),
-    cont_fis:     getSelChips('cont-fis'),
-    cont_farm:    getSelChip('cont-farm'),
-    cont_obs:     (document.getElementById('cont-obs') || {}).value || '',
-    salida:       getSelChip('salidas-grupo'),
-    salidas_just: (document.getElementById('salidas-just') || {}).value || '',
-    lpp:          getSelChips('lpp'),
-    lpp_desc:     (document.getElementById('lpp-desc') || {}).value || '',
-    fr_caida:     getSelChips('fr-caida'),
-    updated_at:   new Date().toISOString(),
-    updated_by:   currentUser.nombre
-  };
-
-  showLoading('Guardando datos clínicos...');
-  var result = await apiPost('residentes', 'update', { clinico_json: JSON.stringify(clinico) }, residenteActual);
-  hideLoading();
-
-  if (result) {
-    // Update local cache
-    var r = DB.residentes.find(function(x){ return String(x.id) === String(residenteActual); });
-    if (r) r.clinico_json = JSON.stringify(clinico);
-    toast('✅ Datos clínicos guardados', 'ok');
-  } else {
-    toast('❌ Error al guardar', 'error');
-  }
-}
-
-function getSelChip(groupId) {
-  var group = document.getElementById(groupId);
-  if (!group) return '';
-  var sel = group.querySelector('.chip.sel');
-  return sel ? sel.textContent.trim() : '';
-}
-
-function getSelChips(group) {
-  var sels = document.querySelectorAll('[onclick*="' + group + '"].chip.sel');
-  return Array.from(sels).map(function(c){ return c.textContent.trim(); }).join(', ');
-}
-
-// ── ABRIR MODAL CAÍDA ──
-function abrirRegistroCaida() {
-  var r = DB.residentes.find(function(x){ return String(x.id) === String(residenteActual); });
-  var nom = document.getElementById('caida-res-nom');
-  if (nom) nom.textContent = r ? r.nombre : '';
-  var fec = document.getElementById('caida-fecha');
-  if (fec) {
-    var now = new Date();
-    fec.value = new Date(now - now.getTimezoneOffset()*60000).toISOString().slice(0,16);
-  }
-  resShowM('modal-caida');
-}
-
-// ── GUARDAR CAÍDA ──
-async function guardarCaida() {
-  var desc    = (document.getElementById('caida-desc') || {}).value || '';
-  var fecha   = (document.getElementById('caida-fecha') || {}).value || '';
-  var turno   = (document.getElementById('caida-turno') || {}).value || '';
-  var presenc = getSelChipByGroup('c-presenciada');
-  var tipo    = getSelChipByGroup('c-tipo');
-  var prodr   = getSelChipByGroup('c-prodromo');
-  var levanta = getSelChipByGroup('c-levanta');
-  var trauma  = getSelChips('c-trauma');
-  var centinela = getSelChipByGroup('c-centinela');
-  var valoro  = getSelChips('c-valoro');
-
-  var resumen = [
-    presenc, tipo, prodr ? 'Pródromos: ' + prodr : null,
-    'Levanta: ' + levanta, trauma ? 'Trauma: ' + trauma : null,
-    centinela === 'Sí — requirió evaluación urgente' ? '⚠️ CENTINELA' : null,
-    valoro ? 'Valoró: ' + valoro : null
-  ].filter(Boolean).join(' | ');
-
-  var data = {
-    residente_id:  residenteActual,
-    residente_nom: (DB.residentes.find(function(x){ return String(x.id)===String(residenteActual); }) || {}).nombre || '',
-    tipo:          'caida',
-    usuario:       currentUser.nombre,
-    turno:         turno,
-    texto:         resumen + (desc ? '\n' + desc : ''),
-    vit_pa:        centinela || '',
-    vit_pulso:     presenc || '',
-    vit_temp:      tipo || '',
-    adjunto:       JSON.stringify({ trauma, valoro, prodr, levanta })
-  };
-
-  showLoading('Guardando caída...');
-  var result = await apiPost('historial', 'insert', data);
-  hideLoading();
-  if (result) {
-    toast('✅ Caída registrada', 'ok');
-    resCloseM('modal-caida');
-    cargarDatosClinicos(residenteActual);
-  } else {
-    toast('❌ Error al guardar', 'error');
-  }
-}
-
-function getSelChipByGroup(grupo) {
-  var chips = document.querySelectorAll('[onclick*="selChipGrupo"][onclick*="' + grupo + '"].chip.sel');
-  if (chips.length === 0) {
-    // try finding by data attribute approach
-    chips = document.querySelectorAll('.chip.sel');
-  }
-  // More reliable: look in the parent chip-group
-  return '';
-}
-
-// ── ABRIR MODAL VACUNA ──
-function agregarVacuna() {
-  var r = DB.residentes.find(function(x){ return String(x.id) === String(residenteActual); });
-  var nom = document.getElementById('vacuna-res-nom');
-  if (nom) nom.textContent = r ? r.nombre : '';
-  var fec = document.getElementById('vacuna-fecha');
-  if (fec) fec.value = new Date().toISOString().split('T')[0];
-  var ap = document.getElementById('vacuna-aplicador');
-  if (ap) ap.value = currentUser.nombre;
-  resShowM('modal-vacuna');
-}
-
-// ── GUARDAR VACUNA ──
-async function guardarVacuna() {
-  var tipo  = (document.getElementById('vacuna-tipo')     || {}).value || '';
-  var fecha = (document.getElementById('vacuna-fecha')    || {}).value || '';
-  var lote  = (document.getElementById('vacuna-lote')     || {}).value || '';
-  var aplic = (document.getElementById('vacuna-aplicador')|| {}).value || currentUser.nombre;
-  var prox  = (document.getElementById('vacuna-proxima')  || {}).value || '';
-
-  var data = {
-    residente_id:  residenteActual,
-    residente_nom: (DB.residentes.find(function(x){ return String(x.id)===String(residenteActual); }) || {}).nombre || '',
-    tipo:          'vacuna',
-    usuario:       aplic,
-    fecha:         fecha,
-    turno:         '',
-    texto:         tipo + (lote ? ' · Lote: ' + lote : '') + (prox ? ' · Próxima: ' + prox : ''),
-    vit_pa:        prox,
-    adjunto:       JSON.stringify({ lote, aplic, prox })
-  };
-
-  showLoading('Guardando vacuna...');
-  var result = await apiPost('historial', 'insert', data);
-  hideLoading();
-  if (result) {
-    toast('✅ Vacuna registrada', 'ok');
-    resCloseM('modal-vacuna');
-    cargarDatosClinicos(residenteActual);
-  } else {
-    toast('❌ Error al guardar', 'error');
-  }
-}
-
-// ═══════════════════════════════════════════════════════
-// INFORME MSP
-// ═══════════════════════════════════════════════════════
-async function generarInformeMSP() {
-  var r = DB.residentes.find(function(x){ return String(x.id) === String(residenteActual); });
-  if (!r) return;
-
-  showLoading('Generando informe MSP...');
-  var hist = await apiGet('historial');
-  var resHist = hist.filter(function(h){ return String(h.residente_id) === String(residenteActual); });
-  hideLoading();
-
-  var barthelRecs = resHist.filter(function(h){ return h.tipo === 'barthel'; })
-    .sort(function(a,b){ return b.created_at > a.created_at ? 1 : -1; });
-  var caidas = resHist.filter(function(h){ return h.tipo === 'caida'; });
-  var vacunas = resHist.filter(function(h){ return h.tipo === 'vacuna'; });
-
-  var ultimoBarthel = barthelRecs[0];
-  var barthelScore  = ultimoBarthel ? (parseInt(ultimoBarthel.vit_pa) || 0) : null;
-  var barthelCat    = barthelScore !== null ? categoriaBarthel(barthelScore) : null;
-
-  var clinico = {};
-  try { clinico = r.clinico_json ? JSON.parse(r.clinico_json) : {}; } catch(e) {}
-
-  var hoy = new Date().toLocaleDateString('es-UY');
-
-  var html = `
-  <div style="font-family:Arial,sans-serif;font-size:11px;color:#000;line-height:1.6;max-width:720px;margin:0 auto;padding:20px">
-
-    <!-- ENCABEZADO -->
-    <div style="border-bottom:2px solid #1a3d35;padding-bottom:10px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:flex-end">
-      <div>
-        <div style="font-size:15px;font-weight:bold;color:#1a3d35">CARRASCO ELDERLY CARE SAS</div>
-        <div style="font-size:10px;color:#555">Rafael Barradas 1527 · Montevideo · elderlycare94@gmail.com</div>
-      </div>
-      <div style="text-align:right;font-size:10px;color:#555">
-        <div style="font-weight:bold;font-size:11px">INFORME CLÍNICO — MSP</div>
-        <div>Fecha: ${hoy}</div>
-      </div>
-    </div>
-
-    <!-- DATOS FILIATORIOS -->
-    <div style="background:#f5f0e8;padding:10px;border-left:3px solid #c9a84c;margin-bottom:10px">
-      <div style="font-size:10px;font-weight:bold;letter-spacing:1px;color:#1a3d35;margin-bottom:6px">1. DATOS DEL RESIDENTE</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
-        <div><span style="color:#555">Nombre:</span> <strong>${r.nombre}</strong></div>
-        <div><span style="color:#555">CI:</span> <strong>${r.ci}</strong></div>
-        <div><span style="color:#555">Edad:</span> <strong>${r.edad} años</strong></div>
-        <div><span style="color:#555">Habitación:</span> <strong>${r.hab}</strong></div>
-        <div><span style="color:#555">Mutualista:</span> <strong>${r.mutualista || '—'}</strong></div>
-        <div><span style="color:#555">Fecha ingreso:</span> <strong>${r.ingreso || '—'}</strong></div>
-        <div><span style="color:#555">Médico:</span> <strong>${r.medico || '—'}</strong></div>
-        <div><span style="color:#555">Familiar ref.:</span> <strong>${r.familiar_nom || '—'}</strong></div>
-      </div>
-    </div>
-
-    <!-- DIAGNÓSTICOS -->
-    <div style="background:#f5f0e8;padding:10px;border-left:3px solid #c9a84c;margin-bottom:10px">
-      <div style="font-size:10px;font-weight:bold;letter-spacing:1px;color:#1a3d35;margin-bottom:6px">2. DIAGNÓSTICOS PRINCIPALES</div>
-      ${(r.diags || 'Sin diagnósticos cargados').split('|').map(function(d){
-        return '<div style="padding:2px 0;border-bottom:1px solid #ede5d4">• ' + d.trim() + '</div>';
-      }).join('')}
-      ${r.alergias && r.alergias !== 'Sin alergias documentadas' ?
-        '<div style="background:#fce4ec;border:1px solid #f48fb1;padding:5px 8px;border-radius:4px;margin-top:6px;font-weight:bold;color:#c62828">⚠️ ALERTAS: ' + r.alergias + '</div>' : ''}
-    </div>
-
-    <!-- FUNCIONALIDAD -->
-    <div style="background:#f5f0e8;padding:10px;border-left:3px solid #c9a84c;margin-bottom:10px">
-      <div style="font-size:10px;font-weight:bold;letter-spacing:1px;color:#1a3d35;margin-bottom:6px">3. FUNCIONALIDAD E INDICADORES DE DEPENDENCIA</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:8px">
-        <div><span style="color:#555">Dependencia ABVD:</span> <strong>${r.dem_estadio || '—'}</strong></div>
-        <div><span style="color:#555">Demencia:</span> <strong>${r.demencia === 'Sí' ? r.dem_estadio : 'No'}</strong></div>
-        <div><span style="color:#555">Auxiliar marcha:</span> <strong>${clinico.auxiliar || '—'}</strong></div>
-        <div><span style="color:#555">Continencia:</span> <strong>${r.cuid_continencia || '—'}</strong></div>
-        <div><span style="color:#555">Movilidad:</span> <strong>${r.cuid_movilidad || '—'}</strong></div>
-        <div><span style="color:#555">Dieta:</span> <strong>${r.cuid_dieta || '—'}</strong></div>
-        <div><span style="color:#555">Espesantes:</span> <strong>${r.cuid_espesantes || '—'}</strong></div>
-        <div><span style="color:#555">O₂ domiciliario:</span> <strong>${r.cuid_oxigeno || '—'}</strong></div>
-      </div>
-
-      <!-- BARTHEL -->
-      ${barthelScore !== null ? `
-      <div style="background:${barthelCat.color}15;border:1px solid ${barthelCat.color}40;border-radius:6px;padding:8px;margin-bottom:6px">
-        <div style="font-weight:bold;color:${barthelCat.color}">ÍNDICE DE BARTHEL: ${barthelScore}/100 — ${barthelCat.cat}</div>
-        <div style="font-size:10px;color:#555;margin-top:3px">Última evaluación: ${new Date(ultimoBarthel.created_at).toLocaleDateString('es-UY')} · Evaluó: ${ultimoBarthel.usuario}</div>
-      </div>
-      ${barthelRecs.length > 1 ? '<div style="font-size:10px;color:#555">Evolución Barthel: ' +
-        barthelRecs.slice(0,5).map(function(b){
-          return new Date(b.created_at).toLocaleDateString('es-UY') + ': ' + (parseInt(b.vit_pa)||0) + ' pts';
-        }).join(' → ') + '</div>' : ''}
-      ` : '<div style="color:#555;font-style:italic">Sin evaluación Barthel registrada</div>'}
-    </div>
-
-    <!-- CONTENCIONES Y SALIDAS -->
-    <div style="background:#f5f0e8;padding:10px;border-left:3px solid #c9a84c;margin-bottom:10px">
-      <div style="font-size:10px;font-weight:bold;letter-spacing:1px;color:#1a3d35;margin-bottom:6px">4. CONTENCIONES Y SALIDAS</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
-        <div><span style="color:#555">Contención física:</span> <strong>${clinico.cont_fis || 'No'}</strong></div>
-        <div><span style="color:#555">Contención farmacológica:</span> <strong>${clinico.cont_farm || 'No'}</strong></div>
-        <div><span style="color:#555">Lesiones por presión:</span> <strong>${clinico.lpp || '—'}</strong></div>
-        <div><span style="color:#555">Salidas del centro:</span> <strong>${clinico.salida || '—'}</strong></div>
-      </div>
-      ${clinico.cont_obs ? '<div style="margin-top:5px;font-size:10px"><span style="color:#555">Obs. contenciones:</span> ' + clinico.cont_obs + '</div>' : ''}
-      ${clinico.salidas_just ? '<div style="margin-top:3px;font-size:10px"><span style="color:#555">Justificación salidas:</span> ' + clinico.salidas_just + '</div>' : ''}
-      ${clinico.lpp_desc ? '<div style="margin-top:3px;font-size:10px"><span style="color:#555">Descripción LPP:</span> ' + clinico.lpp_desc + '</div>' : ''}
-    </div>
-
-    <!-- CAÍDAS -->
-    <div style="background:#f5f0e8;padding:10px;border-left:3px solid #c9a84c;margin-bottom:10px">
-      <div style="font-size:10px;font-weight:bold;letter-spacing:1px;color:#1a3d35;margin-bottom:6px">5. REGISTRO DE CAÍDAS</div>
-      <div><span style="color:#555">Total caídas registradas en el centro:</span> <strong>${caidas.length}</strong></div>
-      ${clinico.fr_caida ? '<div style="margin-top:4px;font-size:10px"><span style="color:#555">Factores de riesgo:</span> ' + clinico.fr_caida + '</div>' : ''}
-      ${caidas.slice(0,5).map(function(c,i) {
-        return '<div style="background:white;border:1px solid #ffcdd2;border-radius:4px;padding:6px;margin-top:5px">' +
-          '<div style="font-weight:bold;color:#c62828;font-size:10px">Caída #' + (i+1) + ' — ' + new Date(c.created_at).toLocaleDateString('es-UY') + '</div>' +
-          '<div style="font-size:10px;color:#555;margin-top:2px">' + (c.texto || '').replace(/\n/g,'<br>') + '</div>' +
-        '</div>';
-      }).join('')}
-    </div>
-
-    <!-- VACUNACIONES -->
-    <div style="background:#f5f0e8;padding:10px;border-left:3px solid #c9a84c;margin-bottom:10px">
-      <div style="font-size:10px;font-weight:bold;letter-spacing:1px;color:#1a3d35;margin-bottom:6px">6. VACUNACIONES EN EL CENTRO</div>
-      ${vacunas.length > 0 ?
-        '<table style="width:100%;border-collapse:collapse;font-size:10px">' +
-        '<tr style="background:#1a3d35;color:white"><th style="padding:4px 6px;text-align:left">Vacuna</th><th style="padding:4px 6px;text-align:left">Fecha</th><th style="padding:4px 6px;text-align:left">Aplicó</th></tr>' +
-        vacunas.map(function(v) {
-          return '<tr style="border-bottom:1px solid #ede5d4"><td style="padding:3px 6px">' + v.texto + '</td>' +
-            '<td style="padding:3px 6px">' + new Date(v.created_at).toLocaleDateString('es-UY') + '</td>' +
-            '<td style="padding:3px 6px">' + v.usuario + '</td></tr>';
-        }).join('') + '</table>' :
-        '<div style="color:#555;font-style:italic">Sin vacunas registradas en el centro</div>'
-      }
-    </div>
-
-    <!-- PIE -->
-    <div style="border-top:1px solid #1a3d35;padding-top:8px;margin-top:12px;font-size:9px;color:#555;text-align:center">
-      <div>Carrasco Elderly Care SAS · Rafael Barradas 1527, Montevideo · RUT 220257400017</div>
-      <div style="margin-top:2px">Informe generado el ${hoy} por ${currentUser.nombre} · Uso interno y MSP</div>
-    </div>
-
-  </div>`;
-
-  // Show preview
-  var preview = document.getElementById('msp-preview');
-  if (preview) {
-    preview.innerHTML = html;
-    preview.style.color = 'var(--texto)';
-    preview.style.textAlign = 'left';
-  }
-
-  // Open print window
-  var w = window.open('', '_blank');
-  w.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Informe MSP — ' + r.nombre + '</title>' +
-    '<style>body{margin:0;padding:0;}@media print{@page{margin:10mm;}}' +
-    '</style></head><body>' + html +
-    '<scr' + 'ipt>window.onload=function(){window.print();};<\/scr' + 'ipt>' +
-    '</body></html>');
-  w.document.close();
-}
-
-function renderMSPPreview(resId) {
-  var preview = document.getElementById('msp-preview');
-  if (!preview) return;
-  var r = DB.residentes.find(function(x){ return String(x.id) === String(resId); });
-  if (!r) return;
-  preview.innerHTML = '<div style="padding:10px">' +
-    '<div style="font-size:13px;font-weight:500;color:var(--verde);margin-bottom:8px">' + r.nombre + '</div>' +
-    '<div style="font-size:12px;color:var(--suave)">Tocá <strong>⬇️ Descargar informe MSP</strong> para generar el documento completo con todos los datos clínicos, Barthel y caídas.</div>' +
-    '</div>';
-}
-
-function compartirInformeMSP() {
-  var r = DB.residentes.find(function(x){ return String(x.id) === String(residenteActual); });
-  if (!r) return;
-  var txt = '📋 *INFORME MSP — ELDERLY CARE CARRASCO*\n\n' +
-    '*Residente:* ' + r.nombre + '\n' +
-    '*CI:* ' + r.ci + ' · *Edad:* ' + r.edad + ' años\n' +
-    '*Habitación:* ' + r.hab + '\n\n' +
-    'Informe completo disponible en el sistema.\n\n' +
-    '_Carrasco Elderly Care SAS · Rafael Barradas 1527_';
-  window.open('https://wa.me/?text=' + encodeURIComponent(txt), '_blank');
-}
-
-
-function compartirEgresoWA() {
-  var empSel = document.getElementById('eg-emp');
-  var empNom = empSel ? (empSel.options[empSel.selectedIndex].text || '') : '';
-  var liquido = (document.getElementById('eg-out-liq') || {}).textContent || '$0';
-  var txt = '💼 *RECIBO DE EGRESO — Elderly Care*\n\n*Empleada:* ' + empNom + '\n*Líquido a cobrar:* ' + liquido + '\n\n_Carrasco Elderly Care SAS_\nRecibo formal en PDF disponible.';
-  window.open('https://wa.me/?text=' + encodeURIComponent(txt), '_blank');
-}
-
-// Refresh liq-emp dropdown with real empleadas from DB
-function refreshLiqEmpDropdown() {
-  var sel = document.getElementById('liq-emp');
-  if (!sel) return;
-  var current = sel.value;
-  sel.innerHTML = '';
-  DB.empleadas.filter(function(e){ return e.activo === 'Sí'; }).forEach(function(e) {
-    var nomCorto = e.nombre.split(' ').slice(0,3).join(' ');
-    var opt = new Option(nomCorto, e.id);
-    sel.add(opt);
-  });
-  // Add manual option
-  sel.add(new Option('— Manual —', 'manual'));
-  if (current) sel.value = current;
-}
-
-// Refresh egreso dropdown too
-function refreshEgEmpDropdown() {
-  var sel = document.getElementById('eg-emp');
-  if (!sel) return;
-  var current = sel.value;
-  sel.innerHTML = '';
-  DB.empleadas.filter(function(e){ return e.activo === 'Sí'; }).forEach(function(e) {
-    var opt = new Option(e.nombre, e.id);
-    sel.add(opt);
-  });
-  sel.add(new Option('— Manual —', 'manual'));
-  if (current) sel.value = current;
-}
-</script>
-</body>
-</html>
+  if (!liqData) { toast('C
