@@ -2,6 +2,10 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
+  <!-- Evitar caché del browser — importante para Safari y Chrome -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Elderly Care Carrasco — Sistema de Gestión</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
@@ -429,6 +433,68 @@ input.fi, select.fi, textarea.fi { max-width:100% !important; min-width:0 !impor
 
 /* ══ Fix specifically for liquidación and egreso ══ */
 #psub-egreso .fi, #psub-liquidacion .fi { max-width:100%; min-width:0; }
+
+
+/* ══════════════════════════════════════════════════════
+   ALIASES — short class names that map to existing rules
+   ══════════════════════════════════════════════════════ */
+.moverlay {
+  position: fixed; inset: 0; z-index: 80;
+  background: rgba(0,0,0,.5);
+  display: none;
+  align-items: flex-end;
+  opacity: 0; pointer-events: none;
+  transition: opacity .3s;
+}
+.moverlay.open, .moverlay.show {
+  display: flex;
+  opacity: 1;
+  pointer-events: all;
+}
+.moverlay > .modal {
+  transform: translateY(100%);
+  transition: transform .35s cubic-bezier(.34,1.56,.64,1);
+}
+.moverlay.open > .modal,
+.moverlay.show > .modal {
+  transform: translateY(0);
+}
+
+.mhandle {
+  width: 38px; height: 4px; border-radius: 2px;
+  background: var(--crema-oscura);
+  margin: 0 auto 17px;
+}
+.mtit {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px; font-weight: 400; font-style: italic;
+  color: var(--verde); margin-bottom: 3px;
+}
+.msub {
+  font-size: 12px; color: var(--suave);
+  margin-bottom: 14px;
+}
+.sep {
+  font-size: 11px; font-weight: 600; color: var(--verde);
+  letter-spacing: .6px; text-transform: uppercase;
+  margin: 14px 0 8px; opacity: .7;
+}
+.stitle {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 24px; font-weight: 400; font-style: italic;
+  color: var(--verde); margin-bottom: 3px;
+}
+.ssub {
+  font-size: 12px; color: var(--suave);
+  margin-bottom: 14px;
+}
+
+
+/* ══ FORCE HIDE INACTIVE MODALS (override for old modal-overlay class) ══ */
+.modal-overlay { display: none !important; }
+.modal-overlay.open { display: flex !important; }
+.moverlay { display: none !important; }
+.moverlay.open, .moverlay.show { display: flex !important; }
 
 </style>
 </head>
@@ -1828,255 +1894,10 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:19px;heigh
 
 </div><!-- /main -->
 
-<button class="fab" onclick="fabAction()">＋</button>
-
-<div class="bottom-nav">
-  <div class="bnav-item active" id="bn-r" onclick="switchMod('residentes',null)"><div class="bnav-icon">🏥</div><div class="bnav-label">Residentes</div></div>
-  <div class="bnav-item" id="bn-p" onclick="switchMod('personal',null)"><div class="bnav-icon">👥</div><div class="bnav-label">Personal</div></div>
-  <div class="bnav-item" id="bn-g" onclick="switchMod('gastos',null)"><div class="bnav-icon">💰</div><div class="bnav-label">Gastos</div></div>
-  <div class="bnav-item" id="bn-d" onclick="switchMod('diagnostico',null)"><div class="bnav-icon">📊</div><div class="bnav-label">Diagnóstico</div></div>
-</div>
-
 <!-- ════════ MODALES ════════ -->
 
 <!-- FICHA RESIDENTE -->
-<div class="modal-overlay" id="modal-residente" onclick="closeO(event,'modal-residente')">
-  <div class="modal">
-    <div class="modal-handle"></div>
-    <div style="display:flex;align-items:center;gap:13px;margin-bottom:14px">
-      <div class="res-avatar" style="width:58px;height:58px;font-size:21px" id="mr-av">MA</div>
-      <div><div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-style:italic;color:var(--verde)" id="mr-nom">María Antonia Rodríguez</div><div style="font-size:12px;color:var(--texto-suave)" id="mr-sub">83 años · Hab. 3</div><span id="mr-badge" class="badge badge-alerta" style="display:inline-block;margin-top:5px">Alerta activa</span></div>
-    </div>
-    <div class="mtab-row">
-      <div class="mtab active" onclick="switchMtab('r-ficha',this)">📋 Ficha</div>
-      <div class="mtab" onclick="switchMtab('r-historial',this)">📜 Historial</div>
-      <div class="mtab" onclick="switchMtab('r-medicacion',this)">💊 Medicación</div>
-      <div class="mtab" id="tab-r-clinico" onclick="switchMtabSociaDuenna('r-clinico',this)">🩺 Clínico</div>
-      <div class="mtab" id="tab-r-msp" onclick="switchMtabSociaDuenna('r-msp',this)">📄 MSP</div>
-    </div>
-
-    <!-- TAB FICHA -->
-    <div id="mt-r-ficha">
-      <div class="form-row">
-        <div class="form-group"><label class="form-label">CI</label><input class="form-input" value="1.234.567-8"></div>
-        <div class="form-group"><label class="form-label">Nacimiento</label><input class="form-input" type="date" value="1942-05-18"></div>
-      </div>
-      <div class="form-group"><label class="form-label">Mutualista / Cobertura</label><select class="form-input"><option>ASSE</option><option>FONASA</option><option>Medicus</option><option>SMI</option><option>Particular</option></select></div>
-      <div class="form-group"><label class="form-label">Familiar de referencia</label><input class="form-input" value="Carlos Rodríguez (hijo) · 099 234 567"></div>
-      <div class="form-group"><label class="form-label">Médico de cabecera</label><input class="form-input" value="Dr. Fernández · ASSE · 098 111 222"></div>
-      <div class="form-group"><label class="form-label">Diagnósticos principales</label><textarea class="form-input" style="min-height:65px">Hipertensión arterial · Artrosis rodilla D · ERGE · Demencia leve estadio I</textarea></div>
-      <div class="form-group"><label class="form-label">Alergias</label><input class="form-input" value="Penicilina (ALERGIA DOCUMENTADA)"></div>
-      <div class="form-group"><label class="form-label">Dieta especial</label><input class="form-input" value="Blanda · Sin sal · Sin lactosa"></div>
-      <div class="form-group"><label class="form-label">Nivel de dependencia</label><select class="form-input"><option>Leve (asistencia parcial)</option><option>Moderado (asistencia permanente)</option><option>Severo (dependencia total)</option></select></div>
-      <div class="form-group"><label class="form-label">Observaciones de ingreso</label><textarea class="form-input" style="min-height:60px">Ingresa con movilidad reducida post-fractura de cadera (enero 2024). Requiere andador.</textarea></div>
-      <button class="btn btn-verde" onclick="closeM('modal-residente')">✅ Guardar ficha</button>
-    </div>
-
-    <!-- TAB HISTORIAL -->
-    <div id="mt-r-historial" style="display:none">
-      <div style="display:flex;gap:8px;margin-bottom:13px">
-        <button class="btn btn-dorado btn-sm" onclick="showM('modal-nuevo-registro')">＋ Nuevo registro</button>
-        <select class="form-input" style="flex:1;padding:7px 10px;font-size:12px">
-          <option>Todos los registros</option>
-          <option>Solo notas clínicas</option>
-          <option>Solo signos vitales</option>
-          <option>Solo incidentes</option>
-          <option>Solo estudios</option>
-        </select>
-      </div>
-
-      <!-- ENTRADAS DE HISTORIAL -->
-      <div class="hist-entry tipo-vital">
-        <div class="hist-header">
-          <span class="hist-tipo-badge">SIGNOS VITALES</span>
-          <span class="hist-fecha">Hoy 07:45</span>
-        </div>
-        <div class="hist-usuario">👤 Ana Martínez · Enfermera</div>
-        <div class="hist-vitales">
-          <div class="vital-chip"><div class="vital-val">130/85</div><div class="vital-lbl">Presión (mmHg)</div></div>
-          <div class="vital-chip"><div class="vital-val">72</div><div class="vital-lbl">Pulso (bpm)</div></div>
-          <div class="vital-chip"><div class="vital-val">36.4°</div><div class="vital-lbl">Temperatura</div></div>
-          <div class="vital-chip"><div class="vital-val">97%</div><div class="vital-lbl">Saturación</div></div>
-          <div class="vital-chip"><div class="vital-val">4.8</div><div class="vital-lbl">Glucemia</div></div>
-        </div>
-      </div>
-
-      <div class="hist-entry">
-        <div class="hist-header">
-          <span class="hist-tipo-badge" style="background:#e8f5e9;color:#2e7d32">NOTA CLÍNICA</span>
-          <span class="hist-fecha">Hoy 07:50</span>
-        </div>
-        <div class="hist-usuario">👤 Ana Martínez · Enfermera · Turno mañana</div>
-        <div class="hist-texto">Paciente descansó bien la noche. Refiere leve dolor en rodilla derecha, se le aplicó compresa fría. Ánimo estable, colaboradora. Se administró medicación matutina sin incidentes. Desayunó bien.</div>
-      </div>
-
-      <div class="hist-entry tipo-medico">
-        <div class="hist-header">
-          <span class="hist-tipo-badge">CONSULTA MÉDICA</span>
-          <span class="hist-fecha">Ayer 14:30</span>
-        </div>
-        <div class="hist-usuario">👤 Juliana · Médica geriatra</div>
-        <div class="hist-texto">Valoración geriátrica mensual. Se ajusta dosis de Enalapril a 10mg/día por buena respuesta. Solicita RX rodilla derecha para seguimiento artrosis. Próxima valoración en 30 días. Familia fue informada por teléfono.</div>
-        <div class="hist-adjunto"><div class="hist-adj-icon">📋</div><div>Informe valoración geriátrica · 13/04/2025.pdf</div></div>
-      </div>
-
-      <div class="hist-entry tipo-estudio">
-        <div class="hist-header">
-          <span class="hist-tipo-badge">ESTUDIO / IMAGEN</span>
-          <span class="hist-fecha">10 abr 15:20</span>
-        </div>
-        <div class="hist-usuario">👤 Juliana · Médica geriatra</div>
-        <div class="hist-texto">Resultado análisis de sangre. Hemograma normal. Creatinina 1.1 mg/dL (normal). Colesterol total 195 mg/dL. Se archiva resultado.</div>
-        <div class="hist-adjunto"><div class="hist-adj-icon">🩸</div><div>Análisis sangre · Lab. Diagnóstico · 10/04/2025.pdf</div></div>
-      </div>
-
-      <div class="hist-entry tipo-incidente">
-        <div class="hist-header">
-          <span class="hist-tipo-badge">INCIDENTE / CAÍDA</span>
-          <span class="hist-fecha">05 abr 22:15</span>
-        </div>
-        <div class="hist-usuario">👤 Carmen González · Auxiliar · Turno noche</div>
-        <div class="hist-texto">Paciente intentó levantarse sin llamar a enfermería. No llegó a caer — fue asistida a tiempo. Sin lesiones. Se reforzó indicación de usar el llamador. Familiar notificado al día siguiente. Se coloca baranda de cama como medida preventiva.</div>
-      </div>
-
-      <div class="hist-entry tipo-medicacion">
-        <div class="hist-header">
-          <span class="hist-tipo-badge" style="background:#e8f5e9;color:#2e7d32">CAMBIO MEDICACIÓN</span>
-          <span class="hist-fecha">01 abr 10:00</span>
-        </div>
-        <div class="hist-usuario">👤 Juliana · Médica geriatra</div>
-        <div class="hist-texto">Se incorpora Alprazolam 0.25mg nocturno por alteración del sueño referida por la paciente y la familia. Se informa a enfermería. Indicación válida por 30 días con reevaluación.</div>
-      </div>
-
-      <div style="text-align:center;padding:10px 0;font-size:13px;color:var(--texto-suave)">Mostrando últimos 6 registros · Ver más ↓</div>
-      <div style="height:10px"></div>
-      <button onclick="descargarHistorial()" style="background:var(--verde);color:white;border:none;border-radius:var(--radio-sm);padding:11px 16px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;width:100%;display:flex;align-items:center;justify-content:center;gap:7px">⬇️ Descargar historial completo (PDF)</button>
-    </div>
-
-    <!-- TAB MEDICACIÓN -->
-    <div id="mt-r-medicacion" style="display:none">
-      <div class="card" style="margin-bottom:10px">
-        <div style="font-size:11px;font-weight:600;letter-spacing:1px;color:var(--verde);margin-bottom:7px">🌅 MAÑANA</div>
-        <div class="med-item"><div class="med-ico">💊</div><div><div style="font-size:13px;font-weight:500">Omeprazol 20mg</div><div style="font-size:11px;color:var(--texto-suave)">1 comp. en ayunas</div></div><div class="med-check" onclick="toggleMed(this)"></div></div>
-        <div class="med-item"><div class="med-ico">💊</div><div><div style="font-size:13px;font-weight:500">Enalapril 10mg</div><div style="font-size:11px;color:var(--texto-suave)">1 comp. con desayuno</div></div><div class="med-check done" onclick="toggleMed(this)">✓</div></div>
-      </div>
-      <div class="card">
-        <div style="font-size:11px;font-weight:600;letter-spacing:1px;color:var(--verde);margin-bottom:7px">🌙 NOCHE</div>
-        <div class="med-item"><div class="med-ico">💊</div><div><div style="font-size:13px;font-weight:500">Alprazolam 0.25mg</div><div style="font-size:11px;color:var(--texto-suave)">1 comp. antes de dormir</div></div><div class="med-check" onclick="toggleMed(this)"></div></div>
-      </div>
-      <div style="height:9px"></div>
-      <div style="display:flex;gap:8px">
-        <button class="btn bv btn-sm" style="flex:1" onclick="showM('modal-add-med')">＋ Agregar medicamento</button>
-      </div>
-    </div>
-  </div>
-</div>
-
 <!-- NUEVO REGISTRO HISTORIAL -->
-<div class="modal-overlay" id="modal-nuevo-registro" onclick="closeO(event,'modal-nuevo-registro')">
-  <div class="modal">
-    <div class="modal-handle"></div>
-    <div class="modal-title">Nuevo registro</div>
-    <div class="modal-sub" id="nr-sub">María Antonia Rodríguez</div>
-
-    <div class="form-group">
-      <label class="form-label">Tipo de registro</label>
-      <div class="tipo-grid">
-        <div class="tipo-btn sel" onclick="selTipo(this,'nota')"><div class="ico">📝</div><div class="lbl">Nota clínica</div></div>
-        <div class="tipo-btn" onclick="selTipo(this,'vital')"><div class="ico">💓</div><div class="lbl">Signos vitales</div></div>
-        <div class="tipo-btn" onclick="selTipo(this,'medicacion')"><div class="ico">💊</div><div class="lbl">Medicación</div></div>
-        <div class="tipo-btn" onclick="selTipo(this,'incidente')"><div class="ico">⚠️</div><div class="lbl">Incidente</div></div>
-        <div class="tipo-btn" onclick="selTipo(this,'medico')"><div class="ico">🩺</div><div class="lbl">Consulta méd.</div></div>
-        <div class="tipo-btn" onclick="selTipo(this,'estudio')"><div class="ico">🔬</div><div class="lbl">Estudio/Imagen</div></div>
-      </div>
-    </div>
-
-    <!-- CAMPOS NOTA -->
-    <div id="campos-nota">
-      <div class="form-group">
-        <label class="form-label">Nota clínica</label>
-        <div style="position:relative">
-          <textarea class="form-input" id="nr-texto" placeholder="Escribí o dictá con el micrófono..."></textarea>
-          <button style="position:absolute;right:8px;bottom:8px;background:none;border:none;font-size:21px;cursor:pointer" onclick="startVoice('nr-texto')">🎤</button>
-        </div>
-        <div id="voice-status">🔴 Escuchando... hablá ahora</div>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Turno</label>
-        <select class="form-input">
-          <option>🌅 Mañana (07:00–15:00)</option>
-          <option>🌆 Tarde (15:00–23:00)</option>
-          <option>🌙 Noche (23:00–07:00)</option>
-        </select>
-      </div>
-    </div>
-
-    <!-- CAMPOS VITALES -->
-    <div id="campos-vital" style="display:none">
-      <div class="vitales-grid">
-        <div class="form-group"><label class="form-label">Presión (mmHg)</label><input class="form-input" placeholder="ej. 130/85"></div>
-        <div class="form-group"><label class="form-label">Pulso (bpm)</label><input class="form-input" type="number" placeholder="72"></div>
-        <div class="form-group"><label class="form-label">Temperatura (°C)</label><input class="form-input" type="number" step="0.1" placeholder="36.5"></div>
-        <div class="form-group"><label class="form-label">Saturación (%)</label><input class="form-input" type="number" placeholder="97"></div>
-        <div class="form-group"><label class="form-label">Glucemia (mmol/L)</label><input class="form-input" type="number" step="0.1" placeholder="4.8"></div>
-        <div class="form-group"><label class="form-label">Peso (kg)</label><input class="form-input" type="number" step="0.1" placeholder=""></div>
-      </div>
-      <div class="form-group"><label class="form-label">Observaciones adicionales</label><input class="form-input" placeholder="Opcional"></div>
-    </div>
-
-    <!-- CAMPOS INCIDENTE -->
-    <div id="campos-incidente" style="display:none">
-      <div class="form-group"><label class="form-label">Tipo de incidente</label><select class="form-input"><option>Caída (con contacto con el suelo)</option><option>Casi-caída (fue asistida a tiempo)</option><option>Agitación / Conducta disruptiva</option><option>Problema respiratorio</option><option>Dolor agudo</option><option>Lesión en piel</option><option>Otro</option></select></div>
-      <div class="form-group"><label class="form-label">Descripción del incidente</label><div style="position:relative"><textarea class="form-input" id="nr-incidente" placeholder="Describí qué ocurrió, cómo se actuó y el estado actual..."></textarea><button style="position:absolute;right:8px;bottom:8px;background:none;border:none;font-size:21px;cursor:pointer" onclick="startVoice('nr-incidente')">🎤</button></div></div>
-      <div class="form-group"><label class="form-label">¿Se notificó a la familia?</label><select class="form-input"><option>Sí — se notificó de inmediato</option><option>Sí — se notificará mañana</option><option>No fue necesario</option></select></div>
-      <div class="form-group"><label class="form-label">Medidas adoptadas</label><input class="form-input" placeholder="ej. Aplicó hielo, llamó médico, colocó baranda..."></div>
-    </div>
-
-    <!-- CAMPOS MÉDICO -->
-    <div id="campos-medico" style="display:none">
-      <div class="form-group"><label class="form-label">Médico / Especialista</label><input class="form-input" placeholder="Nombre y especialidad"></div>
-      <div class="form-group"><label class="form-label">Motivo de consulta</label><input class="form-input" placeholder="Valoración mensual, urgencia, control..."></div>
-      <div class="form-group"><label class="form-label">Conclusiones / Indicaciones</label><div style="position:relative"><textarea class="form-input" id="nr-medico" placeholder="Dictá o escribí el resumen de la consulta..."></textarea><button style="position:absolute;right:8px;bottom:8px;background:none;border:none;font-size:21px;cursor:pointer" onclick="startVoice('nr-medico')">🎤</button></div></div>
-      <div class="form-group"><label class="form-label">Próxima cita</label><input class="form-input" type="date"></div>
-    </div>
-
-    <!-- CAMPOS ESTUDIO -->
-    <div id="campos-estudio" style="display:none">
-      <div class="form-group"><label class="form-label">Tipo de estudio</label><select class="form-input"><option>Análisis de sangre</option><option>Análisis de orina</option><option>Radiografía</option><option>Ecografía</option><option>Electrocardiograma</option><option>TAC / Resonancia</option><option>Otro</option></select></div>
-      <div class="form-group"><label class="form-label">Laboratorio / Centro</label><input class="form-input" placeholder="ej. Lab. Diagnóstico, Hospital Maciel..."></div>
-      <div class="form-group"><label class="form-label">Resumen de resultados</label><div style="position:relative"><textarea class="form-input" id="nr-estudio" placeholder="Describí los resultados relevantes..."></textarea><button style="position:absolute;right:8px;bottom:8px;background:none;border:none;font-size:21px;cursor:pointer" onclick="startVoice('nr-estudio')">🎤</button></div></div>
-    </div>
-
-    <!-- CAMPOS MEDICACIÓN -->
-    <div id="campos-medicacion" style="display:none">
-      <div class="form-group"><label class="form-label">Medicamento</label><input class="form-input" placeholder="Nombre y concentración"></div>
-      <div class="form-row">
-        <div class="form-group"><label class="form-label">Dosis</label><input class="form-input" placeholder="ej. 1 comp."></div>
-        <div class="form-group"><label class="form-label">Frecuencia</label><input class="form-input" placeholder="ej. Cada 12 hs"></div>
-      </div>
-      <div class="form-group"><label class="form-label">Tipo de cambio</label><select class="form-input"><option>Incorporación nueva</option><option>Ajuste de dosis</option><option>Suspensión</option><option>Cambio de horario</option></select></div>
-      <div class="form-group"><label class="form-label">Indicado por</label><input class="form-input" placeholder="Nombre del médico"></div>
-      <div class="form-group"><label class="form-label">Observaciones</label><input class="form-input" placeholder="Duración, precauciones, etc."></div>
-    </div>
-
-    <!-- ADJUNTOS — aparece siempre -->
-    <div style="margin-top:4px">
-      <label class="form-label">Adjuntar foto o PDF</label>
-      <div id="adj-preview" class="adj-preview"></div>
-      <div class="adj-area" onclick="simAdjuntar()">
-        <div class="adj-icon">📎</div>
-        <div class="adj-label">Adjuntar archivo</div>
-        <div class="adj-sub">Foto de la cámara · PDF · Imagen de galería</div>
-      </div>
-    </div>
-
-    <div style="display:flex;gap:8px;margin-top:4px">
-      <button class="btn btn-sec" style="flex:1" onclick="closeM('modal-nuevo-registro')">Cancelar</button>
-      <button class="btn btn-verde" style="flex:1" onclick="guardarRegistro()">✅ Guardar registro</button>
-    </div>
-  </div>
-</div>
-
 <!-- OCR -->
 <div class="modal-overlay" id="modal-ocr" onclick="closeO(event,'modal-ocr')">
   <div class="modal">
@@ -2165,17 +1986,6 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:19px;heigh
 </div>
 
 <!-- NUEVO RESIDENTE -->
-<div class="modal-overlay" id="modal-nuevo-res" onclick="closeO(event,'modal-nuevo-res')">
-  <div class="modal"><div class="modal-handle"></div><div class="modal-title">Nuevo residente</div>
-    <div class="form-row"><div class="form-group"><label class="form-label">Nombre</label><input class="form-input"></div><div class="form-group"><label class="form-label">Apellido</label><input class="form-input"></div></div>
-    <div class="form-row"><div class="form-group"><label class="form-label">Edad</label><input class="form-input" type="number"></div><div class="form-group"><label class="form-label">Habitación</label><input class="form-input"></div></div>
-    <div class="form-group"><label class="form-label">Mutualista</label><select class="form-input"><option>ASSE</option><option>FONASA</option><option>Medicus</option><option>SMI</option><option>Particular</option></select></div>
-    <div class="form-group"><label class="form-label">Familiar referencia</label><input class="form-input" placeholder="Nombre · teléfono"></div>
-    <div class="form-group"><label class="form-label">Fecha ingreso</label><input class="form-input" type="date"></div>
-    <div style="display:flex;gap:8px"><button class="btn btn-sec" style="flex:1" onclick="closeM('modal-nuevo-res')">Cancelar</button><button class="btn btn-verde" style="flex:1" onclick="closeM('modal-nuevo-res')">✅ Crear</button></div>
-  </div>
-</div>
-
 <!-- DÍA CALENDARIO -->
 <div class="modal-overlay" id="modal-dia" onclick="closeO(event,'modal-dia')">
   <div class="modal"><div class="modal-handle"></div><div class="modal-title">Día 14 de abril</div><div class="modal-sub">Ana Martínez</div>
@@ -3161,6 +2971,10 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:19px;heigh
 // ═══════════════════════════════════════════════════════
 // ELDERLY CARE — API + DB LAYER
 // ═══════════════════════════════════════════════════════
+
+// ═══════════════════════════════════════════════════════
+// API CONFIG
+// ═══════════════════════════════════════════════════════
 var API_URL   = 'https://script.google.com/macros/s/AKfycbxlaGFNX580KIPd1BrZBM8uGb_NNRmTVk4bYkCmmA-XVjv2QwIJGa4cD1rrX0_vrA97_A/exec';
 var API_TOKEN = 'ec2026';
 
@@ -3169,103 +2983,219 @@ var DB = {
   residentes: [], empleadas: [], historial: [],
   medicacion: [], gastos: [], adelantos: [], liquidaciones: []
 };
-var PINES = { Juliana:'1234', 'Lucía':'5678', Flavia:'9012' };
+var PINES = { 'Juliana':'1234', 'Lucía':'5678', 'Flavia':'9012' };
 
-// ── API helpers ──
+// ══════════════════════════════════════════════════════════
+// FETCH HELPERS — Compatibles con Safari iOS + Chrome Android
+// CRÍTICO: 
+//   GET: sin Content-Type (evita preflight CORS)
+//   POST: Content-Type text/plain (no application/json — Apps Script no maneja preflight)
+//   redirect: follow — Apps Script redirige 302 a googleusercontent.com
+//   credentials: omit — evita cookies que bloquea Safari ITP
+// ══════════════════════════════════════════════════════════
 async function apiGet(sheet) {
   try {
-    var r = await fetch(API_URL + '?token=' + API_TOKEN + '&sheet=' + sheet + '&action=getAll');
-    var j = await r.json();
-    return j.ok ? j.data : [];
-  } catch(e) { console.warn('apiGet ' + sheet, e); return []; }
-}
-async function apiPost(sheet, action, data, id) {
-  try {
-    var body = { sheet:sheet, action:action, data:data, token:API_TOKEN };
-    if (id) body.id = id;
-    var r = await fetch(API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type':'application/json' },
-      body: JSON.stringify(body)
+    var url = API_URL + '?token=' + API_TOKEN + '&sheet=' + sheet + '&action=getAll';
+    var r = await fetch(url, {
+      method: 'GET',
+      redirect: 'follow',
+      credentials: 'omit'
     });
+    if (!r.ok) { console.warn('apiGet HTTP error', r.status, sheet); return []; }
     var j = await r.json();
-    return j.ok ? j.data : null;
-  } catch(e) { console.warn('apiPost ' + sheet, e); return null; }
+    return (j && j.ok) ? j.data : [];
+  } catch(e) {
+    console.warn('apiGet', sheet, e.message || e);
+    return [];
+  }
 }
 
-// ── Toast ──
+async function apiPost(sheet, action, data, id) {
+  try {
+    var body = { sheet: sheet, action: action, data: data, token: API_TOKEN };
+    if (id) body.id = id;
+    // CRÍTICO: text/plain evita preflight OPTIONS que Apps Script no maneja
+    var r = await fetch(API_URL, {
+      method: 'POST',
+      redirect: 'follow',
+      credentials: 'omit',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(body)
+    });
+    if (!r.ok) { console.warn('apiPost HTTP error', r.status, sheet); return null; }
+    var j = await r.json();
+    return (j && j.ok) ? j.data : null;
+  } catch(e) {
+    console.warn('apiPost', sheet, e.message || e);
+    return null;
+  }
+}
+
+
+
+// ═══════════════════════════════════════════════════════
+// UI HELPERS — Toast, Loading, Botón Reintento
+// ═══════════════════════════════════════════════════════
+
 function toast(msg, tipo) {
   var old = document.querySelector('.ec-toast');
   if (old) old.remove();
   var d = document.createElement('div');
   d.className = 'ec-toast';
   d.textContent = msg;
-  d.style.cssText = 'position:fixed;bottom:110px;left:50%;transform:translateX(-50%);' +
-    'background:' + (tipo==='error'?'#c0392b':tipo==='ok'?'#2e7d32':'#e65100') + ';' +
-    'color:white;padding:10px 22px;border-radius:20px;font-size:13px;z-index:9999;' +
-    'box-shadow:0 4px 16px rgba(0,0,0,.3);max-width:320px;text-align:center;font-family:DM Sans,sans-serif;';
+  var bg = tipo === 'error' ? '#c0392b'
+         : tipo === 'ok'    ? '#2e7d32'
+         : tipo === 'warn'  ? '#e65100'
+         :                    '#1a3d35';
+  d.style.cssText = [
+    'position:fixed', 'bottom:110px', 'left:50%', 'transform:translateX(-50%)',
+    'background:' + bg, 'color:white', 'padding:10px 22px', 'border-radius:20px',
+    'font-size:13px', 'z-index:9999', 'box-shadow:0 4px 16px rgba(0,0,0,.3)',
+    'max-width:320px', 'text-align:center', 'font-family:DM Sans,sans-serif',
+    'cursor:pointer'
+  ].join(';');
+  if (tipo === 'error') {
+    d.onclick = function() { d.remove(); };
+  } else {
+    setTimeout(function() {
+      d.style.opacity = '0'; d.style.transition = 'opacity .3s';
+      setTimeout(function() { d.remove(); }, 400);
+    }, tipo === 'ok' ? 3000 : 4000);
+  }
   document.body.appendChild(d);
-  setTimeout(function(){
-    d.style.opacity='0'; d.style.transition='opacity .3s';
-    setTimeout(function(){ d.remove(); }, 400);
-  }, 2800);
 }
 
-// ── Loading ──
 function showLoading(msg) {
   var el = document.getElementById('ec-loading');
   if (!el) {
     el = document.createElement('div');
     el.id = 'ec-loading';
-    el.style.cssText = 'position:fixed;inset:0;background:rgba(26,61,53,.78);z-index:9999;' +
-      'display:flex;flex-direction:column;align-items:center;justify-content:center;color:white;';
+    el.style.cssText = [
+      'position:fixed', 'inset:0', 'background:rgba(26,61,53,.78)',
+      'z-index:9999', 'display:flex', 'flex-direction:column',
+      'align-items:center', 'justify-content:center', 'color:white'
+    ].join(';');
     el.innerHTML = '<div style="font-size:34px;margin-bottom:14px">⏳</div>' +
       '<div id="ec-loading-msg" style="font-family:DM Sans,sans-serif;font-size:15px">Cargando...</div>';
     document.body.appendChild(el);
   }
-  document.getElementById('ec-loading-msg').textContent = msg || 'Cargando...';
+  var msgEl = document.getElementById('ec-loading-msg');
+  if (msgEl) msgEl.textContent = msg || 'Cargando...';
   el.style.display = 'flex';
 }
+
 function hideLoading() {
   var el = document.getElementById('ec-loading');
   if (el) el.style.display = 'none';
 }
 
-// ═══════════════════════════════════════════════════════
-// CARGAR TODOS LOS DATOS AL INICIO
-// ═══════════════════════════════════════════════════════
+function mostrarBotonReintento() {
+  var old = document.getElementById('btn-reintento');
+  if (old) old.remove();
+  var btn = document.createElement('div');
+  btn.id = 'btn-reintento';
+  btn.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:white;border-radius:16px;padding:28px;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.2);z-index:9998;max-width:300px;width:85%';
+  
+  var retryBtn = document.createElement('button');
+  retryBtn.textContent = '🔄 Reintentar';
+  retryBtn.style.cssText = 'background:#1a3d35;color:white;border:none;border-radius:10px;padding:13px 0;font-size:14px;cursor:pointer;width:100%;font-family:DM Sans,sans-serif;margin-bottom:10px';
+  retryBtn.onclick = function() {
+    var el = document.getElementById('btn-reintento');
+    if (el) el.remove();
+    cargarDatos();
+  };
+  
+  var newTabLink = document.createElement('a');
+  newTabLink.href = window.location.href.split('?')[0] + '?v=' + Date.now();
+  newTabLink.target = '_blank';
+  newTabLink.textContent = '↗ Abrir en pestaña nueva';
+  newTabLink.style.cssText = 'display:block;font-size:11px;color:#1a3d35;text-decoration:none;padding:8px 0;border-top:1px solid #eee;margin-top:4px';
+  
+  btn.innerHTML = '<div style="font-size:36px;margin-bottom:12px">📡</div>' +
+    '<div style="font-family:Cormorant Garamond,serif;font-size:19px;color:#1a3d35;margin-bottom:8px">Sin conexión al servidor</div>' +
+    '<div style="font-size:12px;color:#888;margin-bottom:20px;line-height:1.5">No se pudieron cargar los datos.<br>Verificá tu conexión a internet.</div>';
+  btn.appendChild(retryBtn);
+  btn.appendChild(newTabLink);
+  document.body.appendChild(btn);
+}
+
 async function cargarDatos() {
-  showLoading('Cargando datos del residencial...');
-  try {
-    var cfg = await apiGet('config');
-    cfg.forEach(function(r) {
-      if (r.clave === 'pin_juliana') PINES['Juliana']  = String(r.valor);
-      if (r.clave === 'pin_lucia')   PINES['Lucía']    = String(r.valor);
-      if (r.clave === 'pin_flavia')  PINES['Flavia']   = String(r.valor);
-    });
+  showLoading('Conectando con el servidor...');
+  var intentos = 0;
+  var maxIntentos = 3;
 
-    var results = await Promise.all([
-      apiGet('residentes'), apiGet('empleadas'), apiGet('medicacion'),
-      apiGet('gastos'), apiGet('adelantos'), apiGet('liquidaciones')
-    ]);
-    DB.residentes    = results[0];
-    DB.empleadas     = results[1];
-    DB.medicacion    = results[2];
-    DB.gastos        = results[3];
-    DB.adelantos     = results[4];
-    DB.liquidaciones = results[5];
+  async function intentarCarga() {
+    intentos++;
+    try {
+      // Verificar conectividad primero con un ping rápido
+      var pingUrl = API_URL + '?token=' + API_TOKEN + '&sheet=config&action=ping';
+      var ping = await fetch(pingUrl, { method:'GET', redirect:'follow', credentials:'omit' });
+      if (!ping.ok) throw new Error('HTTP ' + ping.status);
+      var pingData = await ping.json();
+      if (!pingData.ok) throw new Error('API no responde');
 
-    hideLoading();
-    renderListaResidentes();
-    renderListaEmpleadas();
-    renderGastos();
-    renderPastillero();
-    toast('✅ Datos actualizados', 'ok');
-  } catch(e) {
-    hideLoading();
-    toast('⚠️ Error conectando con el servidor', 'error');
-    console.error(e);
+      // Cargar config (PINes)
+      var cfg = await apiGet('config');
+      cfg.forEach(function(r) {
+        if (r.clave === 'pin_juliana') PINES['Juliana'] = String(r.valor);
+        if (r.clave === 'pin_lucia')   PINES['Lucía']   = String(r.valor);
+        if (r.clave === 'pin_flavia')  PINES['Flavia']  = String(r.valor);
+      });
+
+      // Cargar todo en paralelo
+      showLoading('Cargando datos...');
+      var results = await Promise.all([
+        apiGet('residentes'), apiGet('empleadas'), apiGet('medicacion'),
+        apiGet('gastos'), apiGet('adelantos'), apiGet('liquidaciones')
+      ]);
+      DB.residentes    = results[0] || [];
+      DB.empleadas     = results[1] || [];
+      DB.medicacion    = results[2] || [];
+      DB.gastos        = results[3] || [];
+      DB.adelantos     = results[4] || [];
+      DB.liquidaciones = results[5] || [];
+
+      hideLoading();
+      renderListaResidentes();
+      renderListaEmpleadas();
+      renderGastos();
+      try { renderSocias(); } catch(e) {}
+      renderPastillero();
+      try { refreshLiqEmpDropdown(); } catch(e) {}
+      try { refreshEgEmpDropdown(); } catch(e) {}
+
+      var totalOk = DB.residentes.length + DB.empleadas.length;
+      if (totalOk > 0) {
+        toast('✅ ' + DB.residentes.length + ' residentes · ' + DB.empleadas.length + ' empleadas', 'ok');
+      } else {
+        toast('⚠️ Conectado pero sin datos en Sheets', 'warn');
+      }
+      return true;
+
+    } catch(e) {
+      console.warn('cargarDatos intento ' + intentos + ':', e.message || e);
+      if (intentos < maxIntentos) {
+        showLoading('Reintentando... (' + intentos + '/' + maxIntentos + ')');
+        await new Promise(function(r){ setTimeout(r, 1500 * intentos); });
+        return intentarCarga();
+      } else {
+        hideLoading();
+        // Mostrar error claro al usuario
+        var errMsg = '⚠️ Sin conexión al servidor. ';
+        if (e.message && e.message.includes('Load failed')) {
+          errMsg += 'Verificá tu conexión a internet.';
+        } else {
+          errMsg += 'Intentá recargar la página.';
+        }
+        toast(errMsg, 'error');
+        // Mostrar botón de reintento en la pantalla principal
+        mostrarBotonReintento();
+        return false;
+      }
+    }
   }
+
+  return intentarCarga();
 }
 
 // ═══════════════════════════════════════════════════════
@@ -5020,6 +4950,15 @@ resRenderAgenda();
 
 // ── INIT ──
 document.addEventListener('DOMContentLoaded', function() {
+
+  // Service Worker — manejo de versión y caché
+  if ('serviceWorker' in navigator) {
+    // Desregistrar cualquier SW viejo para evitar conflictos
+    navigator.serviceWorker.getRegistrations().then(function(registrations) {
+      for (var r of registrations) { r.unregister(); }
+    });
+  }
+
   try { calcLiq(); } catch(e) {}
   try { calcIPD(); } catch(e) {}
   try { calcS(); } catch(e) {}
