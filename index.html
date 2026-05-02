@@ -2534,105 +2534,174 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:19px;heigh
 
     <!-- TAB: FICHA -->
     <div id="mt-mr-ficha">
-      <!-- ── Datos filiatorios ── -->
+      <button class="btn-volver" onclick="resCloseM('modal-residente')">← Residentes</button>
+
+      <!-- ══ SECCIÓN: Datos básicos ══ -->
       <div class="fs-section">
-        <div class="fs-titulo">🏷️ Datos básicos</div>
-        <div class="fr">
-          <div class="fg"><label class="fl">CI</label>
-            <input class="fi" id="ef-ci" placeholder="X.XXX.XXX-X"></div>
-          <div class="fg"><label class="fl">Edad</label>
-            <input class="fi" type="number" id="ef-edad" placeholder="Años"></div>
-        </div>
-        <div class="fr">
-          <div class="fg"><label class="fl">Habitación</label>
-            <input class="fi" type="number" id="ef-hab" placeholder="Nro."></div>
-          <div class="fg"><label class="fl">Mutualista</label>
-            <select class="fi" id="ef-mutualista">
-              <option>ASSE</option><option>FONASA</option><option>SMI</option>
-              <option>Medicus</option><option>Particular</option>
-            </select>
+        <div class="sec-header">
+          <div class="fs-titulo">🏷️ Datos básicos</div>
+          <div class="sec-btns">
+            <button class="btn-sec-edit" id="btn-edit-res-datos" onclick="toggleSecEdit('res-datos')">✏️ Editar</button>
+            <button class="btn-sec-save" id="btn-save-res-datos" onclick="guardarSeccion('res-datos')" style="display:none">✅ Guardar</button>
           </div>
         </div>
-        <div class="fr">
-          <div class="fg"><label class="fl">Fecha ingreso</label>
-            <input class="fi" type="date" id="ef-ingreso"></div>
-          <div class="fg"><label class="fl">Médico</label>
-            <input class="fi" id="ef-medico" placeholder="Nombre médico"></div>
+        <div class="sec-view" id="view-res-datos">
+          <div class="field-row"><span class="field-lbl">CI</span><span id="vw-ci" class="field-val">—</span></div>
+          <div class="field-row"><span class="field-lbl">Edad</span><span id="vw-edad" class="field-val">—</span></div>
+          <div class="field-row"><span class="field-lbl">Habitación</span><span id="vw-hab" class="field-val">—</span></div>
+          <div class="field-row"><span class="field-lbl">Mutualista</span><span id="vw-mutualista" class="field-val">—</span></div>
+          <div class="field-row"><span class="field-lbl">Ingreso</span><span id="vw-ingreso" class="field-val">—</span></div>
+          <div class="field-row"><span class="field-lbl">Médico</span><span id="vw-medico" class="field-val">—</span></div>
+          <div class="field-row"><span class="field-lbl">Familiar</span><span id="vw-familiar" class="field-val">—</span></div>
+          <div class="field-row"><span class="field-lbl">Tel.</span><span id="vw-ftel" class="field-val">—</span></div>
+          <div class="field-row"><span class="field-lbl">Parentesco</span><span id="vw-fpar" class="field-val">—</span></div>
         </div>
-        <div class="fg"><label class="fl">Familiar referencia</label>
-          <input class="fi" id="ef-familiar" placeholder="Nombre"></div>
-        <div class="fr">
-          <div class="fg"><label class="fl">Tel. familiar</label>
-            <input class="fi" id="ef-familiar-tel" placeholder="09X XXX XXX"></div>
-          <div class="fg"><label class="fl">Parentesco</label>
-            <input class="fi" id="ef-familiar-par" placeholder="Hijo/a, cónyuge..."></div>
+        <div class="sec-edit" id="edit-res-datos" style="display:none">
+          <div class="fr">
+            <div class="fg"><label class="fl">CI</label><input class="fi" id="ef-ci" placeholder="X.XXX.XXX-X"></div>
+            <div class="fg"><label class="fl">Edad</label><input class="fi" type="number" id="ef-edad" placeholder="Años"></div>
+          </div>
+          <div class="fr">
+            <div class="fg"><label class="fl">Habitación</label><input class="fi" type="number" id="ef-hab" placeholder="Nro."></div>
+            <div class="fg"><label class="fl">Mutualista</label>
+              <select class="fi" id="ef-mutualista"><option>ASSE</option><option>FONASA</option><option>SMI</option><option>Medicus</option><option>Particular</option></select>
+            </div>
+          </div>
+          <div class="fr">
+            <div class="fg"><label class="fl">Fecha ingreso</label><input class="fi" type="date" id="ef-ingreso"></div>
+            <div class="fg"><label class="fl">Médico</label><input class="fi" id="ef-medico" placeholder="Nombre médico"></div>
+          </div>
+          <div class="fg"><label class="fl">Familiar referencia</label><input class="fi" id="ef-familiar" placeholder="Nombre"></div>
+          <div class="fr">
+            <div class="fg"><label class="fl">Tel. familiar</label><input class="fi" id="ef-familiar-tel" placeholder="09X XXX XXX"></div>
+            <div class="fg"><label class="fl">Parentesco</label><input class="fi" id="ef-familiar-par" placeholder="Hijo/a, cónyuge..."></div>
+          </div>
         </div>
       </div>
 
-      <!-- ── Diagnósticos ── -->
+      <!-- ══ SECCIÓN: Diagnósticos ══ -->
       <div class="fs-section">
-        <div class="fs-titulo">🩺 Diagnósticos principales</div>
-        <div style="font-size:11px;color:var(--suave);margin-bottom:6px">Separá cada diagnóstico con |</div>
-        <textarea class="fi" id="ef-diags" style="min-height:90px;font-size:12px;line-height:1.6"
-          placeholder="TNCM GDS5 | HTA | FA con Apixaban..."></textarea>
-      </div>
-
-      <!-- ── Alertas críticas ── -->
-      <div class="fs-section">
-        <div class="fs-titulo">⚠️ Alertas críticas</div>
-        <div style="font-size:11px;color:var(--suave);margin-bottom:6px">Alergias, anticoagulantes, espesantes — aparecen destacadas en toda la app</div>
-        <textarea class="fi" id="ef-alergias" style="min-height:65px;font-size:12px"
-          placeholder="⚠️ ANTICOAGULADA | ⚠️ ESPESANTES OBLIGATORIO"></textarea>
-      </div>
-
-      <!-- ── Cuidados ── -->
-      <div class="fs-section">
-        <div class="fs-titulo">🛁 Cuidados y dependencia</div>
-        <div class="fr">
-          <div class="fg"><label class="fl">Dieta</label>
-            <select class="fi" id="ef-dieta">
-              <option>Normal</option><option>Blanda</option><option>Triturada</option>
-              <option>Normal adaptada</option>
-            </select>
-          </div>
-          <div class="fg"><label class="fl">Espesantes</label>
-            <select class="fi" id="ef-espesantes">
-              <option value="No">No</option>
-              <option value="Sí - OBLIGATORIO todos los líquidos">Sí — OBLIGATORIO</option>
-            </select>
+        <div class="sec-header">
+          <div class="fs-titulo">🩺 Diagnósticos principales</div>
+          <div class="sec-btns">
+            <button class="btn-sec-edit" id="btn-edit-res-diags" onclick="toggleSecEdit('res-diags')">✏️ Editar</button>
+            <button class="btn-sec-save" id="btn-save-res-diags" onclick="guardarSeccion('res-diags')" style="display:none">✅ Guardar</button>
           </div>
         </div>
-        <div class="fr">
-          <div class="fg"><label class="fl">Movilidad</label>
-            <input class="fi" id="ef-movilidad" placeholder="Ej: Marcha asistida"></div>
-          <div class="fg"><label class="fl">Continencia</label>
-            <input class="fi" id="ef-continencia" placeholder="Ej: Incontinente"></div>
+        <div class="sec-view" id="view-res-diags">
+          <div id="vw-diags" style="font-size:13px;line-height:1.9;color:var(--texto)">—</div>
         </div>
-        <div class="fr">
-          <div class="fg"><label class="fl">Pañal</label>
-            <select class="fi" id="ef-panal">
-              <option>No</option><option>Sí 24hs</option><option>Solo noche</option>
-            </select>
-          </div>
-          <div class="fg"><label class="fl">Oxígeno domiciliario</label>
-            <select class="fi" id="ef-oxigeno">
-              <option>No</option><option>Sí</option><option>A evaluar</option>
-            </select>
-          </div>
+        <div class="sec-edit" id="edit-res-diags" style="display:none">
+          <div style="font-size:11px;color:var(--suave);margin-bottom:6px">Separá cada diagnóstico con |</div>
+          <textarea class="fi" id="ef-diags" style="min-height:90px;font-size:12px;line-height:1.6" placeholder="TNCM GDS5 | HTA | FA con Apixaban..."></textarea>
         </div>
-        <div class="fg"><label class="fl">Úlceras / LPP</label>
-          <input class="fi" id="ef-ulceras" placeholder="Ej: No activas / Riesgo alto"></div>
       </div>
 
-      <!-- ── Botón guardar ── -->
-      <div style="display:flex;gap:8px;margin-top:8px;margin-bottom:8px">
-        <button class="btn bs" style="flex:1" onclick="resCloseM('modal-residente')">← Cerrar</button>
-        <button class="btn bv" style="flex:2" onclick="guardarFichaResidente()">✅ Guardar ficha</button>
+      <!-- ══ SECCIÓN: Alertas críticas ══ -->
+      <div class="fs-section">
+        <div class="sec-header">
+          <div class="fs-titulo">⚠️ Alertas críticas</div>
+          <div class="sec-btns">
+            <button class="btn-sec-edit" id="btn-edit-res-alertas" onclick="toggleSecEdit('res-alertas')">✏️ Editar</button>
+            <button class="btn-sec-save" id="btn-save-res-alertas" onclick="guardarSeccion('res-alertas')" style="display:none">✅ Guardar</button>
+          </div>
+        </div>
+        <div class="sec-view" id="view-res-alertas">
+          <div id="vw-alergias" style="font-size:13px;color:var(--rojo)">—</div>
+        </div>
+        <div class="sec-edit" id="edit-res-alertas" style="display:none">
+          <div style="font-size:11px;color:var(--suave);margin-bottom:6px">Alergias, anticoagulantes, espesantes</div>
+          <textarea class="fi" id="ef-alergias" style="min-height:65px;font-size:12px" placeholder="⚠️ ANTICOAGULADA | ⚠️ ESPESANTES OBLIGATORIO"></textarea>
+        </div>
       </div>
+
+      <!-- ══ SECCIÓN: Cuidados ══ -->
+      <div class="fs-section">
+        <div class="sec-header">
+          <div class="fs-titulo">🛁 Cuidados y dependencia</div>
+          <div class="sec-btns">
+            <button class="btn-sec-edit" id="btn-edit-res-cuidados" onclick="toggleSecEdit('res-cuidados')">✏️ Editar</button>
+            <button class="btn-sec-save" id="btn-save-res-cuidados" onclick="guardarSeccion('res-cuidados')" style="display:none">✅ Guardar</button>
+          </div>
+        </div>
+        <div class="sec-view" id="view-res-cuidados">
+          <div class="field-row"><span class="field-lbl">Dieta</span><span id="vw-dieta" class="field-val">—</span></div>
+          <div class="field-row"><span class="field-lbl">Espesantes</span><span id="vw-espesantes" class="field-val">—</span></div>
+          <div class="field-row"><span class="field-lbl">Movilidad</span><span id="vw-movilidad" class="field-val">—</span></div>
+          <div class="field-row"><span class="field-lbl">Continencia</span><span id="vw-continencia" class="field-val">—</span></div>
+          <div class="field-row"><span class="field-lbl">Pañal</span><span id="vw-panal" class="field-val">—</span></div>
+          <div class="field-row"><span class="field-lbl">Oxígeno</span><span id="vw-oxigeno" class="field-val">—</span></div>
+          <div class="field-row"><span class="field-lbl">LPP / Úlceras</span><span id="vw-ulceras" class="field-val">—</span></div>
+        </div>
+        <div class="sec-edit" id="edit-res-cuidados" style="display:none">
+          <div class="fr">
+            <div class="fg"><label class="fl">Dieta</label>
+              <select class="fi" id="ef-dieta"><option>Normal</option><option>Blanda</option><option>Triturada</option><option>Normal adaptada</option></select>
+            </div>
+            <div class="fg"><label class="fl">Espesantes</label>
+              <select class="fi" id="ef-espesantes"><option value="No">No</option><option value="Sí - OBLIGATORIO todos los líquidos">Sí — OBLIGATORIO</option></select>
+            </div>
+          </div>
+          <div class="fr">
+            <div class="fg"><label class="fl">Movilidad</label><input class="fi" id="ef-movilidad" placeholder="Ej: Marcha asistida"></div>
+            <div class="fg"><label class="fl">Continencia</label><input class="fi" id="ef-continencia" placeholder="Ej: Incontinente"></div>
+          </div>
+          <div class="fr">
+            <div class="fg"><label class="fl">Pañal</label>
+              <select class="fi" id="ef-panal"><option>No</option><option>Sí 24hs</option><option>Solo noche</option></select>
+            </div>
+            <div class="fg"><label class="fl">Oxígeno</label>
+              <select class="fi" id="ef-oxigeno"><option>No</option><option>Sí</option><option>A evaluar</option></select>
+            </div>
+          </div>
+          <div class="fg"><label class="fl">Úlceras / LPP</label><input class="fi" id="ef-ulceras" placeholder="Ej: No activas / Riesgo alto"></div>
+        </div>
+      </div>
+
+      <!-- ══ SECCIÓN: Índice de Barthel ══ -->
+      <div class="fs-section">
+        <div class="sec-header">
+          <div class="fs-titulo">📊 Índice de Barthel</div>
+          <div class="sec-btns">
+            <button class="btn-sec-edit" id="btn-edit-res-barthel" onclick="toggleSecEdit('res-barthel')">✏️ Registrar</button>
+            <button class="btn-sec-save" id="btn-save-res-barthel" onclick="guardarSeccion('res-barthel')" style="display:none">✅ Guardar</button>
+          </div>
+        </div>
+        <!-- Vista: último Barthel + evolución -->
+        <div class="sec-view" id="view-res-barthel">
+          <div id="barthel-actual" style="background:var(--verde);border-radius:10px;padding:12px;color:white;margin-bottom:8px">
+            <div style="font-size:10px;opacity:.7;letter-spacing:1px">ÚLTIMO REGISTRO</div>
+            <div style="font-family:'Cormorant Garamond',serif;font-size:38px;font-weight:300;color:#C9A84C" id="barthel-score">—</div>
+            <div style="font-size:12px;opacity:.85" id="barthel-cat">Sin registros</div>
+            <div style="font-size:10px;opacity:.6;margin-top:2px" id="barthel-fecha"></div>
+          </div>
+          <div id="barthel-evolucion" style="font-size:11px;color:var(--suave);text-align:center;padding:6px">Sin registros anteriores</div>
+        </div>
+        <!-- Edición: input rápido 0-100 -->
+        <div class="sec-edit" id="edit-res-barthel" style="display:none">
+          <div style="font-size:11px;color:var(--suave);margin-bottom:10px">0 = Dependencia total · 100 = Independiente</div>
+          <div style="display:flex;align-items:center;gap:12px">
+            <input type="number" id="barthel-input-rapido" min="0" max="100" placeholder="0–100"
+              class="fi" style="width:90px;font-size:24px;font-weight:600;text-align:center;padding:8px"
+              oninput="actualizarBarthelLabel(this.value)">
+            <div style="flex:1">
+              <div id="barthel-label-rapido" style="font-size:14px;font-weight:600;color:var(--verde)">—</div>
+              <div style="font-size:10px;color:var(--suave);margin-top:4px">
+                0–20: Dep. total · 21–60: Dep. severa · 61–90: Dep. moderada · 91–99: Dep. leve · 100: Independiente
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="height:16px"></div>
     </div>
 
     <!-- TAB: HISTORIAL -->
     <div id="mt-mr-historial" style="display:none">
+      <button class="btn-volver" onclick="resCloseM('modal-residente')">← Residentes</button>
+
+      
       <div style="display:flex;gap:8px;margin-bottom:12px">
         <button class="btn bd btn-sm" onclick="resShowM('modal-nuevo-registro')">＋ Nuevo registro</button>
         <select class="fi" style="flex:1;padding:6px 9px;font-size:12px">
@@ -2649,6 +2718,9 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:19px;heigh
 
     <!-- TAB: MEDICACIÓN -->
     <div id="mt-mr-medicacion" style="display:none">
+      <button class="btn-volver" onclick="resCloseM('modal-residente')">← Residentes</button>
+
+      
       <div class="norma">💊 Planilla de medicación mensual — formato oficial del residencial</div>
       <div id="medicacion-content"></div>
       <div style="display:flex;gap:8px;margin-top:10px">
@@ -2658,6 +2730,9 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:19px;heigh
 
     <!-- TAB: FICHA DE SALIDA -->
     <div id="mt-mr-salida" style="display:none">
+      <button class="btn-volver" onclick="resCloseM('modal-residente')">← Residentes</button>
+
+      
       <!-- ══════════ SECCIÓN 1: DATOS CLÍNICOS ══════════ -->
       <div id="salida-clinico-lock" style="display:none;text-align:center;padding:24px">
         <div style="font-size:32px;margin-bottom:8px">🔒</div>
@@ -2672,24 +2747,24 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:19px;heigh
           <div class="fs-titulo">📊 Índice de Barthel</div>
           <!-- Entrada rápida 0-100 -->
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-            <input type="number" id="barthel-input-rapido" min="0" max="100" placeholder="0–100"
+            <input type="number" id="barthel-input-rapido-2" min="0" max="100" placeholder="0–100"
               class="fi" style="width:80px;font-size:22px;font-weight:600;text-align:center;padding:8px"
               oninput="actualizarBarthelLabel(this.value)">
             <div style="flex:1">
-              <div id="barthel-label-rapido" style="font-size:13px;font-weight:600;color:var(--verde)">—</div>
+              <div id="barthel-label-rapido-2" style="font-size:13px;font-weight:600;color:var(--verde)">—</div>
               <div style="font-size:10px;color:var(--suave);margin-top:2px">0-20: Total · 21-60: Severa · 61-90: Moderada · 91-99: Leve · 100: Independiente</div>
             </div>
             <button class="btn bv btn-sm" onclick="guardarBarthelRapido()" style="white-space:nowrap">✅ Guardar</button>
           </div>
           <!-- Display último score registrado -->
-          <div id="barthel-actual" style="background:var(--verde);border-radius:10px;padding:12px;color:white;margin-bottom:8px">
+          <div id="barthel-actual-2" style="background:var(--verde);border-radius:10px;padding:12px;color:white;margin-bottom:8px">
             <div style="font-size:10px;opacity:.7;letter-spacing:1px">BARTHEL REGISTRADO</div>
-            <div style="font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:300;color:var(--dorado-c)" id="barthel-score">—</div>
-            <div style="font-size:11px;opacity:.8" id="barthel-cat">Sin registros</div>
-            <div style="font-size:10px;opacity:.6;margin-top:2px" id="barthel-fecha"></div>
+            <div style="font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:300;color:var(--dorado-c)" id="barthel-score-2">—</div>
+            <div style="font-size:11px;opacity:.8" id="barthel-cat-2">Sin registros</div>
+            <div style="font-size:10px;opacity:.6;margin-top:2px" id="barthel-fecha-2"></div>
           </div>
           <!-- Evolución -->
-          <div id="barthel-evolucion" style="font-size:12px;color:var(--suave);text-align:center;padding:8px">Sin registros</div>
+          <div id="barthel-evolucion-2" style="font-size:12px;color:var(--suave);text-align:center;padding:8px">Sin registros</div>
         </div>
 
         <!-- Auxiliares de marcha -->
@@ -6229,6 +6304,129 @@ function refreshEgEmpDropdown() {
 // ═══════════════════════════════════════════════════════
 
 // ── Cargar ficha residente en los campos editables ──
+
+// ═══════════════════════════════════════════════════════
+// SECCIONES CON EDITAR/GUARDAR — Ficha residente
+// ═══════════════════════════════════════════════════════
+
+function toggleSecEdit(secId) {
+  var viewEl  = document.getElementById('view-' + secId);
+  var editEl  = document.getElementById('edit-' + secId);
+  var btnEdit = document.getElementById('btn-edit-' + secId);
+  var btnSave = document.getElementById('btn-save-' + secId);
+  if (!editEl) return;
+  var isEditing = editEl.style.display !== 'none';
+  if (isEditing) {
+    editEl.style.display = 'none';
+    if (viewEl) viewEl.style.display = 'block';
+    if (btnEdit) { btnEdit.textContent = '✏️ Editar'; btnEdit.style.display = 'inline-flex'; }
+    if (btnSave) btnSave.style.display = 'none';
+  } else {
+    editEl.style.display = 'block';
+    if (viewEl) viewEl.style.display = 'none';
+    if (btnEdit) { btnEdit.textContent = '✕ Cancelar'; btnEdit.style.display = 'inline-flex'; }
+    if (btnSave) btnSave.style.display = 'inline-flex';
+  }
+}
+
+function closeSecEdit(secId) {
+  var viewEl  = document.getElementById('view-' + secId);
+  var editEl  = document.getElementById('edit-' + secId);
+  var btnEdit = document.getElementById('btn-edit-' + secId);
+  var btnSave = document.getElementById('btn-save-' + secId);
+  if (editEl) editEl.style.display = 'none';
+  if (viewEl) viewEl.style.display = 'block';
+  if (btnEdit) { btnEdit.textContent = secId.includes('barthel') ? '✏️ Registrar' : '✏️ Editar'; btnEdit.style.display = 'inline-flex'; }
+  if (btnSave) btnSave.style.display = 'none';
+}
+
+async function guardarSeccion(secId) {
+  if (!residenteActual) { toast('Sin residente seleccionado', 'error'); return; }
+  var get = function(id) { var el=document.getElementById(id); return el ? el.value.trim() : ''; };
+  var data = {};
+
+  if (secId === 'res-datos') {
+    var ingresoRaw = get('ef-ingreso');
+    data = {
+      ci: get('ef-ci'), edad: parseInt(get('ef-edad'))||0,
+      hab: get('ef-hab'), mutualista: get('ef-mutualista'),
+      ingreso: ingresoRaw, medico: get('ef-medico'),
+      familiar_nom: get('ef-familiar'), familiar_tel: get('ef-familiar-tel'),
+      familiar_parentesco: get('ef-familiar-par')
+    };
+  } else if (secId === 'res-diags') {
+    var raw = get('ef-diags').replace(/\n/g,'|').replace(/\s*\|\s*/g,'|').replace(/^\||\|$/g,'');
+    data = { diags: raw };
+  } else if (secId === 'res-alertas') {
+    var raw2 = get('ef-alergias').replace(/\n/g,'|').replace(/\s*\|\s*/g,'|').replace(/^\||\|$/g,'');
+    data = { alergias: raw2 };
+  } else if (secId === 'res-cuidados') {
+    data = {
+      cuid_dieta: get('ef-dieta'), cuid_espesantes: get('ef-espesantes'),
+      cuid_movilidad: get('ef-movilidad'), cuid_continencia: get('ef-continencia'),
+      cuid_panal: get('ef-panal'), cuid_oxigeno: get('ef-oxigeno'),
+      cuid_ulceras: get('ef-ulceras')
+    };
+  } else if (secId === 'res-barthel') {
+    await guardarBarthelRapido();
+    closeSecEdit(secId);
+    var inp = document.getElementById('barthel-input-rapido');
+    if (inp) inp.value = '';
+    var lbl = document.getElementById('barthel-label-rapido');
+    if (lbl) lbl.textContent = '—';
+    return;
+  }
+
+  showLoading('Guardando...');
+  var result = await apiPost('residentes', 'update', data, residenteActual);
+  hideLoading();
+
+  if (result) {
+    var r = DB.residentes.find(function(x){ return String(x.id)===String(residenteActual); });
+    if (r) Object.assign(r, data);
+    actualizarVistaFicha(r || data);
+    closeSecEdit(secId);
+    renderListaResidentes();
+    toast('✅ Guardado', 'ok');
+  } else {
+    toast('❌ Error al guardar', 'error');
+  }
+}
+
+function actualizarVistaFicha(r) {
+  if (!r) return;
+  var sv = function(id, val) { var el=document.getElementById(id); if(el) el.textContent=val||'—'; };
+  sv('vw-ci',         r.ci);
+  sv('vw-edad',       r.edad ? r.edad + ' años' : '');
+  sv('vw-hab',        r.hab ? 'Hab. ' + r.hab : '');
+  sv('vw-mutualista', r.mutualista);
+  sv('vw-ingreso',    r.ingreso ? String(r.ingreso).split('T')[0] : '');
+  sv('vw-medico',     r.medico);
+  sv('vw-familiar',   (r.familiar_nom||r.familiar||'') + (r.familiar_parentesco?' ('+r.familiar_parentesco+')':''));
+  sv('vw-ftel',       r.familiar_tel);
+  sv('vw-fpar',       r.familiar_parentesco);
+
+  var diagEl = document.getElementById('vw-diags');
+  if (diagEl) {
+    var diags = (r.diags||'').split('|').filter(function(d){return d.trim();});
+    diagEl.innerHTML = diags.length ? diags.map(function(d){return '• '+d.trim();}).join('<br>') : '—';
+  }
+  var alEl = document.getElementById('vw-alergias');
+  if (alEl) {
+    alEl.innerHTML = r.alergias && r.alergias !== 'Sin alergias documentadas'
+      ? '⚠️ ' + r.alergias.replace(/\|/g,' · ')
+      : '<span style="color:var(--suave)">Sin alertas registradas</span>';
+  }
+  sv('vw-dieta',      r.cuid_dieta);
+  sv('vw-espesantes', r.cuid_espesantes);
+  sv('vw-movilidad',  r.cuid_movilidad);
+  sv('vw-continencia',r.cuid_continencia);
+  sv('vw-panal',      r.cuid_panal);
+  sv('vw-oxigeno',    r.cuid_oxigeno);
+  sv('vw-ulceras',    r.cuid_ulceras);
+}
+
+
 function cargarFichaEnFormulario(r) {
   if (!r) return;
   var set = function(id, val) {
@@ -6264,6 +6462,8 @@ function cargarFichaEnFormulario(r) {
   set('ef-panal',       r.cuid_panal);
   set('ef-oxigeno',     r.cuid_oxigeno);
   set('ef-ulceras',     r.cuid_ulceras);
+  // Update view spans
+  actualizarVistaFicha(r);
 }
 
 // ── Guardar ficha residente ──
