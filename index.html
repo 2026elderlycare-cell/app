@@ -496,6 +496,31 @@ input.fi, select.fi, textarea.fi { max-width:100% !important; min-width:0 !impor
 .moverlay { display: none !important; }
 .moverlay.open, .moverlay.show { display: flex !important; }
 
+
+/* ── Btn volver ── */
+.btn-volver{display:inline-flex;align-items:center;gap:6px;background:none;border:none;color:var(--verde);font-size:13px;font-weight:600;padding:6px 0 10px;cursor:pointer;letter-spacing:.3px;}
+.btn-volver:active{opacity:.6;}
+/* ── Secciones editar/guardar ── */
+.sec-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.sec-header .fs-titulo{margin-bottom:0;}
+.sec-btns{display:flex;gap:6px;}
+.btn-sec-edit,.btn-sec-save{font-size:11px;padding:4px 10px;border-radius:8px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;}
+.btn-sec-edit{background:var(--crema-oscura);color:var(--verde);}
+.btn-sec-save{background:var(--verde);color:white;}
+.field-row{display:flex;padding:5px 0;border-bottom:1px solid var(--crema-oscura);font-size:13px;}
+.field-lbl{width:42%;color:var(--suave);font-size:11px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;padding-top:1px;}
+.field-val{flex:1;color:var(--texto);font-weight:500;}
+/* ── Pastillero semanal ── */
+.past-dia-btn{flex-shrink:0;padding:7px 14px;border-radius:20px;border:1px solid var(--crema-oscura);background:white;color:var(--verde);font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.past-dia-btn.active{background:var(--verde);color:white;border-color:var(--verde);}
+.past-franja{margin-bottom:14px;}
+.past-franja-titulo{font-size:11px;font-weight:700;letter-spacing:.8px;color:var(--suave);text-transform:uppercase;margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid var(--crema-oscura);}
+.past-item{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--crema-o);}
+.past-av{width:34px;height:34px;border-radius:50%;background:var(--verde);color:white;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;}
+.past-med-nom{font-size:13px;font-weight:600;color:var(--texto);}
+.past-med-det{font-size:11px;color:var(--suave);margin-top:2px;}
+.past-med-alerta{color:var(--rojo)!important;}
+
 </style>
 </head>
 <body>
@@ -848,7 +873,10 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:19px;heigh
   </div>
 
   <div style="height:8px"></div>
-  <button class="btn bd" onclick="resShowM('modal-nuevo-res')">＋ Agregar residente</button>
+  <div style="display:flex;gap:10px;margin-bottom:0">
+  <button class="btn bv" style="flex:1" onclick="abrirPastilleroSemanal()">💊 Pastillero semanal</button>
+  <button class="btn bd" style="flex:1" onclick="resShowM('modal-nuevo-res')">＋ Agregar residente</button>
+</div>
 </div>
 
 <!-- ══════ PASTILLERO ══════ -->
@@ -903,7 +931,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:19px;heigh
   </div>
   <div class="alerta al-r" style="margin-top:10px">
     <div class="al-ico">💊</div>
-    <div><div class="al-tit">Pacientes anticoaguladas</div><div class="al-txt">Morgade (Apixaban) · Tarrio (Rivaroxaban) · Rodríguez (Apixaban/Mantixa) — verificar siempre antes de administrar</div></div>
+    <div><div class="al-tit">Pacientes anticoaguladas</div></div>
   </div>
 </div>
 
@@ -969,124 +997,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:19px;heigh
   <div class="sep">Cuidadoras activas</div>
   <div id="lista-empleadas"></div>
 
-  <div class="emp-card" onclick="abrirEmp('choca')">
-    <div class="emp-av">CH</div>
-    <div style="flex:1">
-      <div class="emp-nom">Choca Javier Daniela</div>
-      <div class="emp-rol">Cuidadora · Turno 07-15 · Ingreso 01/06/2025</div>
-      <div style="margin-top:4px;display:flex;gap:6px;align-items:center">
-        <span class="prueba-badge pb-ok">✓ Consolidada</span>
-        <span style="font-size:10px;color:var(--suave)">10 meses</span>
-      </div>
-    </div>
-    <div style="text-align:right">
-      <div style="font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--verde);font-weight:600">$26.841</div>
-      <div style="font-size:10px;color:var(--suave)">líquido</div>
-    </div>
-  </div>
-
-  <div class="emp-card" onclick="abrirEmp('rodriguez_v')">
-    <div class="emp-av">RV</div>
-    <div style="flex:1">
-      <div class="emp-nom">Rodríguez Ilama Victoria</div>
-      <div class="emp-rol">Cuidadora · Rotativo · Ingreso 15/12/2025</div>
-      <div style="margin-top:4px;display:flex;gap:6px;align-items:center">
-        <span class="prueba-badge pb-ok">✓ Consolidada</span>
-        <span style="font-size:10px;color:var(--suave)">4 meses</span>
-      </div>
-    </div>
-    <div style="text-align:right">
-      <div style="font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--verde);font-weight:600">$27.434</div>
-      <div style="font-size:10px;color:var(--suave)">líquido</div>
-    </div>
-  </div>
-
-  <div class="emp-card" onclick="abrirEmp('basualdo')">
-    <div class="emp-av">BN</div>
-    <div style="flex:1">
-      <div class="emp-nom">Basualdo Vila Naya</div>
-      <div class="emp-rol">Cuidadora · Turno 23-07 · Ingreso 23/02/2026</div>
-      <div style="margin-top:4px;display:flex;gap:6px;align-items:center">
-        <span class="prueba-badge pb-naranja" style="background:#fff3e0;color:var(--naranja)">⏳ En prueba</span>
-        <span style="font-size:10px;color:var(--suave)">56 días · vence 23/05</span>
-      </div>
-    </div>
-    <div style="text-align:right">
-      <div style="font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--verde);font-weight:600">$24.886</div>
-      <div style="font-size:10px;color:var(--suave)">líquido</div>
-    </div>
-  </div>
-
-  <div class="emp-card" onclick="abrirEmp('aguiar')">
-    <div class="emp-av">AC</div>
-    <div style="flex:1">
-      <div class="emp-nom">Aguiar Camila Belén</div>
-      <div class="emp-rol">Cuidadora · Rotativo · Ingreso 18/03/2026</div>
-      <div style="margin-top:4px;display:flex;gap:6px;align-items:center">
-        <span class="prueba-badge pb-naranja" style="background:#fff3e0;color:var(--naranja)">⏳ En prueba</span>
-        <span style="font-size:10px;color:var(--suave)">34 días · vence 18/06</span>
-      </div>
-    </div>
-    <div style="text-align:right">
-      <div style="font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--verde);font-weight:600">$10.559</div>
-      <div style="font-size:10px;color:var(--suave)">líquido (mar)</div>
-    </div>
-  </div>
-
-  <div class="emp-card" onclick="abrirEmp('cabrera')">
-    <div class="emp-av">CG</div>
-    <div style="flex:1">
-      <div class="emp-nom">Cabrera Olaizola Gabriela</div>
-      <div class="emp-rol">Cuidadora · Turno 15-23 · Ingreso 07/08/2025</div>
-      <div style="margin-top:4px;display:flex;gap:6px;align-items:center">
-        <span class="prueba-badge pb-ok">✓ Consolidada</span>
-        <span style="font-size:10px;color:var(--suave)">8 meses</span>
-      </div>
-    </div>
-    <div style="text-align:right">
-      <div style="font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--verde);font-weight:600">$26.341</div>
-      <div style="font-size:10px;color:var(--suave)">líquido</div>
-    </div>
-  </div>
-
-  <div class="emp-card" onclick="abrirEmp('pereira')">
-    <div class="emp-av">PF</div>
-    <div style="flex:1">
-      <div class="emp-nom">Pereira Cuadrado Florencia</div>
-      <div class="emp-rol">Cuidadora · Turno 15-23 · Ingreso 16/11/2025</div>
-      <div style="margin-top:4px;display:flex;gap:6px;align-items:center">
-        <span class="prueba-badge pb-ok">✓ Consolidada</span>
-        <span style="font-size:10px;color:var(--suave)">5 meses · Adelanto $7k</span>
-      </div>
-    </div>
-    <div style="text-align:right">
-      <div style="font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--verde);font-weight:600">$19.922</div>
-      <div style="font-size:10px;color:var(--suave)">líquido</div>
-    </div>
-  </div>
-
-  <div class="emp-card" onclick="abrirEmp('rodriguez_m')">
-    <div class="emp-av">RM</div>
-    <div style="flex:1">
-      <div class="emp-nom">Rodríguez Ilama Marianela</div>
-      <div class="emp-rol">Cuidadora · Rotativo · Ingreso 05/12/2025</div>
-      <div style="margin-top:4px;display:flex;gap:6px;align-items:center">
-        <span class="prueba-badge pb-ok">✓ Consolidada</span>
-        <span style="font-size:10px;color:var(--suave)">4 meses · 12d licencia</span>
-      </div>
-    </div>
-    <div style="text-align:right">
-      <div style="font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--verde);font-weight:600">$17.683</div>
-      <div style="font-size:10px;color:var(--suave)">líquido</div>
-    </div>
-  </div>
-
-  <div class="sep">Limpieza</div>
-  <div class="alerta al-verde" style="margin-bottom:10px">
-    <div class="al-ico">ℹ️</div>
-    <div><div class="al-tit">Sin limpiadora actualmente</div><div class="al-txt">Cuando ingresen una, crear la ficha desde ＋</div></div>
-  </div>
-
+  
   <button class="btn bd" onclick="perShowM('modal-nueva-emp')">＋ Agregar empleada</button>
 </div>
 
@@ -1253,7 +1164,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:19px;heigh
     <div class="fr">
       <div class="fg">
         <label class="fl">Mes liquidación</label>
-        <input class="fi" type="month" id="liq-mes" value="2026-04">
+        <input class="fi" type="month" id="liq-mes" value="2026-04" onchange="actualizarDesdeEmp()">
       </div>
       <div class="fg">
         <label class="fl">Nro. liquidación</label>
@@ -1398,7 +1309,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:19px;heigh
   <div class="card">
     <div class="fg">
       <label class="fl">Empleada</label>
-      <select class="fi" id="eg-emp" onchange="calcEgreso()">
+      <select class="fi" id="eg-emp" onchange="var v=this.value; if(v&&v!=='manual')precargarEgreso(v); else calcEgreso();">
         <option value="choca">Choca Javier Daniela Nahir</option>
         <option value="aguiar_eg">Aguiar Camila Belén (ejemplo egreso)</option>
         <option value="manual">— Manual —</option>
@@ -1422,6 +1333,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:19px;heigh
       <div class="fg">
         <label class="fl">Días licencia no gozada</label>
         <input class="fi" type="number" id="eg-licenc" value="0" onchange="calcEgreso()">
+        <div id="eg-licenc-info" style="font-size:10px;color:var(--suave);margin-top:3px;line-height:1.4"></div>
       </div>
     </div>
     <div class="fr">
@@ -1789,14 +1701,6 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:19px;heigh
 
 </div><!-- /main -->
 
-<button class="fab" onclick="fabAction()">＋</button>
-
-<div class="bottom-nav">
-  <div class="bnav-item active" id="bn-r" onclick="switchMod('residentes',null)"><div class="bnav-icon">🏥</div><div class="bnav-label">Residentes</div></div>
-  <div class="bnav-item" id="bn-p" onclick="switchMod('personal',null)"><div class="bnav-icon">👥</div><div class="bnav-label">Personal</div></div>
-  <div class="bnav-item" id="bn-g" onclick="switchMod('gastos',null)"><div class="bnav-icon">💰</div><div class="bnav-label">Gastos</div></div>
-  <div class="bnav-item" id="bn-d" onclick="switchMod('diagnostico',null)"><div class="bnav-icon">📊</div><div class="bnav-label">Diagnóstico</div></div>
-</div>
 
 
 </div><!-- /main -->
@@ -2290,97 +2194,302 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:19px;heigh
       </div>
     </div>
     <div class="mtab-row">
-      <div class="mtab active" onclick="switchMtab('fe-datos',this)">📋 Datos</div>
-      <div class="mtab" onclick="switchMtab('fe-licencia',this)">🌴 Licencia</div>
-      <div class="mtab" onclick="switchMtab('fe-adelantos',this)">💵 Adelantos</div>
+      <div class="mtab active" onclick="switchMtab('fe-datos',this)">📋 Ficha</div>
+      <div class="mtab" onclick="switchMtab('fe-registros',this)">📝 Registros</div>
+      <div class="mtab" onclick="switchMtab('fe-liquidaciones',this)">💳 Liquidaciones</div>
     </div>
 
     <!-- DATOS -->
     <div id="mt-fe-datos">
-      <div class="fr">
-        <div class="fg"><label class="fl">CI</label><input class="fi" id="fe-ci" value="4.533.078-9"></div>
-        <div class="fg"><label class="fl">Teléfono</label><input class="fi" id="fe-tel" placeholder="09X..."></div>
-      </div>
-      <div class="fr">
-        <div class="fg"><label class="fl">Sueldo base ($)</label><input class="fi" id="fe-sueldo" type="number" value="29674"></div>
-        <div class="fg"><label class="fl">Presentismo ($)</label><input class="fi" id="fe-pres" type="number" value="3709"></div>
-      </div>
-      <div class="fg"><label class="fl">Prima antigüedad (% por año)</label><input class="fi" id="fe-antig-pct" type="number" value="0" step="0.5" placeholder="Ej: 1"></div>
-      <div class="card" style="background:var(--crema);padding:12px">
-        <div class="toggle-row">
-          <div><div class="toggle-lbl">¿Hijos menores a cargo?</div></div>
-          <div class="toggle" id="fe-tog-hijos" onclick="this.classList.toggle('on')"></div>
+      <button class="btn-volver" onclick="perCloseM('modal-ficha-emp')">← Personal</button>
+
+      <!-- SEC: Datos personales -->
+      <div class="fs-section">
+        <div class="sec-header">
+          <div class="fs-titulo">🪪 Datos personales</div>
+          <div class="sec-btns">
+            <button class="btn-sec-edit" id="btn-edit-emp-pers" onclick="toggleEmpSec('pers')">✏️ Editar</button>
+            <button class="btn-sec-save" id="btn-save-emp-pers" onclick="guardarEmpSeccion('pers')" style="display:none">✅ Guardar</button>
+          </div>
         </div>
-        <div class="toggle-row">
-          <div><div class="toggle-lbl">¿Cónyuge a cargo?</div></div>
-          <div class="toggle" id="fe-tog-conyuge" onclick="this.classList.toggle('on')"></div>
+        <div id="view-emp-pers">
+          <div class="field-row"><span class="field-lbl">CI</span><span id="vew-ci" class="field-val">—</span></div>
+          <div class="field-row"><span class="field-lbl">Teléfono</span><span id="vew-tel" class="field-val">—</span></div>
+          <div class="field-row"><span class="field-lbl">Banco</span><span id="vew-banco" class="field-val">—</span></div>
+          <div class="field-row"><span class="field-lbl">Nro. cuenta</span><span id="vew-cuenta" class="field-val">—</span></div>
         </div>
-      </div>
-      <div class="fr">
-        <div class="fg"><label class="fl">Banco</label><input class="fi" id="fe-banco" placeholder="BROU / Itaú"></div>
-        <div class="fg"><label class="fl">Nro. cuenta</label><input class="fi" id="fe-cuenta" placeholder="Nro."></div>
-      </div>
-      <div class="fr">
-        <div class="fg"><label class="fl">Turno</label>
-          <select class="fi" id="fe-turno">
-            <option>07 - 15</option><option>15 - 23</option><option>23 - 07</option><option>Rotativo</option>
-          </select>
-        </div>
-        <div class="fg"><label class="fl">Categoría</label>
-          <select class="fi" id="fe-categoria">
-            <option>Cuidadora</option><option>Limpiadora</option><option>Cocinera</option><option>Encargada</option>
-          </select>
+        <div id="edit-emp-pers" style="display:none">
+          <div class="fr">
+            <div class="fg"><label class="fl">CI</label><input class="fi" id="fe-ci" placeholder="X.XXX.XXX-X"></div>
+            <div class="fg"><label class="fl">Teléfono</label><input class="fi" id="fe-tel" placeholder="09X..."></div>
+          </div>
+          <div class="fr">
+            <div class="fg"><label class="fl">Banco</label><input class="fi" id="fe-banco" placeholder="BROU / Itaú"></div>
+            <div class="fg"><label class="fl">Nro. cuenta</label><input class="fi" id="fe-cuenta" placeholder="Nro."></div>
+          </div>
         </div>
       </div>
-      <div style="display:flex;gap:8px;margin-top:6px">
-        <button class="btn bd" style="flex:1" onclick="confirmarEliminarEmpleada()">🗑️ Eliminar</button>
-        <button class="btn bv" style="flex:2" onclick="guardarFichaEmpleada()">✅ Guardar cambios</button>
+
+      <!-- SEC: Condiciones laborales -->
+      <div class="fs-section">
+        <div class="sec-header">
+          <div class="fs-titulo">💼 Condiciones laborales</div>
+          <div class="sec-btns">
+            <button class="btn-sec-edit" id="btn-edit-emp-lab" onclick="toggleEmpSec('lab')">✏️ Editar</button>
+            <button class="btn-sec-save" id="btn-save-emp-lab" onclick="guardarEmpSeccion('lab')" style="display:none">✅ Guardar</button>
+          </div>
+        </div>
+        <div id="view-emp-lab">
+          <div class="field-row"><span class="field-lbl">Turno</span><span id="vew-turno" class="field-val">—</span></div>
+          <div class="field-row"><span class="field-lbl">Categoría</span><span id="vew-categoria" class="field-val">—</span></div>
+          <div class="field-row"><span class="field-lbl">Sueldo base</span><span id="vew-sueldo" class="field-val">—</span></div>
+          <div class="field-row"><span class="field-lbl">Presentismo</span><span id="vew-pres" class="field-val">—</span></div>
+          <div class="field-row"><span class="field-lbl">Hijos</span><span id="vew-hijos" class="field-val">—</span></div>
+          <div class="field-row"><span class="field-lbl">Cónyuge</span><span id="vew-conyuge" class="field-val">—</span></div>
+        </div>
+        <div id="edit-emp-lab" style="display:none">
+          <div class="fr">
+            <div class="fg"><label class="fl">Turno</label>
+              <select class="fi" id="fe-turno">
+                <option>07 - 15</option><option>15 - 23</option><option>23 - 07</option><option>Rotativo</option>
+              </select>
+            </div>
+            <div class="fg"><label class="fl">Categoría</label>
+              <select class="fi" id="fe-categoria">
+                <option>Cuidadora</option><option>Limpiadora</option><option>Cocinera</option><option>Encargada</option>
+              </select>
+            </div>
+          </div>
+          <div class="fr">
+            <div class="fg"><label class="fl">Sueldo ($)</label><input class="fi" id="fe-sueldo" type="number" value="29674"></div>
+            <div class="fg"><label class="fl">Presentismo ($)</label><input class="fi" id="fe-pres" type="number" value="3709"></div>
+          </div>
+          <div class="fg"><label class="fl">Prima antigüedad (%/año)</label>
+            <input class="fi" id="fe-antig-pct" type="number" value="0" step="0.5">
+          </div>
+          <div class="card" style="background:var(--crema);padding:12px">
+            <div class="toggle-row">
+              <div><div class="toggle-lbl">¿Hijos menores a cargo?</div></div>
+              <div class="toggle" id="fe-tog-hijos" onclick="this.classList.toggle('on')"></div>
+            </div>
+            <div class="toggle-row">
+              <div><div class="toggle-lbl">¿Cónyuge a cargo?</div></div>
+              <div class="toggle" id="fe-tog-conyuge" onclick="this.classList.toggle('on')"></div>
+            </div>
+          </div>
+        </div>
       </div>
+      <button class="btn bd" style="width:100%;margin-top:4px" onclick="confirmarEliminarEmpleada()">🗑️ Dar de baja</button>
     </div>
 
     <!-- LICENCIA -->
-    <div id="mt-fe-licencia" style="display:none">
-      <div class="card" style="background:var(--crema);padding:13px;margin-bottom:12px">
-        <div style="font-size:13px;line-height:2.2">
-          <div style="display:flex;justify-content:space-between"><span>Fecha ingreso</span><strong id="fe-lic-ing">01/06/2025</strong></div>
-          <div style="display:flex;justify-content:space-between"><span>Meses trabajados</span><strong id="fe-lic-meses">10</strong></div>
-          <div style="display:flex;justify-content:space-between"><span>Días generados (×1.66)</span><strong id="fe-lic-gen" style="color:var(--verde)">16.6 días</strong></div>
-          <div style="display:flex;justify-content:space-between"><span>Días gozados</span><strong id="fe-lic-goz" style="color:#2e7d32">0 días</strong></div>
-          <div class="divider" style="margin:5px 0"></div>
-          <div style="display:flex;justify-content:space-between"><span style="font-weight:600;color:var(--verde)">Días pendientes</span><strong id="fe-lic-pend" style="color:var(--rojo);font-size:15px">16.6 días</strong></div>
-        </div>
-      </div>
-      <div class="fg"><label class="fl">Registrar días de licencia gozados</label><input class="fi" type="number" placeholder="Ej: 5" min="0"></div>
-      <button class="btn bv" onclick="perCloseM('modal-ficha-emp')">✅ Actualizar licencia</button>
-    </div>
+    <div id="mt-fe-registros" style="display:none">
+      <button class="btn-volver" onclick="perCloseM('modal-ficha-emp')">← Personal</button>
 
-    <!-- ADELANTOS -->
-    <div id="mt-fe-adelantos" style="display:none">
-      <div style="font-size:13px">
-        <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--crema-o)"><span style="color:var(--suave)">Historial</span></div>
-        <div id="fe-adelantos-lista" style="font-size:12px">
-          <div style="display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid var(--crema-o)">
-            <span style="color:var(--suave);min-width:55px;font-size:11px">mar 2026</span>
-            <span style="flex:1">Adelanto</span>
-            <strong style="color:var(--rojo)">$0</strong>
-            <span style="font-size:10px;padding:2px 7px;border-radius:20px;background:#e8f5e9;color:#2e7d32">Descontado</span>
+      <!-- ══ SECCIÓN: LICENCIA ══ -->
+      <div class="fs-section">
+        <div class="fs-titulo">🌴 Licencia anual</div>
+        <!-- Resumen -->
+        <div style="background:var(--crema);border-radius:10px;padding:12px;margin-bottom:12px">
+          <div style="font-size:13px;line-height:2.2">
+            <div style="display:flex;justify-content:space-between"><span>Fecha ingreso</span><strong id="fe-lic-ing">—</strong></div>
+            <div style="display:flex;justify-content:space-between"><span>Días que corresponden/año</span><strong id="fe-lic-anual" style="color:var(--verde)">—</strong></div>
+            <div style="display:flex;justify-content:space-between"><span>Días generados (prop. al año)</span><strong id="fe-lic-gen" style="color:var(--verde)">—</strong></div>
+            <div style="display:flex;justify-content:space-between"><span>Días gozados</span><strong id="fe-lic-goz" style="color:#2e7d32">—</strong></div>
+            <div style="display:flex;justify-content:space-between;border-top:1px solid var(--crema-oscura);padding-top:6px;margin-top:4px">
+              <span style="font-weight:600;color:var(--verde)">Días pendientes</span>
+              <strong id="fe-lic-pend" style="color:var(--rojo);font-size:15px">—</strong>
+            </div>
           </div>
         </div>
-        <div class="divider"></div>
-        <div style="display:flex;justify-content:space-between;font-weight:700;font-size:14px"><span style="color:var(--verde)">Pendiente total</span><strong id="fe-adel-total" style="color:var(--rojo)">$0</strong></div>
+        <!-- Registro de período gozado -->
+        <div class="sep">Registrar período gozado</div>
+        <div class="fr">
+          <div class="fg"><label class="fl">Desde</label>
+            <input class="fi" type="date" id="fe-lic-desde" oninput="calcDiasLic()">
+          </div>
+          <div class="fg"><label class="fl">Hasta</label>
+            <input class="fi" type="date" id="fe-lic-hasta" oninput="calcDiasLic()">
+          </div>
+        </div>
+        <div class="fg">
+          <label class="fl">Días hábiles</label>
+          <input class="fi" type="number" id="fe-lic-dias-reg" placeholder="Se calcula auto" min="0">
+          <div style="font-size:10px;color:var(--suave);margin-top:3px" id="fe-lic-calc-info"></div>
+        </div>
+        <div class="fg"><label class="fl">Observación</label>
+          <input class="fi" id="fe-lic-obs" placeholder="Ej: Vacaciones enero">
+        </div>
+        <button class="btn bv" style="width:100%;margin-top:4px" onclick="registrarLicencia()">✅ Registrar licencia gozada</button>
       </div>
-      <div class="divider"></div>
-      <div id="adelantos-lista"></div>
-      <div class="sep" style="margin-top:10px">Registrar nuevo adelanto</div>
-      <div class="fg"><label class="fl">Monto ($)</label>
-        <input class="fi" type="number" id="adelanto-monto" placeholder="Ej: 5000">
+
+      <!-- ══ SECCIÓN: HORAS EXTRA ══ -->
+      <div class="fs-section">
+        <div class="fs-titulo">⏱️ Horas extra diurnas</div>
+        <div style="font-size:11px;color:var(--suave);margin-bottom:8px">Recargo 100% · Jornal hora × 2 = <strong>$296.74/hora</strong></div>
+        <div class="fr">
+          <div class="fg"><label class="fl">Cantidad de horas</label>
+            <input class="fi" type="number" id="reg-hex-cantidad" placeholder="0" min="0" step="0.5" oninput="calcRegistros()">
+          </div>
+          <div class="fg"><label class="fl">Mes</label>
+            <select class="fi" id="reg-hex-mes"></select>
+          </div>
+        </div>
+        <div id="reg-hex-resultado" style="font-size:12px;color:var(--verde);margin-bottom:8px"></div>
+        <button class="btn bv" style="width:100%" onclick="guardarRegistroEmp('hex')">✅ Registrar horas extra</button>
       </div>
-      <div class="fg"><label class="fl">Se descuenta en</label>
-        <select class="fi" id="adelanto-mes"></select>
+
+      <!-- ══ SECCIÓN: HORAS NOCTURNAS ══ -->
+      <div class="fs-section">
+        <div class="fs-titulo">🌙 Horas nocturnas</div>
+        <div style="font-size:11px;color:var(--suave);margin-bottom:8px">Recargo 20% · Jornal hora × 1.20 = <strong>$178.04/hora</strong> · Horario 22:00–06:00</div>
+        <div class="fr">
+          <div class="fg"><label class="fl">Cantidad de horas</label>
+            <input class="fi" type="number" id="reg-hnoct-cantidad" placeholder="0" min="0" step="0.5" oninput="calcRegistros()">
+          </div>
+          <div class="fg"><label class="fl">Mes</label>
+            <select class="fi" id="reg-hnoct-mes"></select>
+          </div>
+        </div>
+        <div id="reg-hnoct-resultado" style="font-size:12px;color:var(--verde);margin-bottom:8px"></div>
+        <button class="btn bv" style="width:100%" onclick="guardarRegistroEmp('hnoct')">✅ Registrar horas nocturnas</button>
       </div>
-      <button class="btn bv" style="width:100%;margin-top:6px" onclick="guardarAdelanto()">💵 Registrar adelanto</button>
+
+      <!-- ══ SECCIÓN: ADELANTOS ══ -->
+      <div class="fs-section">
+        <div class="fs-titulo">💵 Adelantos</div>
+        <div style="background:var(--verde);border-radius:10px;padding:10px;color:white;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <div style="font-size:10px;opacity:.7">PENDIENTE</div>
+            <div style="font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;color:#C9A84C" id="fe-adel-total">$0</div>
+          </div>
+          <div style="font-size:10px;opacity:.7">Se descuenta<br>en liquidación</div>
+        </div>
+        <div id="adelantos-lista" style="margin-bottom:10px"></div>
+        <div class="sep">Registrar adelanto</div>
+        <div class="fr">
+          <div class="fg"><label class="fl">Mes</label>
+            <select class="fi" id="adelanto-mes"></select>
+          </div>
+          <div class="fg"><label class="fl">Monto ($)</label>
+            <input class="fi" type="number" id="adelanto-monto" placeholder="Ej: 5000">
+          </div>
+        </div>
+        <button class="btn bv" style="width:100%" onclick="guardarAdelanto()">💵 Registrar adelanto</button>
+      </div>
+
     </div>
-  </div>
+
+<!-- TAB: LIQUIDACIONES -->
+    <div id="mt-fe-liquidaciones" style="display:none">
+      <button class="btn-volver" onclick="perCloseM('modal-ficha-emp')">← Personal</button>
+
+      <!-- ══ SECCIÓN 1: LIQUIDACIÓN MENSUAL ══ -->
+      <div class="fs-section">
+        <div class="fs-titulo">💵 Liquidación mensual</div>
+        <div style="font-size:11px;color:var(--suave);margin-bottom:10px">Grupo 15/200 · Régimen 5×1 · 8 hs diarias</div>
+
+        <div class="fr">
+          <div class="fg"><label class="fl">Empleada</label>
+            <div class="fi" id="liq-emp-nom" style="padding:10px;font-size:12px;font-weight:600;color:var(--verde)">—</div>
+          </div>
+          <div class="fg"><label class="fl">Mes</label>
+            <input class="fi" type="month" id="liq-mes-emp" onchange="onLiqMesChange()">
+          </div>
+        </div>
+
+        <div class="sep">Haberes</div>
+        <div class="fr">
+          <div class="fg"><label class="fl">Sueldo base ($)</label>
+            <input class="fi" type="number" id="liq-sueldo-emp" value="29674" oninput="calcLiqEmp()">
+          </div>
+          <div class="fg"><label class="fl">Presentismo ($)</label>
+            <input class="fi" type="number" id="liq-pres-emp" value="3709" oninput="calcLiqEmp()">
+          </div>
+        </div>
+        <div class="fr">
+          <div class="fg"><label class="fl">Hs extra diurnas</label>
+            <input class="fi" type="number" id="liq-hex-emp" value="0" min="0" step="0.5"
+              oninput="calcLiqEmp()"
+              title="Recargo 100% · $296.74/hora">
+            <div style="font-size:10px;color:var(--suave);margin-top:2px">$296.74/hora</div>
+          </div>
+          <div class="fg"><label class="fl">Hs nocturnas</label>
+            <input class="fi" type="number" id="liq-hnoct-emp" value="0" min="0" step="0.5"
+              oninput="calcLiqEmp()"
+              title="Recargo 20% · $178.04/hora">
+            <div style="font-size:10px;color:var(--suave);margin-top:2px">$178.04/hora</div>
+          </div>
+        </div>
+
+        <div class="sep">Descuentos</div>
+        <div class="fr">
+          <div class="fg"><label class="fl">Adelanto a descontar ($)</label>
+            <input class="fi" type="number" id="liq-adel-emp" value="0" oninput="calcLiqEmp()">
+          </div>
+          <div class="fg"><label class="fl">Faltas (días)</label>
+            <input class="fi" type="number" id="liq-faltas-emp" value="0" min="0" oninput="calcLiqEmp()">
+          </div>
+        </div>
+
+        <!-- Resultado liquidación -->
+        <div style="background:var(--verde);border-radius:10px;padding:12px;color:white;margin-top:10px;margin-bottom:4px">
+          <div style="font-size:10px;opacity:.7;letter-spacing:1px">LIQUIDACIÓN MENSUAL</div>
+          <div id="liq-emp-detalle" style="font-size:11px;opacity:.8;margin:6px 0">—</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:38px;font-weight:300;color:#C9A84C" id="liq-emp-liquido">$0</div>
+          <div style="font-size:10px;opacity:.6">LÍQUIDO A COBRAR</div>
+        </div>
+        <button class="btn bv" style="width:100%;margin-bottom:4px" onclick="generarReciboEmpPDF()">⬇️ Generar recibo PDF</button>
+      </div>
+
+      <!-- ══ SECCIÓN 2: LIQUIDACIÓN POR EGRESO ══ -->
+      <div class="fs-section">
+        <div class="fs-titulo">📋 Liquidación por egreso</div>
+        <div style="font-size:11px;color:var(--suave);margin-bottom:10px">Vacacional · Licencia no gozada · Aguinaldo proporcional</div>
+        <div style="font-size:10px;background:#fff8e1;border-left:3px solid #f9a825;padding:6px 8px;border-radius:0 4px 4px 0;margin-bottom:10px">
+          ⚠️ BPS solo aplica sobre aguinaldo. Vacacional y licencia no gozada no tienen aportes.
+        </div>
+
+        <div class="fr">
+          <div class="fg"><label class="fl">Fecha ingreso</label>
+            <input class="fi" type="date" id="eg-ing-emp" onchange="calcEgresoEmp()">
+          </div>
+          <div class="fg"><label class="fl">Fecha egreso</label>
+            <input class="fi" type="date" id="eg-sal-emp" onchange="calcEgresoEmp()">
+          </div>
+        </div>
+        <div class="fr">
+          <div class="fg"><label class="fl">Jornal diario ($)</label>
+            <input class="fi" type="number" id="eg-jornal-emp" placeholder="Sueldo ÷ 30" oninput="calcEgresoEmp()">
+            <div style="font-size:10px;color:var(--suave);margin-top:2px">Se precarga automáticamente</div>
+          </div>
+          <div class="fg"><label class="fl">Mejor nominal semestre ($)</label>
+            <input class="fi" type="number" id="eg-nominal-emp" placeholder="Mejor mes" oninput="calcEgresoEmp()">
+          </div>
+        </div>
+        <div class="fr">
+          <div class="fg"><label class="fl">Días lic. no gozada</label>
+            <input class="fi" type="number" id="eg-lic-emp" value="0" oninput="calcEgresoEmp()">
+          </div>
+          <div class="fg"><label class="fl">Días vacacionales</label>
+            <input class="fi" type="number" id="eg-vac-emp" value="0" oninput="calcEgresoEmp()">
+          </div>
+        </div>
+        <div style="font-size:10px;color:var(--suave);margin-bottom:10px" id="eg-lic-emp-info"></div>
+
+        <!-- Resultado egreso -->
+        <div style="background:var(--verde);border-radius:10px;padding:12px;color:white;margin-top:6px;margin-bottom:4px">
+          <div style="font-size:10px;opacity:.7;letter-spacing:1px">LIQUIDACIÓN EGRESO</div>
+          <div id="eg-emp-detalle" style="font-size:11px;opacity:.8;margin:6px 0">—</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:38px;font-weight:300;color:#C9A84C" id="eg-emp-liquido">$0</div>
+          <div style="font-size:10px;opacity:.6">TOTAL A COBRAR</div>
+        </div>
+        <button class="btn bv" style="width:100%" onclick="generarEgresoEmpPDF()">⬇️ Generar recibo egreso PDF</button>
+      </div>
+
+    </div>
+
+</div>
 </div>
 
 <!-- RECIBO MODAL -->
@@ -2735,6 +2844,34 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:19px;heigh
   </div><!-- /modal -->
 </div><!-- /modal-residente -->
 
+
+<!-- MODAL: PASTILLERO SEMANAL -->
+<div class="moverlay" id="modal-pastillero-semanal" onclick="resCloseO(event,'modal-pastillero-semanal')">
+  <div class="modal" style="max-height:92vh">
+    <div class="mhandle"></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+      <div><div class="mtit">💊 Pastillero semanal</div><div class="msub">Medicación de todos los residentes activos</div></div>
+      <button class="btn-volver" onclick="resCloseM('modal-pastillero-semanal')" style="padding:0">✕</button>
+    </div>
+    <div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;margin-bottom:14px" id="past-dias">
+      <button class="past-dia-btn active" onclick="verDiaPastillero(0,this)">Lun</button>
+      <button class="past-dia-btn" onclick="verDiaPastillero(1,this)">Mar</button>
+      <button class="past-dia-btn" onclick="verDiaPastillero(2,this)">Mié</button>
+      <button class="past-dia-btn" onclick="verDiaPastillero(3,this)">Jue</button>
+      <button class="past-dia-btn" onclick="verDiaPastillero(4,this)">Vie</button>
+      <button class="past-dia-btn" onclick="verDiaPastillero(5,this)">Sáb</button>
+      <button class="past-dia-btn" onclick="verDiaPastillero(6,this)">Dom</button>
+    </div>
+    <div id="past-contenido" style="overflow-y:auto;max-height:55vh"></div>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button class="btn bv" style="flex:1" onclick="generarPastilleroPDF()">⬇️ Semana completa PDF</button>
+    </div>
+    <div style="font-size:10px;color:var(--suave);text-align:center;margin-top:8px;padding-top:8px;border-top:1px solid var(--crema-o)">
+      🌅 08:00 · ☀️ 14:00 · 🌆 16:00 · 🌙 20:00 · 🌛 00:00
+    </div>
+  </div>
+</div>
+
 <!-- MODAL: NUEVO REGISTRO HISTORIAL -->
 <div class="moverlay" id="modal-nuevo-registro" onclick="resCloseO(event,'modal-nuevo-registro')">
   <div class="modal">
@@ -2951,41 +3088,98 @@ var PINES = { 'Juliana':'1234', 'Lucía':'5678', 'Flavia':'9012' };
 //   credentials: omit — evita cookies que bloquea Safari ITP
 // ══════════════════════════════════════════════════════════
 async function apiGet(sheet) {
+  var url = API_URL + '?token=' + API_TOKEN + '&sheet=' + sheet + '&action=getAll';
+  
+  // Intentar con fetch primero
   try {
-    var url = API_URL + '?token=' + API_TOKEN + '&sheet=' + sheet + '&action=getAll';
     var r = await fetch(url, {
       method: 'GET',
       redirect: 'follow',
       credentials: 'omit'
     });
-    if (!r.ok) { console.warn('apiGet HTTP error', r.status, sheet); return []; }
-    var j = await r.json();
-    return (j && j.ok) ? j.data : [];
-  } catch(e) {
-    console.warn('apiGet', sheet, e.message || e);
-    return [];
+    if (r.ok) {
+      var j = await r.json();
+      return (j && j.ok) ? j.data : [];
+    }
+  } catch(e1) {
+    console.warn('apiGet fetch failed, trying XHR:', sheet, e1.message || e1);
   }
+
+  // Fallback: XMLHttpRequest (diferente manejo de CORS, funciona en Safari iOS)
+  return new Promise(function(resolve) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', url, true);
+    xhr.withCredentials = false;
+    xhr.timeout = 15000;
+    xhr.onload = function() {
+      try {
+        var j = JSON.parse(xhr.responseText);
+        resolve((j && j.ok) ? j.data : []);
+      } catch(e) {
+        console.warn('apiGet XHR parse error:', sheet, e.message);
+        resolve([]);
+      }
+    };
+    xhr.onerror = function() {
+      console.warn('apiGet XHR error:', sheet);
+      resolve([]);
+    };
+    xhr.ontimeout = function() {
+      console.warn('apiGet XHR timeout:', sheet);
+      resolve([]);
+    };
+    xhr.send();
+  });
 }
 
 async function apiPost(sheet, action, data, id) {
+  var body = { sheet: sheet, action: action, data: data, token: API_TOKEN };
+  if (id) body.id = id;
+  var bodyStr = JSON.stringify(body);
+
+  // Intentar con fetch primero
   try {
-    var body = { sheet: sheet, action: action, data: data, token: API_TOKEN };
-    if (id) body.id = id;
-    // CRÍTICO: text/plain evita preflight OPTIONS que Apps Script no maneja
     var r = await fetch(API_URL, {
       method: 'POST',
       redirect: 'follow',
       credentials: 'omit',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify(body)
+      body: bodyStr
     });
-    if (!r.ok) { console.warn('apiPost HTTP error', r.status, sheet); return null; }
-    var j = await r.json();
-    return (j && j.ok) ? j.data : null;
-  } catch(e) {
-    console.warn('apiPost', sheet, e.message || e);
-    return null;
+    if (r.ok) {
+      var j = await r.json();
+      return (j && j.ok) ? j.data : null;
+    }
+  } catch(e1) {
+    console.warn('apiPost fetch failed, trying XHR:', sheet, e1.message || e1);
   }
+
+  // Fallback: XMLHttpRequest
+  return new Promise(function(resolve) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', API_URL, true);
+    xhr.setRequestHeader('Content-Type', 'text/plain;charset=utf-8');
+    xhr.withCredentials = false;
+    xhr.timeout = 15000;
+    xhr.onload = function() {
+      try {
+        var j = JSON.parse(xhr.responseText);
+        resolve((j && j.ok) ? j.data : null);
+      } catch(e) {
+        console.warn('apiPost XHR parse error:', sheet, e.message);
+        resolve(null);
+      }
+    };
+    xhr.onerror = function() {
+      console.warn('apiPost XHR error:', sheet);
+      resolve(null);
+    };
+    xhr.ontimeout = function() {
+      console.warn('apiPost XHR timeout:', sheet);
+      resolve(null);
+    };
+    xhr.send(bodyStr);
+  });
 }
 
 
@@ -3045,37 +3239,6 @@ function hideLoading() {
   var el = document.getElementById('ec-loading');
   if (el) el.style.display = 'none';
 }
-
-function mostrarBotonReintento() {
-  var old = document.getElementById('btn-reintento');
-  if (old) old.remove();
-  var btn = document.createElement('div');
-  btn.id = 'btn-reintento';
-  btn.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:white;border-radius:16px;padding:28px;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.2);z-index:9998;max-width:300px;width:85%';
-  
-  var retryBtn = document.createElement('button');
-  retryBtn.textContent = '🔄 Reintentar';
-  retryBtn.style.cssText = 'background:#1a3d35;color:white;border:none;border-radius:10px;padding:13px 0;font-size:14px;cursor:pointer;width:100%;font-family:DM Sans,sans-serif;margin-bottom:10px';
-  retryBtn.onclick = function() {
-    var el = document.getElementById('btn-reintento');
-    if (el) el.remove();
-    cargarDatos();
-  };
-  
-  var newTabLink = document.createElement('a');
-  newTabLink.href = window.location.href.split('?')[0] + '?v=' + Date.now();
-  newTabLink.target = '_blank';
-  newTabLink.textContent = '↗ Abrir en pestaña nueva';
-  newTabLink.style.cssText = 'display:block;font-size:11px;color:#1a3d35;text-decoration:none;padding:8px 0;border-top:1px solid #eee;margin-top:4px';
-  
-  btn.innerHTML = '<div style="font-size:36px;margin-bottom:12px">📡</div>' +
-    '<div style="font-family:Cormorant Garamond,serif;font-size:19px;color:#1a3d35;margin-bottom:8px">Sin conexión al servidor</div>' +
-    '<div style="font-size:12px;color:#888;margin-bottom:20px;line-height:1.5">No se pudieron cargar los datos.<br>Verificá tu conexión a internet.</div>';
-  btn.appendChild(retryBtn);
-  btn.appendChild(newTabLink);
-  document.body.appendChild(btn);
-}
-
 
 // ── Indicador de carga NO bloqueante (esquina superior, no tapa el PIN) ──
 function mostrarIndicadorCarga(mostrar, msg) {
@@ -3420,42 +3583,106 @@ function abrirEmpleada(id) {
   var e = DB.empleadas.find(function(x){ return String(x.id) === String(id); });
   if (!e) { toast('Empleada no encontrada', 'error'); return; }
   empleadaActual = id;
+
+  // ── Header del modal ──
   var ini = e.nombre.split(' ').map(function(w){ return w[0]; }).filter(Boolean).slice(0,2).join('');
-  document.getElementById('fe-av').textContent  = ini;
-  document.getElementById('fe-nom').textContent = e.nombre;
-  var ing = new Date(e.ingreso);
-  document.getElementById('fe-sub').textContent = e.turno + ' · Ingreso ' + ing.toLocaleDateString('es-UY');
-  document.getElementById('fe-ci').value        = e.ci || '';
-  document.getElementById('fe-sueldo').value    = e.sueldo || 29674;
-  document.getElementById('fe-pres').value      = e.presentismo || 3709;
-  document.getElementById('fe-antig-pct').value = e.antig_pct || 0;
-  document.getElementById('fe-tog-hijos').classList.toggle('on', e.hijos === 'Sí');
-  document.getElementById('fe-tog-conyuge').classList.toggle('on', e.conyuge === 'Sí');
-  document.getElementById('fe-lic-ing').textContent = ing.toLocaleDateString('es-UY');
-  var hoy = new Date();
-  var meses = (hoy.getFullYear()-ing.getFullYear())*12 + hoy.getMonth()-ing.getMonth();
-  document.getElementById('fe-lic-meses').textContent = meses;
-  var diasGen = Math.round(meses * 1.66 * 10) / 10;
-  document.getElementById('fe-lic-gen').textContent  = diasGen + ' días';
-  document.getElementById('fe-lic-pend').textContent = diasGen + ' días';
+  var setEl = function(id, val, prop) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    if (prop === 'text') el.textContent = val;
+    else if (prop === 'val') el.value = val || '';
+    else if (prop === 'toggle') el.classList.toggle('on', !!val);
+  };
+
+  setEl('fe-av',  ini,       'text');
+  setEl('fe-nom', e.nombre,  'text');
+  var ing = new Date(String(e.ingreso||'').split('T')[0] || '2020-01-01');
+  var ingStr = ing.toLocaleDateString('es-UY');
+  setEl('fe-sub', (e.turno||'') + ' · Ingreso ' + ingStr, 'text');
+  var badgeEl = document.getElementById('fe-badge');
+  if (badgeEl) {
+    var hoy = new Date();
+    var meses = (hoy.getFullYear()-ing.getFullYear())*12 + hoy.getMonth()-ing.getMonth();
+    var estado = meses < 3 ? 'En período de prueba' : 'Consolidada · ' + meses + ' meses';
+    var cls    = meses < 3 ? 'badge b-naranja' : 'badge b-verde';
+    badgeEl.className = cls;
+    badgeEl.textContent = (meses < 3 ? '⚠️ ' : '✓ ') + estado;
+  }
+
+  // ── Tab Ficha: campos editables + vista ──
+  setEl('fe-ci',        e.ci,           'val');
+  setEl('fe-tel',       e.telefono,     'val');
+  setEl('fe-banco',     e.banco,        'val');
+  setEl('fe-cuenta',    e.cuenta,       'val');
+  setEl('fe-sueldo',    e.sueldo||29674,'val');
+  setEl('fe-pres',      e.presentismo||3709,'val');
+  setEl('fe-antig-pct', e.antig_pct||0, 'val');
+  setEl('fe-turno',     e.turno,        'val');
+  setEl('fe-categoria', e.categoria,    'val');
+  setEl('fe-tog-hijos',   e.hijos==='Sí',   'toggle');
+  setEl('fe-tog-conyuge', e.conyuge==='Sí', 'toggle');
+  try { actualizarVistaEmp(e); } catch(ex) {}
+
+  // ── Tab Registros: Licencia ──
+  var hoy2 = new Date();
+  var meses2 = (hoy2.getFullYear()-ing.getFullYear())*12 + hoy2.getMonth()-ing.getMonth();
+  var anios  = meses2 / 12;
+  var diasAnuales = anios >= 15 ? 30 : anios >= 9 ? 27 : anios >= 4 ? 25 : 20;
+  var diasGen  = Math.round((meses2/12) * diasAnuales * 10) / 10;
+  var diasGoz  = parseFloat(e.dias_gozados || 0);
+  var diasPend = Math.max(0, Math.round((diasGen - diasGoz) * 10) / 10);
+
+  setEl('fe-lic-ing',    ingStr,                       'text');
+  setEl('fe-lic-anual',  diasAnuales + ' días/año',    'text');
+  setEl('fe-lic-gen',    diasGen + ' días',             'text');
+  setEl('fe-lic-goz',    diasGoz + ' días',             'text');
+  setEl('fe-lic-pend',   diasPend + ' días',            'text');
+
+  // ── Tab Registros: Adelantos ──
   var adelPend = DB.adelantos
-    .filter(function(a){ return String(a.empleada_id) === String(id) && a.descontado === 'No'; })
-    .reduce(function(s,a){ return s + Number(a.monto); }, 0);
-  document.getElementById('fe-adel-total').textContent = '$' + adelPend.toLocaleString('es-UY');
+    .filter(function(a){ return String(a.empleada_id)===String(id) && a.descontado==='No'; })
+    .reduce(function(s,a){ return s+Number(a.monto); }, 0);
+  setEl('fe-adel-total', '$' + Math.round(adelPend).toLocaleString('es-UY'), 'text');
+  try { poblarMesesAdelanto(); renderListaAdelantos(); } catch(ex) {}
+  try { poblarMesesRegistros('reg-hex-mes'); poblarMesesRegistros('reg-hnoct-mes'); } catch(ex) {}
 
-  // Pre-cargar en liquidación
-  tieneHijos   = e.hijos   === 'Sí';
-  tieneConyuge = e.conyuge === 'Sí';
-  if (document.getElementById('liq-sueldo')) document.getElementById('liq-sueldo').value = e.sueldo;
-  if (document.getElementById('liq-pres'))   document.getElementById('liq-pres').value   = e.presentismo;
-  if (document.getElementById('tog-hijos'))  document.getElementById('tog-hijos').classList.toggle('on', tieneHijos);
-  if (document.getElementById('tog-conyuge')) document.getElementById('tog-conyuge').classList.toggle('on', tieneConyuge);
-  calcLiq();
+  // ── Tab Liquidaciones: Sueldo mensual ──
+  var mesActual = new Date().toISOString().slice(0,7);
+  setEl('liq-sueldo-emp', e.sueldo||29674,      'val');
+  setEl('liq-pres-emp',   e.presentismo||3709,  'val');
+  setEl('liq-mes-emp',    mesActual,             'val');
+  setEl('liq-emp-nom',    e.nombre,              'text');
+  // Adelantos del mes actual
+  var adelMes = DB.adelantos
+    .filter(function(a){ return String(a.empleada_id)===String(id) && a.mes===mesActual && a.descontado==='No'; })
+    .reduce(function(s,a){ return s+Number(a.monto); }, 0);
+  setEl('liq-adel-emp', adelMes, 'val');
+  // Cargar registros del mes (horas extra/nocturnas)
+  var registros = {};
+  try { registros = JSON.parse(e.registros_json||'{}'); } catch(ex) {}
+  setEl('liq-hex-emp',   (registros[mesActual]||{}).hex   || 0, 'val');
+  setEl('liq-hnoct-emp', (registros[mesActual]||{}).hnoct || 0, 'val');
+  setEl('liq-faltas-emp', 0, 'val');
+  try { calcLiqEmp(); } catch(ex) {}
 
-  document.querySelectorAll('[id^="mt-fe-"]').forEach(function(t){ t.style.display = t.id==='mt-fe-datos' ? 'block' : 'none'; });
-  document.querySelectorAll('#modal-ficha-emp .mtab').forEach(function(t,i){ t.classList.toggle('active', i===0); });
-  // Initialize adelantos
-  try { poblarMesesAdelanto(); renderListaAdelantos(); } catch(e) {}
+  // ── Tab Liquidaciones: Egreso ──
+  var ingFecha = String(e.ingreso||'').split('T')[0];
+  setEl('eg-ing-emp',     ingFecha,                                                   'val');
+  setEl('eg-sal-emp',     new Date().toISOString().split('T')[0],                     'val');
+  setEl('eg-jornal-emp',  Math.round((parseFloat(e.sueldo)||29674)/30*100)/100,       'val');
+  setEl('eg-nominal-emp', parseFloat(e.sueldo||29674)+parseFloat(e.presentismo||3709),'val');
+  setEl('eg-lic-emp',     diasPend,                                                    'val');
+  setEl('eg-vac-emp',     0,                                                           'val');
+  try { calcEgresoEmp(); } catch(ex) {}
+
+  // ── Reset tabs to Ficha ──
+  document.querySelectorAll('[id^="mt-fe-"]').forEach(function(t){
+    t.style.display = t.id === 'mt-fe-datos' ? 'block' : 'none';
+  });
+  document.querySelectorAll('#modal-ficha-emp .mtab').forEach(function(t,i){
+    t.classList.toggle('active', i===0);
+  });
+
   perShowM('modal-ficha-emp');
 }
 
@@ -3601,8 +3828,7 @@ const MODS={
   residentes:{bn:'bn-r',subs:[
     {id:'rsub-lista',l:'🏥 Lista'},
     {id:'rsub-pastillero',l:'💊 Pastillero'},
-    {id:'rsub-agenda',l:'📋 Agenda'}
-  ]},
+    ]},
   personal:{bn:'bn-p',subs:[
     {id:'psub-equipo',l:'👥 Equipo'},
     {id:'psub-indicadores',l:'📊 Indicadores'},
@@ -3653,6 +3879,11 @@ function switchSub(id,el){
 function showM(id){document.getElementById(id).classList.add('open');}
 function closeM(id){document.getElementById(id).classList.remove('open');}
 function closeO(e,id){if(e.target===document.getElementById(id))closeM(id);}
+
+// ── Aliases modales residentes ──
+function resShowM(id){ showM(id); }
+function resCloseM(id){ closeM(id); }
+function resCloseO(e,id){ closeO(e,id); }
 
 // ── TIPO REGISTRO ──
 let tipoActual='nota';
@@ -4002,70 +4233,153 @@ function perCloseM(id) { document.getElementById(id).classList.remove('open'); }
 function perCloseO(e, id) { if (e.target === document.getElementById(id)) perCloseM(id); }
 
 // ══ ABRIR FICHA EMPLEADA ══
-function abrirEmp(key) {
-  const e = EMPLEADAS[key];
+function precargarLiquidacion(empId) {
+  // Buscar en DB.empleadas (datos reales de Sheets)
+  var e = DB.empleadas.find(function(x){ return String(x.id) === String(empId); });
   if (!e) return;
-  currentEmp = key;
-  document.getElementById('fe-av').textContent = e.ini;
-  document.getElementById('fe-nom').textContent = e.nom;
-  const ing = new Date(e.ingreso);
-  const hoy = new Date();
-  const meses = (hoy.getFullYear() - ing.getFullYear()) * 12 + hoy.getMonth() - ing.getMonth();
-  const prueba = meses < 3;
-  document.getElementById('fe-sub').textContent = `Cuidadora · ${e.turno} · Ingreso ${ing.toLocaleDateString('es-UY')}`;
-  const badge = document.getElementById('fe-badge');
-  badge.className = 'prueba-badge ' + (prueba ? 'pb-naranja' : 'pb-ok');
-  badge.style.cssText = prueba ? 'background:#fff3e0;color:var(--naranja);margin-top:4px' : 'margin-top:4px';
-  badge.textContent = prueba ? `⏳ En prueba · ${meses} meses` : `✓ Consolidada · ${meses} meses`;
-  document.getElementById('fe-ci').value = e.ci;
-  document.getElementById('fe-sueldo').value = e.sueldo;
-  document.getElementById('fe-pres').value = e.pres;
-  document.getElementById('fe-antig-pct').value = e.antig_pct;
-  if (e.hijos) document.getElementById('fe-tog-hijos').classList.add('on');
-  else document.getElementById('fe-tog-hijos').classList.remove('on');
-  if (e.conyuge) document.getElementById('fe-tog-conyuge').classList.add('on');
-  else document.getElementById('fe-tog-conyuge').classList.remove('on');
-  // Licencia
-  document.getElementById('fe-lic-ing').textContent = ing.toLocaleDateString('es-UY');
-  document.getElementById('fe-lic-meses').textContent = meses;
-  const diasGen = Math.round(meses * 1.66 * 10) / 10;
-  document.getElementById('fe-lic-gen').textContent = diasGen + ' días';
-  document.getElementById('fe-lic-pend').textContent = diasGen + ' días';
-  // Adelantos
-  document.getElementById('fe-adel-total').textContent = '$' + (e.adelanto || 0).toLocaleString('es-UY');
-  // Reset mtabs
-  ['fe-datos','fe-licencia','fe-adelantos'].forEach((t,i) => {
-    document.getElementById('mt-'+t).style.display = i===0 ? 'block' : 'none';
-  });
-  document.querySelectorAll('.mtab').forEach((t,i) => t.classList.toggle('active', i===0));
-  // Prellenar liquidación
-  precargarLiquidacion(key);
-  perShowM('modal-ficha-emp');
-}
 
-function precargarLiquidacion(key) {
-  const e = EMPLEADAS[key];
-  if (!e) return;
-  document.getElementById('liq-emp').value = key;
-  document.getElementById('liq-sueldo').value = e.sueldo;
-  document.getElementById('liq-pres').value = e.pres;
-  document.getElementById('liq-noct').value = e.noct || 0;
-  document.getElementById('liq-hexn').value = e.hexn || 0;
-  document.getElementById('liq-adelanto').value = e.adelanto || 0;
-  document.getElementById('liq-faltas').value = e.faltas || 0;
-  document.getElementById('liq-faltaxing').value = 0;
-  document.getElementById('liq-antig-pct').value = e.antig_pct || 0;
-  document.getElementById('liq-antig-anios').value = e.antig_anios || 0;
-  tieneHijos = e.hijos;
-  tieneConyuge = e.conyuge;
-  document.getElementById('tog-hijos').classList.toggle('on', tieneHijos);
-  document.getElementById('tog-conyuge').classList.toggle('on', tieneConyuge);
+  // Sueldo base desde Sheets, o laudo vigente si no está
+  var sueldo = parseFloat(e.sueldo) || 29674;
+  var pres   = parseFloat(e.presentismo) || 0;
+
+  document.getElementById('liq-sueldo').value  = sueldo;
+  document.getElementById('liq-pres').value    = pres;
+  document.getElementById('liq-noct').value    = 0;
+  document.getElementById('liq-hexn').value    = 0;
+  document.getElementById('liq-faltas').value  = 0;
+
+  // Turno desde ficha
+  var turnoEl = document.getElementById('liq-turno');
+  if (turnoEl && e.turno) {
+    var turnoVal = e.turno.replace(' ', '-').replace('Rotativo','rot').replace('rotativo','rot');
+    for (var o = 0; o < turnoEl.options.length; o++) {
+      if (turnoEl.options[o].value === turnoVal ||
+          turnoEl.options[o].text.toLowerCase().includes(e.turno.toLowerCase())) {
+        turnoEl.selectedIndex = o; break;
+      }
+    }
+  }
+
+  // Categoría según tiempo de servicio
+  var catEl = document.getElementById('liq-cat');
+  if (catEl && e.ingreso) {
+    var ingreso = new Date(String(e.ingreso).split('T')[0]);
+    var hoy = new Date();
+    var meses = (hoy.getFullYear() - ingreso.getFullYear()) * 12 + (hoy.getMonth() - ingreso.getMonth());
+    catEl.value = meses < 3 ? 'cuid-pru' : 'cuid-cons';
+  }
+
+  // Adelantos pendientes del mes seleccionado
+  var mesEl = document.getElementById('liq-mes');
+  var mesVal = mesEl ? mesEl.value : new Date().toISOString().slice(0,7);
+  var adelantosMes = DB.adelantos.filter(function(a){
+    return String(a.empleada_id) === String(e.id) && a.mes === mesVal && a.descontado === 'No';
+  });
+  var totalAdelanto = adelantosMes.reduce(function(s,a){ return s + Number(a.monto); }, 0);
+  document.getElementById('liq-adelanto').value = totalAdelanto;
+
+  // Hijos y cónyuge desde ficha
+  var tieneHij = e.hijos === 'Sí' || e.hijos === 'si' || Number(e.hijos) > 0;
+  var tieneCon = e.conyuge === 'Sí' || e.conyuge === 'si';
+  tieneHijos   = tieneHij;
+  tieneConyuge = tieneCon;
+  var togH = document.getElementById('tog-hijos');
+  var togC = document.getElementById('tog-conyuge');
+  if (togH) togH.classList.toggle('on', tieneHij);
+  if (togC) togC.classList.toggle('on', tieneCon);
+
   calcLiq();
 }
 
 function actualizarDesdeEmp() {
-  const key = document.getElementById('liq-emp').value;
-  if (key !== 'nueva') precargarLiquidacion(key);
+  var empId = document.getElementById('liq-emp').value;
+  if (empId && empId !== 'manual') precargarLiquidacion(empId);
+  else calcLiq();
+}
+
+// ── Calcular días de licencia según Ley 12.590 ──
+function diasLicenciaAnual(fechaIngreso) {
+  var ingreso = new Date(String(fechaIngreso).split('T')[0]);
+  var hoy = new Date();
+  var anios = (hoy - ingreso) / (1000 * 60 * 60 * 24 * 365.25);
+  if (anios >= 15) return 30;
+  if (anios >= 9)  return 27;
+  if (anios >= 4)  return 25;
+  return 20;
+}
+
+// ── Precargar egreso desde DB.empleadas ──
+function precargarEgreso(empId) {
+  var e = DB.empleadas.find(function(x){ return String(x.id) === String(empId); });
+  if (!e) return;
+
+  var fechaIngreso = String(e.ingreso || '').split('T')[0];
+  var hoy = new Date();
+  var hoyStr = hoy.toISOString().split('T')[0];
+
+  // Fechas
+  var inpIng = document.getElementById('eg-ing');
+  var inpSal = document.getElementById('eg-sal');
+  if (inpIng) inpIng.value = fechaIngreso;
+  if (inpSal) inpSal.value = hoyStr;
+
+  // Jornal = sueldo / 30
+  var sueldo = parseFloat(e.sueldo) || 29674;
+  var jornal = Math.round(sueldo / 30 * 100) / 100;
+  var inpJornal = document.getElementById('eg-jornal');
+  if (inpJornal) inpJornal.value = jornal;
+
+  // Nominal para aguinaldo = sueldo + presentismo
+  var pres = parseFloat(e.presentismo) || 0;
+  var nomAg = sueldo + pres;
+  var inpNomAg = document.getElementById('eg-aguin-nom');
+  if (inpNomAg) inpNomAg.value = Math.round(nomAg);
+
+  // Días de licencia según ley
+  var diasAnuales = diasLicenciaAnual(fechaIngreso);
+
+  // Licencia proporcional al año en curso (régimen 5×1, días hábiles)
+  // Días trabajados en el año en curso
+  var inicioAnio = new Date(hoy.getFullYear(), 0, 1);
+  var diasEnAnio = Math.floor((hoy - inicioAnio) / (1000 * 60 * 60 * 24));
+  var licProporcional = Math.round((diasEnAnio / 365) * diasAnuales * 10) / 10;
+
+  var inpLic = document.getElementById('eg-licenc');
+  if (inpLic) inpLic.value = licProporcional;
+
+  // Vacacional proporcional: misma proporción (1 día vacacional por cada 4 de licencia)
+  var diasVac = Math.round(licProporcional / 4 * 10) / 10;
+  var inpVac = document.getElementById('eg-vacac');
+  if (inpVac) inpVac.value = diasVac;
+
+  // Meses del semestre en curso (para aguinaldo)
+  // Semestre 1: enero-junio, Semestre 2: julio-diciembre
+  var mes = hoy.getMonth(); // 0-11
+  var inicioSemestre = mes < 6
+    ? new Date(hoy.getFullYear(), 0, 1)   // 1 enero
+    : new Date(hoy.getFullYear(), 6, 1);   // 1 julio
+  var mesesSem = Math.floor((hoy - inicioSemestre) / (1000 * 60 * 60 * 24 * 30.44));
+  mesesSem = Math.min(Math.max(mesesSem, 1), 6);
+  var inpAguinMes = document.getElementById('eg-aguin-mes');
+  if (inpAguinMes) inpAguinMes.value = mesesSem;
+
+  // Hijos y cónyuge
+  var tieneHij = e.hijos === 'Sí' || e.hijos === 'si' || Number(e.hijos) > 0;
+  var tieneCon = e.conyuge === 'Sí' || e.conyuge === 'si';
+  var togH = document.getElementById('tog-eg-hijos');
+  var togC = document.getElementById('tog-eg-conyuge');
+  if (togH) togH.classList.toggle('on', tieneHij);
+  if (togC) togC.classList.toggle('on', tieneCon);
+
+  // Mostrar breakdown de licencia
+  var info = document.getElementById('eg-licenc-info');
+  if (info) {
+    info.textContent = diasAnuales + ' días/año por antigüedad · ' +
+      diasEnAnio + ' días trabajados en ' + hoy.getFullYear() +
+      ' → ' + licProporcional + ' días proporcional';
+  }
+
+  calcEgreso();
 }
 
 // ══ TOGGLES ══
@@ -4380,10 +4694,6 @@ function resSwitchTab(name, el) {
 }
 
 // ══ MODALES ══
-function resShowM(id) { document.getElementById(id).classList.add('open'); }
-function resCloseM(id) { document.getElementById(id).classList.remove('open'); }
-function resCloseO(e, id) { if (e.target === document.getElementById(id)) resCloseM(id); }
-
 // ══ CHIP SELECT ══
 function selChip(el, grupo) {
   el.closest('.chip-group').querySelectorAll('.chip').forEach(c => c.classList.remove('sel'));
@@ -4712,9 +5022,6 @@ function resStartVoice(targetId) {
 }
 
 // ══ INIT ══
-resRenderAgenda();
-
-
 // ═══════ INIT ═══════
 
 // ── INIT ──
@@ -4733,7 +5040,6 @@ document.addEventListener('DOMContentLoaded', function() {
   try { calcS(); } catch(e) {}
   try { calcSim(); } catch(e) {}
   try { calcEsc(); } catch(e) {}
-  try { resRenderAgenda(); } catch(e) {}
   var btn = document.getElementById('header-user-btn');
   if (btn) btn.onclick = showPerfil;
   // Pre-fill date inputs
@@ -5885,14 +6191,19 @@ function refreshLiqEmpDropdown() {
   if (!sel) return;
   var current = sel.value;
   sel.innerHTML = '';
-  DB.empleadas.filter(function(e){ return e.activo === 'Sí'; }).forEach(function(e) {
+  var activas = DB.empleadas.filter(function(e){ return e.activo === 'Sí'; });
+  activas.forEach(function(e) {
     var nomCorto = e.nombre.split(' ').slice(0,3).join(' ');
     var opt = new Option(nomCorto, e.id);
     sel.add(opt);
   });
-  // Add manual option
   sel.add(new Option('— Manual —', 'manual'));
-  if (current) sel.value = current;
+  // Restore or default to first
+  if (current && current !== 'manual') sel.value = current;
+  else if (activas.length > 0) sel.value = activas[0].id;
+  // Auto-precarga
+  var selVal = sel.value;
+  if (selVal && selVal !== 'manual') precargarLiquidacion(selVal);
 }
 
 // Refresh egreso dropdown too
@@ -5901,12 +6212,15 @@ function refreshEgEmpDropdown() {
   if (!sel) return;
   var current = sel.value;
   sel.innerHTML = '';
-  DB.empleadas.filter(function(e){ return e.activo === 'Sí'; }).forEach(function(e) {
+  var activas = DB.empleadas.filter(function(e){ return e.activo === 'Sí'; });
+  activas.forEach(function(e) {
     var opt = new Option(e.nombre, e.id);
     sel.add(opt);
   });
   sel.add(new Option('— Manual —', 'manual'));
-  if (current) sel.value = current;
+  // Restore selection or default to first
+  if (current && current !== 'manual') sel.value = current;
+  else if (activas.length > 0) sel.value = activas[0].id;
 }
 
 
@@ -6211,6 +6525,539 @@ async function generarFichaSalidaCompleta() {
 // ── Actualizar abrirResidente para cargar ficha en formulario ──
 // (override partial de la función existente — llama cargarFichaEnFormulario)
 var _origAbrirResidente = typeof abrirResidente === 'function' ? abrirResidente : null;
+
+// ═══════════════════════════════════════════════════════
+// FICHA EMPLEADA — secciones editar/guardar
+// ═══════════════════════════════════════════════════════
+
+function toggleEmpSec(secId) {
+  var viewEl  = document.getElementById('view-emp-' + secId);
+  var editEl  = document.getElementById('edit-emp-' + secId);
+  var btnEdit = document.getElementById('btn-edit-emp-' + secId);
+  var btnSave = document.getElementById('btn-save-emp-' + secId);
+  if (!editEl) return;
+  var isEditing = editEl.style.display !== 'none';
+  if (isEditing) {
+    editEl.style.display = 'none';
+    if (viewEl) viewEl.style.display = 'block';
+    if (btnEdit) { btnEdit.textContent = '✏️ Editar'; btnEdit.style.display = 'inline-flex'; }
+    if (btnSave) btnSave.style.display = 'none';
+  } else {
+    editEl.style.display = 'block';
+    if (viewEl) viewEl.style.display = 'none';
+    if (btnEdit) { btnEdit.textContent = '✕ Cancelar'; btnEdit.style.display = 'inline-flex'; }
+    if (btnSave) btnSave.style.display = 'inline-flex';
+  }
+}
+
+async function guardarEmpSeccion(secId) {
+  if (!empleadaActual) { toast('Sin empleada seleccionada', 'error'); return; }
+  var get = function(id){ var el=document.getElementById(id); return el ? el.value.trim() : ''; };
+  var data = {};
+
+  if (secId === 'pers') {
+    data = { ci: get('fe-ci'), telefono: get('fe-tel'), banco: get('fe-banco'), cuenta: get('fe-cuenta') };
+  } else if (secId === 'lab') {
+    var hijos = document.getElementById('fe-tog-hijos');
+    var cony  = document.getElementById('fe-tog-conyuge');
+    data = {
+      turno: get('fe-turno'), categoria: get('fe-categoria'),
+      sueldo: parseFloat(get('fe-sueldo')) || 0,
+      presentismo: parseFloat(get('fe-pres')) || 0,
+      antig_pct: parseFloat(get('fe-antig-pct')) || 0,
+      hijos:   hijos && hijos.classList.contains('on') ? 'Sí' : 'No',
+      conyuge: cony  && cony.classList.contains('on')  ? 'Sí' : 'No'
+    };
+  }
+
+  showLoading('Guardando...');
+  var result = await apiPost('empleadas', 'update', data, empleadaActual);
+  hideLoading();
+
+  if (result) {
+    var e = DB.empleadas.find(function(x){ return String(x.id) === String(empleadaActual); });
+    if (e) Object.assign(e, data);
+    actualizarVistaEmp(e || data);
+    // Close section
+    var editEl = document.getElementById('edit-emp-' + secId);
+    var viewEl = document.getElementById('view-emp-' + secId);
+    var btnEdit = document.getElementById('btn-edit-emp-' + secId);
+    var btnSave = document.getElementById('btn-save-emp-' + secId);
+    if (editEl) editEl.style.display = 'none';
+    if (viewEl) viewEl.style.display = 'block';
+    if (btnEdit) { btnEdit.textContent = '✏️ Editar'; btnEdit.style.display = 'inline-flex'; }
+    if (btnSave) btnSave.style.display = 'none';
+    renderListaEmpleadas();
+    toast('✅ Guardado', 'ok');
+  } else toast('❌ Error al guardar', 'error');
+}
+
+function actualizarVistaEmp(e) {
+  if (!e) return;
+  var sv = function(id, val) {
+    var el = document.getElementById(id);
+    if (el) el.textContent = val || '—';
+  };
+  sv('vew-ci',       e.ci);
+  sv('vew-tel',      e.telefono);
+  sv('vew-banco',    e.banco);
+  sv('vew-cuenta',   e.cuenta);
+  sv('vew-turno',    e.turno);
+  sv('vew-categoria',e.categoria);
+  sv('vew-sueldo',   e.sueldo ? '$' + Number(e.sueldo).toLocaleString('es-UY') : '');
+  sv('vew-pres',     e.presentismo ? '$' + Number(e.presentismo).toLocaleString('es-UY') : '');
+  sv('vew-hijos',    e.hijos || 'No');
+  sv('vew-conyuge',  e.conyuge || 'No');
+}
+
+// ── Licencia: calcular días hábiles entre fechas ──
+function calcDiasLic() {
+  var desde = document.getElementById('fe-lic-desde');
+  var hasta  = document.getElementById('fe-lic-hasta');
+  var info   = document.getElementById('fe-lic-calc-info');
+  var input  = document.getElementById('fe-lic-dias-reg');
+  if (!desde || !hasta || !desde.value || !hasta.value) return;
+  var d1 = new Date(desde.value), d2 = new Date(hasta.value);
+  if (d2 < d1) { if (info) info.textContent = '⚠️ La fecha hasta debe ser posterior'; return; }
+  var dias = 0, cur = new Date(d1);
+  while (cur <= d2) {
+    var dow = cur.getDay();
+    if (dow !== 0 && dow !== 6) dias++;
+    cur.setDate(cur.getDate() + 1);
+  }
+  if (input) input.value = dias;
+  if (info) info.textContent = 'Días hábiles calculados: ' + dias;
+}
+
+async function registrarLicencia() {
+  if (!empleadaActual) { toast('Sin empleada seleccionada', 'error'); return; }
+  var dias = parseFloat((document.getElementById('fe-lic-dias-reg') || {}).value) || 0;
+  if (dias <= 0) { toast('Ingresá la cantidad de días', 'error'); return; }
+  var desde = (document.getElementById('fe-lic-desde') || {}).value || '';
+  var hasta  = (document.getElementById('fe-lic-hasta') || {}).value || '';
+  var obs   = (document.getElementById('fe-lic-obs') || {}).value || '';
+
+  // Guardar en historial de la empleada como nota
+  var e = DB.empleadas.find(function(x){ return String(x.id) === String(empleadaActual); });
+  var diasGozados = parseFloat((e && e.dias_gozados) || 0) + dias;
+  var data = { dias_gozados: diasGozados };
+  var nota = 'Licencia: ' + dias + ' días' +
+    (desde ? ' (' + desde + (hasta ? ' al ' + hasta : '') + ')' : '') +
+    (obs ? ' — ' + obs : '');
+
+  showLoading('Registrando licencia...');
+  var result = await apiPost('empleadas', 'update', data, empleadaActual);
+  hideLoading();
+
+  if (result) {
+    if (e) e.dias_gozados = diasGozados;
+    // Limpiar form
+    ['fe-lic-desde','fe-lic-hasta','fe-lic-dias-reg','fe-lic-obs'].forEach(function(id){
+      var el = document.getElementById(id); if (el) el.value = '';
+    });
+    var info = document.getElementById('fe-lic-calc-info');
+    if (info) info.textContent = '';
+    // Refresh licencia display
+    if (e) actualizarDisplayLicencia(e);
+    toast('✅ ' + dias + ' días de licencia registrados', 'ok');
+  } else toast('❌ Error al registrar', 'error');
+}
+
+function actualizarDisplayLicencia(e) {
+  var goz = parseFloat(e.dias_gozados || 0);
+  var gozEl = document.getElementById('fe-lic-goz');
+  var pendEl = document.getElementById('fe-lic-pend');
+  var genEl  = document.getElementById('fe-lic-gen');
+  if (gozEl)  gozEl.textContent = goz.toFixed(1) + ' días';
+  if (genEl && e.ingreso) {
+    var meses = Math.floor((new Date() - new Date(String(e.ingreso).split('T')[0])) / (1000*60*60*24*30.44));
+    var gen = Math.round(meses * 1.666 * 10) / 10;
+    genEl.textContent = gen + ' días';
+    if (pendEl) pendEl.textContent = Math.max(0, gen - goz).toFixed(1) + ' días';
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// LIQUIDACIONES DENTRO DEL MODAL EMPLEADA
+// ═══════════════════════════════════════════════════════
+
+function calcLiqEmp() {
+  var get  = function(id){ return parseFloat((document.getElementById(id)||{}).value)||0; };
+  var sueldo  = get('liq-sueldo-emp');
+  var pres    = get('liq-pres-emp');
+  var hexHoras  = get('liq-hex-emp');   // horas extra diurnas
+  var hnoctHoras= get('liq-hnoct-emp'); // horas nocturnas
+  var adel    = get('liq-adel-emp');
+  var faltas  = get('liq-faltas-emp');
+
+  // Jornal hora: sueldo / 200 (25 días × 8 horas)
+  var jornalHora = sueldo / 200;
+
+  // Horas extra diurnas: recargo 100% = jornal × 2
+  var hex   = hexHoras * jornalHora * 2;
+
+  // Horas nocturnas: recargo 20% = jornal × 1.20
+  // (solo el recargo, no el jornal base que ya está incluido en el sueldo mensual)
+  var hnoct = hnoctHoras * jornalHora * 0.20;
+
+  // Descuento por faltas: sueldo / 30 × días
+  var descFaltas = faltas * (sueldo / 30);
+
+  var nominal = sueldo + pres + hex + hnoct - descFaltas;
+  var bps     = nominal * 0.15;
+  var frl     = nominal * 0.001;
+  var snis    = nominal * 0.03; // simplificado - sin cargas de familia extra
+  var liquido = nominal - bps - frl - snis - adel;
+
+  var liqEl = document.getElementById('liq-emp-liquido');
+  var detEl = document.getElementById('liq-emp-detalle');
+  if (liqEl) liqEl.textContent = '$' + Math.round(liquido).toLocaleString('es-UY');
+  if (detEl) {
+    var items = [
+      'Nominal $' + Math.round(nominal).toLocaleString('es-UY'),
+      'BPS $' + Math.round(bps).toLocaleString('es-UY'),
+      'FRL $' + Math.round(frl).toLocaleString('es-UY'),
+      'SNIS $' + Math.round(snis).toLocaleString('es-UY')
+    ];
+    if (hexHoras > 0) items.push('Hs extra ' + hexHoras + 'h = $' + Math.round(hex).toLocaleString('es-UY'));
+    if (hnoctHoras > 0) items.push('Hs noct. ' + hnoctHoras + 'h = +$' + Math.round(hnoct).toLocaleString('es-UY'));
+    if (adel > 0) items.push('Adelanto -$' + Math.round(adel).toLocaleString('es-UY'));
+    if (faltas > 0) items.push('Faltas ' + faltas + 'd = -$' + Math.round(descFaltas).toLocaleString('es-UY'));
+    detEl.textContent = items.join(' · ');
+  }
+}
+
+function calcEgresoEmp() {
+  var get    = function(id){ return parseFloat((document.getElementById(id)||{}).value)||0; };
+  var getStr = function(id){ return (document.getElementById(id)||{}).value || ''; };
+  var jornal   = get('eg-jornal-emp');
+  var diasLic  = get('eg-lic-emp');
+  var diasVac  = get('eg-vac-emp');
+  var nomBest  = get('eg-nominal-emp');
+  var ingStr   = getStr('eg-ing-emp');
+  var salStr   = getStr('eg-sal-emp');
+
+  if (!ingStr || !salStr || jornal <= 0) return;
+
+  var dIng = new Date(ingStr);
+  var dSal = new Date(salStr);
+  if (dSal <= dIng) return;
+
+  // Antigüedad en años
+  var anios = (dSal - dIng) / (1000*60*60*24*365.25);
+  var diasAnuales = anios >= 15 ? 30 : anios >= 9 ? 27 : anios >= 4 ? 25 : 20;
+
+  // Vacacional proporcional al año (si no se pasaron días manuales)
+  if (diasVac === 0) {
+    var inicioAnio = new Date(dSal.getFullYear(), 0, 1);
+    var diasEnAnio = Math.floor((dSal - inicioAnio) / (1000*60*60*24));
+    diasVac = Math.round((diasEnAnio / 365) * diasAnuales * 10) / 10;
+    var inpVac = document.getElementById('eg-vac-emp');
+    if (inpVac && !inpVac.dataset.manual) inpVac.value = diasVac;
+  }
+
+  // Vacacional: jornal × 1.12 × días (incluye 12% salario vacacional, sin aportes BPS)
+  var vacacional = jornal * 1.12 * diasVac;
+
+  // Licencia no gozada: igual que vacacional (jornal × 1.12 × días, sin aportes)
+  var licencia = jornal * 1.12 * diasLic;
+
+  // Aguinaldo proporcional: mejor nominal semestre / 2 × (meses/6)
+  // Semestre en curso
+  var mes = dSal.getMonth();
+  var inicioSem = mes < 6 ? new Date(dSal.getFullYear(),0,1) : new Date(dSal.getFullYear(),6,1);
+  var mesesSem  = Math.min(Math.max(Math.round((dSal-inicioSem)/(1000*60*60*24*30.44)),1),6);
+  var nomAguin  = nomBest > 0 ? nomBest : jornal * 30;
+  var aguinaldo = (nomAguin / 2) * (mesesSem / 6);
+
+  // BPS solo sobre aguinaldo (15%)
+  var bpsAguin = aguinaldo * 0.15;
+  var liquido  = vacacional + licencia + aguinaldo - bpsAguin;
+
+  var info = document.getElementById('eg-lic-emp-info');
+  if (info) info.textContent = diasAnuales + ' días/año · Antigüedad: ' + anios.toFixed(1) +
+    ' años · Vacacional proporcional: ' + diasVac + ' días · Semestre: ' + mesesSem + ' meses';
+
+  var liqEl = document.getElementById('eg-emp-liquido');
+  var detEl = document.getElementById('eg-emp-detalle');
+  if (liqEl) liqEl.textContent = '$' + Math.round(liquido).toLocaleString('es-UY');
+  if (detEl) detEl.textContent =
+    'Vacacional $' + Math.round(vacacional).toLocaleString('es-UY') +
+    (licencia>0 ? ' · Lic. no gozada $' + Math.round(licencia).toLocaleString('es-UY') : '') +
+    ' · Aguinaldo $' + Math.round(aguinaldo).toLocaleString('es-UY') +
+    ' · (-) BPS aguinaldo $' + Math.round(bpsAguin).toLocaleString('es-UY');
+}
+
+function generarReciboEmpPDF() {
+  var e = DB.empleadas.find(function(x){ return String(x.id) === String(empleadaActual); }) || {};
+  var get = function(id){ return (document.getElementById(id)||{}).value || ''; };
+  var getN = function(id){ return parseFloat(get(id)) || 0; };
+  var sueldo = getN('liq-sueldo-emp'), pres = getN('liq-pres-emp'), noct = getN('liq-noct-emp'), adel = getN('liq-adel-emp');
+  var nominal = sueldo + pres + (noct*304.16);
+  var bps = nominal*0.15, frl = nominal*0.001, snis = nominal*0.03;
+  var liquido = nominal - bps - frl - snis - adel;
+  var mes = get('liq-mes-emp') || new Date().toISOString().slice(0,7);
+  var hoy = new Date().toLocaleDateString('es-UY');
+
+  var html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>' +
+    'body{font-family:Arial,sans-serif;font-size:11px;padding:20px;max-width:500px;margin:0 auto}' +
+    '@media print{@page{margin:10mm;size:A5}}' +
+    '.titulo{font-size:14px;font-weight:bold;color:#1a3d35;margin-bottom:4px}' +
+    '.row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #ede5d4}' +
+    '.total{font-size:16px;font-weight:bold;color:#1a3d35;padding:10px 0}' +
+    '</style></head><body>' +
+    '<div class="titulo">CARRASCO ELDERLY CARE SAS</div>' +
+    '<div style="font-size:10px;color:#555;margin-bottom:12px">Rafael Barradas 1527 · Montevideo · ' + hoy + '</div>' +
+    '<div style="font-weight:bold;margin-bottom:2px">' + (e.nombre||'—') + '</div>' +
+    '<div style="font-size:10px;color:#555;margin-bottom:12px">Grupo 15/200 · Mes: ' + mes + '</div>' +
+    '<div class="row"><span>Sueldo laudo</span><span>$' + Math.round(sueldo).toLocaleString('es-UY') + '</span></div>' +
+    '<div class="row"><span>Presentismo</span><span>$' + Math.round(pres).toLocaleString('es-UY') + '</span></div>' +
+    (noct>0?'<div class="row"><span>Horas nocturnas</span><span>$'+Math.round(noct*304.16).toLocaleString('es-UY')+'</span></div>':'') +
+    '<div class="row"><span>(-) BPS empleado (15%)</span><span style="color:#c62828">-$' + Math.round(bps).toLocaleString('es-UY') + '</span></div>' +
+    '<div class="row"><span>(-) FRL (0.1%)</span><span style="color:#c62828">-$' + Math.round(frl).toLocaleString('es-UY') + '</span></div>' +
+    '<div class="row"><span>(-) SNIS (3%)</span><span style="color:#c62828">-$' + Math.round(snis).toLocaleString('es-UY') + '</span></div>' +
+    (adel>0?'<div class="row"><span>(-) Adelanto</span><span style="color:#c62828">-$'+Math.round(adel).toLocaleString('es-UY')+'</span></div>':'') +
+    '<div class="row total"><span>LÍQUIDO A COBRAR</span><span>$' + Math.round(liquido).toLocaleString('es-UY') + '</span></div>' +
+    '<div style="margin-top:40px;display:flex;justify-content:space-between;font-size:10px">' +
+    '<div style="text-align:center;border-top:1px solid #555;padding-top:4px;width:40%">Firma empleada</div>' +
+    '<div style="text-align:center;border-top:1px solid #555;padding-top:4px;width:40%">Firma empleador</div></div>' +
+    '</body></html>';
+
+  var w = window.open('', '_blank');
+  if (!w) { toast('⚠️ Habilitá ventanas emergentes', 'error'); return; }
+  w.document.write(html); w.document.close();
+  w.onload = function(){ w.print(); };
+  toast('✅ Recibo generado', 'ok');
+}
+
+function generarEgresoEmpPDF() {
+  var e = DB.empleadas.find(function(x){ return String(x.id) === String(empleadaActual); }) || {};
+  var liquido = (document.getElementById('eg-emp-liquido')||{}).textContent || '$0';
+  var detalle = (document.getElementById('eg-emp-detalle')||{}).textContent || '';
+  var hoy = new Date().toLocaleDateString('es-UY');
+
+  var html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>' +
+    'body{font-family:Arial,sans-serif;font-size:11px;padding:20px;max-width:500px;margin:0 auto}' +
+    '@media print{@page{margin:10mm;size:A5}}' +
+    '.titulo{font-size:14px;font-weight:bold;color:#1a3d35;margin-bottom:4px}' +
+    '.row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #ede5d4}' +
+    '.total{font-size:16px;font-weight:bold;color:#1a3d35;padding:10px 0}' +
+    '</style></head><body>' +
+    '<div class="titulo">CARRASCO ELDERLY CARE SAS</div>' +
+    '<div style="font-size:10px;color:#555;margin-bottom:12px">Rafael Barradas 1527 · Montevideo · ' + hoy + '</div>' +
+    '<div style="font-weight:bold;margin-bottom:2px">' + (e.nombre||'—') + '</div>' +
+    '<div style="font-size:10px;color:#555;margin-bottom:12px">LIQUIDACIÓN POR EGRESO</div>' +
+    '<div style="font-size:10px;color:#555;padding:8px 0;border-bottom:1px solid #ede5d4">' + detalle + '</div>' +
+    '<div class="row total"><span>TOTAL EGRESO</span><span>' + liquido + '</span></div>' +
+    '<div style="margin-top:40px;display:flex;justify-content:space-between;font-size:10px">' +
+    '<div style="text-align:center;border-top:1px solid #555;padding-top:4px;width:40%">Firma empleada</div>' +
+    '<div style="text-align:center;border-top:1px solid #555;padding-top:4px;width:40%">Firma empleador</div></div>' +
+    '</body></html>';
+
+  var w = window.open('', '_blank');
+  if (!w) { toast('⚠️ Habilitá ventanas emergentes', 'error'); return; }
+  w.document.write(html); w.document.close();
+  w.onload = function(){ w.print(); };
+  toast('✅ Recibo egreso generado', 'ok');
+}
+
+// ─ Pastillero JS ─
+var pastDiaActual = 0;
+function abrirPastilleroSemanal() {
+  pastDiaActual = new Date().getDay();
+  pastDiaActual = pastDiaActual === 0 ? 6 : pastDiaActual - 1;
+  document.querySelectorAll('.past-dia-btn').forEach(function(b,i){ b.classList.toggle('active',i===pastDiaActual); });
+  renderPastilleroSemanal(pastDiaActual);
+  resShowM('modal-pastillero-semanal');
+}
+function verDiaPastillero(diaIdx, btn) {
+  pastDiaActual = diaIdx;
+  document.querySelectorAll('.past-dia-btn').forEach(function(b){ b.classList.remove('active'); });
+  if (btn) btn.classList.add('active');
+  renderPastilleroSemanal(diaIdx);
+}
+function renderPastilleroSemanal(diaIdx) {
+  var container = document.getElementById('past-contenido');
+  if (!container) return;
+  var FRANJAS = [
+    {key:'H8', label:'🌅 Mañana 08:00', color:'#1565c0'},
+    {key:'H14',label:'☀️ Mediodía 14:00',color:'#e65100'},
+    {key:'H16',label:'🌆 Tarde 16:00',  color:'#6a1b9a'},
+    {key:'H20',label:'🌙 Noche 20:00',  color:'#1a3d35'},
+    {key:'H0', label:'🌛 Madrugada 00:00',color:'#37474f'}
+  ];
+  var resMap = {};
+  DB.residentes.filter(function(r){ return r.activo==='Sí'; }).forEach(function(r){ resMap[String(r.id)]=r; });
+  var medActiva = DB.medicacion.filter(function(m){ return m.activo==='Sí' && resMap[String(m.residente_id)]; });
+  if (medActiva.length===0) { container.innerHTML='<div style="text-align:center;padding:30px;color:var(--suave)">💊<br>Sin medicación cargada aún.</div>'; return; }
+  var html='', hayAlgo=false;
+  FRANJAS.forEach(function(franja){
+    var mf=medActiva.filter(function(m){ var h=(m.horario||'').toUpperCase(); return h.includes(franja.key)||h.includes(franja.key.replace('H','')); });
+    if(!mf.length) return;
+    hayAlgo=true;
+    html+='<div class="past-franja"><div class="past-franja-titulo" style="color:'+franja.color+'">'+franja.label+'</div>';
+    mf.forEach(function(m){
+      var r=resMap[String(m.residente_id)]||{};
+      var ini=(r.nombre||'').split(' ').slice(0,2).map(function(w){return w[0]||'';}).join('');
+      var esA=(m.nota||'').includes('⚠️');
+      html+='<div class="past-item"><div class="past-av">'+ini+'</div><div style="flex:1"><div class="past-med-nom'+(esA?' past-med-alerta':'')+'">'+m.medicamento+'</div><div class="past-med-det">'+(r.nombre||'—')+' · '+m.dosis+(m.nota?' · <span style="color:var(--rojo)">'+m.nota+'</span>':'')+'</div></div></div>';
+    });
+    html+='</div>';
+  });
+  container.innerHTML=hayAlgo?html:'<div style="text-align:center;padding:30px;color:var(--suave)">Sin medicación para este horario.</div>';
+}
+function generarPastilleroPDF(){
+  var DIAS=['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
+  var FRANJAS=[{key:'H8',label:'🌅 Mañana 08:00',color:'#1565c0'},{key:'H14',label:'☀️ Mediodía 14:00',color:'#e65100'},{key:'H16',label:'🌆 Tarde 16:00',color:'#6a1b9a'},{key:'H20',label:'🌙 Noche 20:00',color:'#1a3d35'},{key:'H0',label:'🌛 Madrugada 00:00',color:'#37474f'}];
+  var resMap={};
+  var residentes=DB.residentes.filter(function(r){return r.activo==='Sí';});
+  residentes.forEach(function(r){resMap[String(r.id)]=r;});
+  var medActiva=DB.medicacion.filter(function(m){return m.activo==='Sí'&&resMap[String(m.residente_id)];});
+  var hoy=new Date().toLocaleDateString('es-UY');
+  var html='<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{font-family:Arial,sans-serif;font-size:11px;padding:16px}@media print{@page{margin:10mm;size:A4}.dia-bloque{page-break-inside:avoid}}.dia-titulo{background:#1a3d35;color:white;padding:5px 8px;font-weight:bold;margin-top:8px;border-radius:4px 4px 0 0}.franja-titulo{font-size:10px;font-weight:700;text-transform:uppercase;padding:4px 8px;background:#f5f0e8}.med-row{display:flex;gap:8px;padding:4px 8px;border-bottom:1px solid #f0ebe0}.med-res{font-weight:600;min-width:120px}.med-nom{flex:1}.med-dos{color:#555;min-width:80px}.alerta{color:#c62828;font-weight:bold}</style></head><body>';
+  html+='<div style="border-bottom:2px solid #1a3d35;padding-bottom:6px;margin-bottom:10px;display:flex;justify-content:space-between"><div><strong style="color:#1a3d35">CARRASCO ELDERLY CARE SAS</strong><div style="font-size:9px;color:#555">Rafael Barradas 1527</div></div><div style="text-align:right"><strong>PASTILLERO SEMANAL</strong><div style="font-size:9px;color:#555">'+hoy+'</div></div></div>';
+  html+='<div style="background:#e8f5e9;border:1px solid #a5d6a7;border-radius:4px;padding:5px 8px;margin-bottom:8px;font-size:10px"><strong>Residentes ('+residentes.length+'):</strong> '+residentes.map(function(r){return r.nombre;}).join(' · ')+'</div>';
+  DIAS.forEach(function(dia){
+    html+='<div class="dia-bloque"><div class="dia-titulo">'+dia.toUpperCase()+'</div>';
+    var hay=false;
+    FRANJAS.forEach(function(f){
+      var mf=medActiva.filter(function(m){var h=(m.horario||'').toUpperCase();return h.includes(f.key)||h.includes(f.key.replace('H',''));});
+      if(!mf.length) return;
+      hay=true;
+      html+='<div class="franja-titulo" style="color:'+f.color+'">'+f.label+'</div>';
+      mf.forEach(function(m){var r=resMap[String(m.residente_id)]||{};var ea=(m.nota||'').includes('⚠️');html+='<div class="med-row"><div class="med-res'+(ea?' alerta':'')+'">'+r.nombre+'</div><div class="med-nom">'+m.medicamento+'</div><div class="med-dos">'+m.dosis+'</div>'+(m.nota?'<div class="alerta">'+m.nota+'</div>':'')+'</div>';});
+    });
+    if(!hay) html+='<div style="padding:4px 8px;color:#999;font-style:italic;font-size:10px">Sin medicación programada</div>';
+    html+='</div>';
+  });
+  html+='<div style="border-top:1px solid #1a3d35;margin-top:12px;padding-top:4px;font-size:9px;color:#555;text-align:center">Para uso interno del equipo · Carrasco Elderly Care SAS</div></body></html>';
+  var w=window.open('','_blank');
+  if(!w){toast('⚠️ Habilitá ventanas emergentes','error');return;}
+  w.document.write(html);w.document.close();w.onload=function(){w.print();};
+  toast('✅ Pastillero PDF generado','ok');
+}
+
+
+
+// ═══════════════════════════════════════════════════════
+// REGISTROS DE EMPLEADA — Horas extra, nocturnas, meses
+// ═══════════════════════════════════════════════════════
+
+// Jornal hora base (Grupo 15/200)
+var JORNAL_HORA = 29674 / 200; // $148.37
+
+function poblarMesesRegistros(selectId) {
+  var sel = document.getElementById(selectId);
+  if (!sel) return;
+  sel.innerHTML = '';
+  var hoy = new Date();
+  // Mes actual + 2 anteriores + 2 próximos
+  for (var i = -2; i <= 2; i++) {
+    var d = new Date(hoy.getFullYear(), hoy.getMonth() + i, 1);
+    var label = d.toLocaleString('es-UY', {month:'long', year:'numeric'});
+    label = label.charAt(0).toUpperCase() + label.slice(1);
+    var val = d.toISOString().slice(0,7);
+    var opt = new Option(label, val);
+    if (i === 0) opt.selected = true;
+    sel.add(opt);
+  }
+}
+
+function calcRegistros() {
+  // Horas extra diurnas
+  var hexH = parseFloat((document.getElementById('reg-hex-cantidad')||{}).value)||0;
+  var hexTotal = hexH * JORNAL_HORA * 2;
+  var hexEl = document.getElementById('reg-hex-resultado');
+  if (hexEl) hexEl.textContent = hexH > 0 ?
+    hexH + ' hs × $' + JORNAL_HORA.toFixed(2) + ' × 2 = $' + Math.round(hexTotal).toLocaleString('es-UY') : '';
+
+  // Horas nocturnas
+  var hnH = parseFloat((document.getElementById('reg-hnoct-cantidad')||{}).value)||0;
+  var hnTotal = hnH * JORNAL_HORA * 1.20;
+  var hnEl = document.getElementById('reg-hnoct-resultado');
+  if (hnEl) hnEl.textContent = hnH > 0 ?
+    hnH + ' hs × $' + JORNAL_HORA.toFixed(2) + ' × 1.20 = $' + Math.round(hnTotal).toLocaleString('es-UY') : '';
+}
+
+async function guardarRegistroEmp(tipo) {
+  if (!empleadaActual) { toast('Sin empleada seleccionada', 'error'); return; }
+
+  var e = DB.empleadas.find(function(x){ return String(x.id)===String(empleadaActual); });
+  var cantidad, mes, monto, campo, label;
+
+  if (tipo === 'hex') {
+    cantidad = parseFloat((document.getElementById('reg-hex-cantidad')||{}).value)||0;
+    mes      = (document.getElementById('reg-hex-mes')||{}).value || '';
+    monto    = Math.round(cantidad * JORNAL_HORA * 2);
+    campo    = 'hex_' + mes;
+    label    = 'Horas extra diurnas';
+  } else if (tipo === 'hnoct') {
+    cantidad = parseFloat((document.getElementById('reg-hnoct-cantidad')||{}).value)||0;
+    mes      = (document.getElementById('reg-hnoct-mes')||{}).value || '';
+    monto    = Math.round(cantidad * JORNAL_HORA * 1.20);
+    campo    = 'hnoct_' + mes;
+    label    = 'Horas nocturnas';
+  }
+
+  if (!cantidad || cantidad <= 0) { toast('Ingresá la cantidad de horas', 'error'); return; }
+
+  // Guardar en Sheets como registro de historial de adelantos o campo custom
+  // Simplificado: guardamos en campo JSON de la empleada
+  var registros = {};
+  try { registros = JSON.parse(e.registros_json || '{}'); } catch(ex) {}
+  if (!registros[mes]) registros[mes] = {};
+  if (tipo === 'hex')   registros[mes].hex   = (registros[mes].hex||0)   + cantidad;
+  if (tipo === 'hnoct') registros[mes].hnoct = (registros[mes].hnoct||0) + cantidad;
+
+  showLoading('Guardando registro...');
+  var result = await apiPost('empleadas','update',{registros_json: JSON.stringify(registros)},empleadaActual);
+  hideLoading();
+
+  if (result) {
+    if (e) e.registros_json = JSON.stringify(registros);
+    // Limpiar campo
+    var inpId = tipo === 'hex' ? 'reg-hex-cantidad' : 'reg-hnoct-cantidad';
+    var inp = document.getElementById(inpId);
+    if (inp) inp.value = '';
+    calcRegistros();
+    // Auto-actualizar liquidación con los nuevos datos del mes
+    var liqMes = (document.getElementById('liq-mes-emp')||{}).value || '';
+    if (liqMes === mes) {
+      precargarRegistrosEnLiq(mes, registros);
+    }
+    toast('✅ ' + label + ': ' + cantidad + 'h registradas ($' + monto.toLocaleString('es-UY') + ')', 'ok');
+  } else {
+    toast('❌ Error al guardar', 'error');
+  }
+}
+
+function precargarRegistrosEnLiq(mes, registros) {
+  if (!registros || !registros[mes]) return;
+  var hexInp   = document.getElementById('liq-hex-emp');
+  var hnoctInp = document.getElementById('liq-hnoct-emp');
+  if (hexInp   && registros[mes].hex)   hexInp.value   = registros[mes].hex;
+  if (hnoctInp && registros[mes].hnoct) hnoctInp.value = registros[mes].hnoct;
+  calcLiqEmp();
+}
+
+// Cuando cambia el mes en liquidación, cargar los registros de ese mes
+function onLiqMesChange() {
+  var mes = (document.getElementById('liq-mes-emp')||{}).value;
+  if (!mes || !empleadaActual) { calcLiqEmp(); return; }
+  var e = DB.empleadas.find(function(x){ return String(x.id)===String(empleadaActual); });
+  var registros = {};
+  try { registros = JSON.parse((e&&e.registros_json)||'{}'); } catch(ex) {}
+  precargarRegistrosEnLiq(mes, registros);
+  // También cargar adelantos del mes
+  var adelantosMes = DB.adelantos.filter(function(a){
+    return String(a.empleada_id)===String(empleadaActual) && a.mes===mes && a.descontado==='No';
+  }).reduce(function(s,a){return s+Number(a.monto);},0);
+  var inpA = document.getElementById('liq-adel-emp');
+  if (inpA) inpA.value = adelantosMes;
+  calcLiqEmp();
+}
+
+
 function abrirResidente(id) {
   var r = DB.residentes.find(function(x){ return String(x.id) === String(id); });
   if (!r) { toast('Residente no encontrado', 'error'); return; }
