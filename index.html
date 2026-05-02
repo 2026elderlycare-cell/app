@@ -56,7 +56,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--crema);color:var(--texto)
 .subtab.active{color:var(--verde);border-bottom-color:var(--dorado);}
 
 /* MAIN */
-.main{padding:16px 14px 100px;}
+.main{padding:16px 14px 100px;overflow-x:hidden;}
 .module{display:none;}.module.active{display:block;}
 .subview{display:none;}.subview.active{display:block;animation:fadeUp .3s ease;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
@@ -533,6 +533,7 @@ input, select, textarea {
   font-size: inherit;
 }
 
+html{overflow-x:hidden;}
 </style>
 </head>
 <body>
@@ -2752,7 +2753,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:19px;heigh
       </div>
       <div id="salida-clinico-content">
 
-        <div class="sep" style="margin-top:4px">🩺 Estado clínico actual</div>
+        <div class="sep" style="margin-top:4px">📋 Reporte MSP / Estado clínico</div>
 
         <!-- Barthel -->
         <div class="fs-section" style="margin-bottom:10px">
@@ -5167,7 +5168,58 @@ function compartirWA(tipo) {
 
 function imprimirPastillero() { alert('Abrirá ventana de impresión con el pastillero del día formateado.'); }
 function imprimirAgenda() { alert('Abrirá ventana de impresión con la agenda del día formateada.'); }
-function imprimirMedicacion() { alert('Abrirá la planilla de medicación en formato imprimible.'); }
+function imprimirMedicacion() {
+  if (!residenteActual) { toast('Sin residente seleccionado', 'error'); return; }
+  var r = DB.residentes.find(function(x){ return String(x.id)===String(residenteActual); }) || {};
+  var meds = DB.medicacion.filter(function(m){
+    return String(m.residente_id)===String(residenteActual) && m.activo==='Sí';
+  });
+
+  var hoy = new Date().toLocaleDateString('es-UY');
+  var FRANJAS = [
+    {key:'H8', label:'🌅 Mañana — 08:00'},
+    {key:'H14',label:'☀️ Mediodía — 14:00'},
+    {key:'H16',label:'🌆 Tarde — 16:00'},
+    {key:'H20',label:'🌙 Noche — 20:00'},
+    {key:'H0', label:'🌛 Madrugada — 00:00'}
+  ];
+
+  var rows = meds.map(function(m){
+    var alerta = (m.nota||'').includes('⚠️') ? ' style="color:#c62828;font-weight:bold"' : '';
+    return '<tr><td'+alerta+'>'+m.medicamento+'</td><td>'+m.dosis+'</td>' +
+           '<td>'+m.horario+'</td><td'+(m.nota?' style="color:#c62828"':'')+'>'+(m.nota||'')+'</td></tr>';
+  }).join('');
+
+  var html = '<!DOCTYPE html><html><head><meta charset="UTF-8">' +
+    '<style>body{font-family:Arial,sans-serif;font-size:12px;padding:16px;max-width:700px;margin:0 auto}' +
+    '@media print{@page{margin:10mm;size:A4}}' +
+    'h2{color:#1a3d35;font-size:15px;margin-bottom:4px}' +
+    'table{width:100%;border-collapse:collapse;margin-top:12px}' +
+    'th{background:#1a3d35;color:white;padding:7px 10px;text-align:left;font-size:11px}' +
+    'td{padding:7px 10px;border-bottom:1px solid #ede5d4;font-size:12px}' +
+    'tr:nth-child(even) td{background:#f9f6f0}' +
+    '.header{display:flex;justify-content:space-between;border-bottom:2px solid #1a3d35;padding-bottom:8px;margin-bottom:12px}' +
+    '.alerta{background:#fff3cd;border-left:3px solid #f9a825;padding:6px 10px;margin-top:10px;font-size:11px}' +
+    '</style></head><body>' +
+    '<div class="header">' +
+    '<div><strong style="color:#1a3d35;font-size:14px">CARRASCO ELDERLY CARE SAS</strong>' +
+    '<div style="font-size:10px;color:#555">Rafael Barradas 1527 · Montevideo</div></div>' +
+    '<div style="text-align:right"><strong>PLANILLA DE MEDICACIÓN</strong>' +
+    '<div style="font-size:10px;color:#555">' + hoy + '</div></div></div>' +
+    '<h2>' + (r.nombre||'—') + '</h2>' +
+    '<div style="font-size:11px;color:#555;margin-bottom:4px">' +
+    'CI: '+(r.ci||'—')+' · Hab. '+(r.hab||'—')+' · Mutualista: '+(r.mutualista||'—')+'</div>' +
+    '<table><thead><tr><th>Medicamento</th><th>Dosis</th><th>Horario</th><th>Notas</th></tr></thead>' +
+    '<tbody>' + (rows || '<tr><td colspan="4" style="text-align:center;color:#999">Sin medicación registrada</td></tr>') +
+    '</tbody></table>' +
+    '<div class="alerta">⚠️ Verificar indicaciones médicas vigentes antes de administrar. Planilla generada: ' + hoy + '</div>' +
+    '<div style="margin-top:40px;display:flex;justify-content:space-between;font-size:10px;color:#555">' +
+    '<div style="text-align:center;border-top:1px solid #aaa;padding-top:4px;width:35%">Preparado por</div>' +
+    '<div style="text-align:center;border-top:1px solid #aaa;padding-top:4px;width:35%">Revisado por</div>' +
+    '</div></body></html>';
+
+  abrirPDF(html, 'Medicación — ' + (r.nombre||'').split(' ')[0]);
+}
 function descargarHistorial() { alert('Generará PDF con todo el historial del residente seleccionado.'); }
 function simAdjunto() { alert('Aquí se abriría la cámara o la galería para adjuntar foto o PDF.'); }
 // ══ VOZ ══
@@ -6806,11 +6858,7 @@ async function generarFichaSalidaCompleta() {
 
   hideLoading();
 
-  var w = window.open('', '_blank');
-  if (!w) { toast('⚠️ Permitir ventanas emergentes para generar PDF', 'error'); return; }
-  w.document.write(html);
-  w.document.close();
-  w.onload = function() { w.print(); };
+    abrirPDF(html, 'Reporte MSP');
   toast('✅ Ficha PDF generada', 'ok');
 }
 
@@ -7115,10 +7163,7 @@ function generarReciboEmpPDF() {
     '<div style="text-align:center;border-top:1px solid #555;padding-top:4px;width:40%">Firma empleador</div></div>' +
     '</body></html>';
 
-  var w = window.open('', '_blank');
-  if (!w) { toast('⚠️ Habilitá ventanas emergentes', 'error'); return; }
-  w.document.write(html); w.document.close();
-  w.onload = function(){ w.print(); };
+    abrirPDF(html, 'Recibo liquidación');
   toast('✅ Recibo generado', 'ok');
 }
 
@@ -7146,10 +7191,7 @@ function generarEgresoEmpPDF() {
     '<div style="text-align:center;border-top:1px solid #555;padding-top:4px;width:40%">Firma empleador</div></div>' +
     '</body></html>';
 
-  var w = window.open('', '_blank');
-  if (!w) { toast('⚠️ Habilitá ventanas emergentes', 'error'); return; }
-  w.document.write(html); w.document.close();
-  w.onload = function(){ w.print(); };
+    abrirPDF(html, 'Recibo egreso');
   toast('✅ Recibo egreso generado', 'ok');
 }
 
@@ -7223,9 +7265,7 @@ function generarPastilleroPDF(){
     html+='</div>';
   });
   html+='<div style="border-top:1px solid #1a3d35;margin-top:12px;padding-top:4px;font-size:9px;color:#555;text-align:center">Para uso interno del equipo · Carrasco Elderly Care SAS</div></body></html>';
-  var w=window.open('','_blank');
-  if(!w){toast('⚠️ Habilitá ventanas emergentes','error');return;}
-  w.document.write(html);w.document.close();w.onload=function(){w.print();};
+    abrirPDF(html, 'Pastillero semanal');
   toast('✅ Pastillero PDF generado','ok');
 }
 
@@ -7551,6 +7591,91 @@ var _origAbrirEmpleada = typeof abrirEmpleada === 'function' ? abrirEmpleada : n
 // ═══════════════════════════════════════════════════════
 // FIX: generarHistorialPDF — asegurar que abre ventana
 // ═══════════════════════════════════════════════════════
+async 
+// ── Helper PDF: genera Blob y abre en nueva pestaña (sin popup bloqueado) ──
+// En iOS Safari: funciona si se llama desde un evento de usuario directo
+function abrirPDF(html, titulo) {
+  // Método 1: Blob URL (funciona en Chrome, Firefox, Safari desktop)
+  try {
+    var blob = new Blob([html], {type: 'text/html;charset=utf-8'});
+    var url  = URL.createObjectURL(blob);
+    var a    = document.createElement('a');
+    a.href   = url;
+    a.target = '_blank';
+    // En iOS: no se puede descargar Blob directamente, abrir en nueva pestaña
+    if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
+      // iOS: abrir inline en la misma pestaña con un iframe temporal
+      abrirPDFiOS(html, titulo);
+    } else {
+      a.click();
+      setTimeout(function(){ URL.revokeObjectURL(url); }, 5000);
+      toast('✅ ' + (titulo||'PDF') + ' generado — revisá la nueva pestaña', 'ok');
+    }
+  } catch(e) {
+    // Fallback: window.open
+    var w = window.open('', '_blank');
+    if (w) { w.document.write(html); w.document.close(); }
+    else    { toast('⚠️ Habilitá ventanas emergentes en Safari', 'error'); }
+  }
+}
+
+// ── iOS: mostrar PDF dentro de la app con botón para compartir ──
+function abrirPDFiOS(html, titulo) {
+  // Crear un modal temporal con el HTML del PDF dentro de un iframe
+  var viejo = document.getElementById('modal-pdf-ios');
+  if (viejo) viejo.remove();
+
+  var modal = document.createElement('div');
+  modal.id  = 'modal-pdf-ios';
+  modal.style.cssText = 'position:fixed;inset:0;z-index:9999;background:white;display:flex;flex-direction:column;';
+
+  // Barra superior con botones
+  modal.innerHTML =
+    '<div style="display:flex;align-items:center;gap:10px;padding:12px 16px;' +
+    'background:#1a3d35;color:white;flex-shrink:0">' +
+    '<button onclick="document.getElementById(\'modal-pdf-ios\').remove()" ' +
+    'style="background:rgba(255,255,255,.2);border:none;color:white;border-radius:8px;' +
+    'padding:8px 14px;font-size:14px;cursor:pointer;font-family:DM Sans,sans-serif">← Volver</button>' +
+    '<span style="flex:1;font-size:14px;font-weight:600">' + (titulo||'PDF') + '</span>' +
+    '<button onclick="compartirPDFiOS()" ' +
+    'style="background:rgba(255,255,255,.2);border:none;color:white;border-radius:8px;' +
+    'padding:8px 14px;font-size:14px;cursor:pointer;font-family:DM Sans,sans-serif">⬆️ Compartir</button>' +
+    '</div>' +
+    '<iframe id="pdf-ios-frame" style="flex:1;border:none;width:100%;height:100%"></iframe>';
+
+  document.body.appendChild(modal);
+
+  // Escribir el HTML en el iframe
+  var frame = document.getElementById('pdf-ios-frame');
+  frame.contentDocument.open();
+  frame.contentDocument.write(html);
+  frame.contentDocument.close();
+
+  // Guardar para compartir
+  window._pdfHTML  = html;
+  window._pdfTitulo = titulo;
+}
+
+function compartirPDFiOS() {
+  if (!window._pdfHTML) return;
+  try {
+    var blob = new Blob([window._pdfHTML], {type: 'text/html'});
+    var file = new File([blob], (window._pdfTitulo||'documento')+'.html', {type:'text/html'});
+    if (navigator.share && navigator.canShare({files:[file]})) {
+      navigator.share({files:[file], title: window._pdfTitulo||'PDF'});
+    } else {
+      // Fallback: descargar
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url; a.download = (window._pdfTitulo||'documento')+'.html';
+      a.click();
+    }
+  } catch(e) {
+    toast('Usá el botón compartir del navegador', 'warn');
+  }
+}
+
+
 async function generarHistorialPDF() {
   if (!residenteActual) { toast('Sin residente seleccionado', 'error'); return; }
   var r = DB.residentes.find(function(x){ return String(x.id) === String(residenteActual); });
@@ -7606,11 +7731,7 @@ async function generarHistorialPDF() {
     'Carrasco Elderly Care SAS · Generado el ' + hoy + ' por ' + currentUser.nombre + '</div>';
   html += '</body></html>';
 
-  var w = window.open('', '_blank');
-  if (!w) { toast('⚠️ Habilitá ventanas emergentes para generar PDF', 'error'); return; }
-  w.document.write(html);
-  w.document.close();
-  w.onload = function() { w.print(); };
+    abrirPDF(html, 'Historial clínico');
   toast('✅ Historial PDF generado', 'ok');
 }
 </script>
