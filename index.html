@@ -447,6 +447,12 @@ input.fi, select.fi, textarea.fi { max-width:100% !important; min-width:0 !impor
   opacity: 0; pointer-events: none;
   transition: opacity .3s;
 }
+/* Sub-modales sobre modal-residente (z-index:80) */
+#modal-vacuna, #modal-caida, #modal-barthel, #modal-add-med,
+#modal-nuevo-registro, #modal-nuevo-res, #modal-nueva-emp,
+#modal-pastillero-semanal {
+  z-index: 200;
+}
 .moverlay.open, .moverlay.show {
   display: flex;
   opacity: 1;
@@ -2542,7 +2548,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:19px;heigh
       <div class="mtab active" onclick="switchMtab('mr-ficha',this)">📋 Ficha</div>
       <div class="mtab" onclick="switchMtab('mr-historial',this)">📜 Historial</div>
       <div class="mtab" onclick="switchMtab('mr-medicacion',this)">💊 Medicación</div>
-      <div class="mtab" id="tab-mr-salida" onclick="switchMtab('mr-salida',this)">📋 Reporte MSP / Internación</div>
+      <div class="mtab" id="tab-mr-salida" onclick="switchMtab('mr-salida',this);cargarDatosClinicos(residenteActual);">📋 Reporte MSP / Internación</div>
     </div>
 
     <!-- TAB: FICHA -->
@@ -5330,11 +5336,11 @@ function renderGastos() {
           '<div style="font-size:13px;font-weight:500">' + f.descripcion + '</div>' +
           '<div style="font-size:11px;color:var(--suave)">' + f.categoria + ' · mensual fijo</div>' +
         '</div>' +
-        '<div style="display:flex;align-items:center;gap:6px">' +
+        '<div style="display:flex;align-items:center;gap:4px;background:var(--crema);border-radius:8px;padding:4px 8px">' +
           '<span style="font-size:11px;color:var(--suave)">$</span>' +
           '<input type="number" value="' + monto + '" data-fijo-desc="' + f.descripcion + '" data-fijo-cat="' + f.categoria + '" data-fijo-id="' + id + '" ' +
             'onblur="guardarGastoFijo(this)" placeholder="0" ' +
-            'style="width:90px;text-align:right;border:1px solid var(--crema-o);border-radius:6px;padding:6px 8px;font-size:13px;font-weight:600;color:var(--rojo);font-family:DM Sans,sans-serif">' +
+            'style="width:80px;text-align:right;border:none;background:transparent;font-size:13px;font-weight:600;color:var(--verde);font-family:DM Sans,sans-serif;outline:none">' +
         '</div>' +
       '</div>';
     }).join('');
