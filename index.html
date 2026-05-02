@@ -3598,7 +3598,7 @@ async function cargarYRenderHistorial(resId) {
   var container = document.getElementById('historial-content');
   if (!container) return;
   container.innerHTML = '<div style="text-align:center;padding:20px;color:var(--suave)">⏳ Cargando historial...</div>';
-  var hist = await apiGet('historial');
+  var hist = DB.historial || [];
   hist = hist.filter(function(h){ return String(h.residente_id) === String(resId); });
   hist.sort(function(a,b){ return b.created_at > a.created_at ? 1 : -1; });
   if (hist.length === 0) {
@@ -5223,7 +5223,7 @@ function imprimirMedicacion() {
 
   abrirPDF(html, 'Medicación — ' + (r.nombre||'').split(' ')[0]);
 }
-function descargarHistorial() { alert('Generará PDF con todo el historial del residente seleccionado.'); }
+function descargarHistorial() { generarHistorialPDF(); }
 function simAdjunto() { alert('Aquí se abriría la cámara o la galería para adjuntar foto o PDF.'); }
 // ══ VOZ ══
 function resStartVoice(targetId) {
@@ -5599,7 +5599,7 @@ function showM_addMed() {
 async function compartirHistorialWA() {
   var r = DB.residentes.find(function(x){ return String(x.id) === String(residenteActual); });
   if (!r) return;
-  var hist = await apiGet('historial');
+  var hist = DB.historial || [];
   hist = hist.filter(function(h){ return String(h.residente_id) === String(residenteActual); });
   var txt = '📋 *HISTORIAL CLÍNICO — ELDERLY CARE*\n\n' +
     '*Residente:* ' + r.nombre + '\n' +
@@ -5918,6 +5918,12 @@ async function guardarBarthelRapido() {
     inp.value = '';
     var lbl = document.getElementById('barthel-label-rapido');
     if (lbl) lbl.textContent = '—';
+    result.tipo = 'barthel';
+    result.vit_pa = String(score);
+    result.residente_id = residenteActual;
+    result.created_at = result.created_at || new Date().toISOString();
+    result.usuario = currentUser.nombre;
+    DB.historial.unshift(result);
     toast('✅ Barthel ' + score + ' pts guardado', 'ok');
     cargarDatosClinicos(residenteActual);
   } else {
@@ -5958,8 +5964,10 @@ async function guardarBarthel() {
 
 // ── CARGAR DATOS CLÍNICOS (Barthel, vacunas, caídas) ──
 async function cargarDatosClinicos(resId) {
-  var hist = await apiGet('historial');
-  var resHist = hist.filter(function(h){ return String(h.residente_id) === String(resId); });
+  // Usar DB.historial (ya cargado en memoria) - no async, no apiGet
+  var resHist = (DB.historial || []).filter(function(h){
+    return String(h.residente_id) === String(resId);
+  });
 
   // Barthel
   var barthelRecs = resHist
@@ -5970,33 +5978,38 @@ async function cargarDatosClinicos(resId) {
     var ultimo = barthelRecs[0];
     var score  = parseInt(ultimo.vit_pa) || 0;
     var cat    = categoriaBarthel(score);
-    var elS = document.getElementById('barthel-score');
-    var elC = document.getElementById('barthel-cat');
-    var elF = document.getElementById('barthel-fecha');
-    if (elS) elS.textContent = score + ' / 100';
-    if (elC) { elC.textContent = cat.cat; }
-    if (elF) elF.textContent = 'Evaluado: ' + new Date(ultimo.created_at).toLocaleDateString('es-UY') + ' — por ' + ultimo.usuario;
-
+    ['barthel-score','barthel-score-2'].forEach(function(id){
+      var el=document.getElementById(id); if(el) el.textContent=score+' / 100';
+    });
+    ['barthel-cat','barthel-cat-2'].forEach(function(id){
+      var el=document.getElementById(id); if(el){ el.textContent=cat.cat; }
+    });
+    ['barthel-fecha','barthel-fecha-2'].forEach(function(id){
+      var el=document.getElementById(id);
+      if(el) el.textContent='Evaluado: '+new Date(ultimo.created_at).toLocaleDateString('es-UY')+' — por '+ultimo.usuario;
+    });
     // Evolución
     var evDiv = document.getElementById('barthel-evolucion');
     if (evDiv && barthelRecs.length > 1) {
       evDiv.innerHTML = '<div style="font-size:11px;font-weight:600;color:var(--verde);margin-bottom:6px;letter-spacing:.5px">EVOLUCIÓN</div>' +
         barthelRecs.slice(0,6).map(function(b) {
-          var sc  = parseInt(b.vit_pa) || 0;
-          var ct  = categoriaBarthel(sc);
-          var dt  = new Date(b.created_at).toLocaleDateString('es-UY');
-          var pct = sc;
+          var sc = parseInt(b.vit_pa) || 0;
+          var ct = categoriaBarthel(sc);
+          var dt = new Date(b.created_at).toLocaleDateString('es-UY');
           return '<div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid var(--crema-o)">' +
-            '<div style="font-size:11px;color:var(--suave);min-width:65px">' + dt + '</div>' +
+            '<div style="font-size:11px;color:var(--suave);min-width:65px">'+dt+'</div>' +
             '<div style="flex:1;height:8px;background:var(--crema-o);border-radius:4px">' +
-              '<div style="height:8px;border-radius:4px;background:' + ct.color + ';width:' + pct + '%"></div>' +
+              '<div style="height:8px;border-radius:4px;background:'+ct.color+';width:'+sc+'%"></div>' +
             '</div>' +
-            '<div style="font-size:12px;font-weight:600;color:' + ct.color + ';min-width:35px;text-align:right">' + sc + '</div>' +
+            '<div style="font-size:12px;font-weight:600;color:'+ct.color+';min-width:35px;text-align:right">'+sc+'</div>' +
           '</div>';
         }).join('');
     } else if (evDiv) {
-      evDiv.innerHTML = '<div style="font-size:12px;color:var(--suave);text-align:center;padding:8px">Solo 1 registro — la evolución se verá con más registros</div>';
+      evDiv.innerHTML = '<div style="font-size:12px;color:var(--suave);text-align:center;padding:8px">Solo 1 registro — la evolución aparecerá con más registros</div>';
     }
+    var evDiv2 = document.getElementById('barthel-evolucion-2');
+    var evDiv1 = document.getElementById('barthel-evolucion');
+    if (evDiv1 && evDiv2) evDiv2.innerHTML = evDiv1.innerHTML;
   }
 
   // Vacunas
@@ -6009,10 +6022,9 @@ async function cargarDatosClinicos(resId) {
       vacunas.map(function(v) {
         var dt = new Date(v.created_at).toLocaleDateString('es-UY');
         return '<div style="padding:7px 0;border-bottom:1px solid var(--crema-o);display:flex;justify-content:space-between">' +
-          '<div><div style="font-size:13px;font-weight:500">' + v.texto + '</div>' +
-          '<div style="font-size:11px;color:var(--suave)">' + dt + ' · ' + v.usuario + '</div></div>' +
-          '<div style="font-size:11px;color:var(--verde)">💉</div>' +
-        '</div>';
+          '<span style="font-size:12px;font-weight:500">'+v.texto+'</span>' +
+          '<span style="font-size:11px;color:var(--suave)">'+dt+'</span>' +
+          '</div>';
       }).join('') :
       '<div style="font-size:12px;color:var(--suave);text-align:center;padding:8px">Sin vacunas registradas</div>';
   }
@@ -6024,29 +6036,38 @@ async function cargarDatosClinicos(resId) {
   var caidaDiv = document.getElementById('caidas-lista');
   if (caidaDiv) {
     caidaDiv.innerHTML = caidas.length > 0 ?
-      '<div style="font-size:12px;color:var(--rojo);font-weight:600;margin-bottom:6px">⚡ ' + caidas.length + ' caída(s) registrada(s)</div>' +
-      caidas.map(function(c) {
-        var dt = c.turno || new Date(c.created_at).toLocaleDateString('es-UY');
-        return '<div style="background:#fff8f8;border:1px solid #ffcdd2;border-radius:8px;padding:10px;margin-bottom:6px">' +
-          '<div style="font-size:12px;font-weight:500;color:var(--rojo)">' + (c.texto || 'Caída registrada') + '</div>' +
-          '<div style="font-size:11px;color:var(--suave);margin-top:3px">' + dt + ' · ' + c.usuario + '</div>' +
-        '</div>';
+      caidas.map(function(ca) {
+        var dt = new Date(ca.created_at).toLocaleDateString('es-UY');
+        return '<div style="padding:7px 0;border-bottom:1px solid var(--crema-o)">' +
+          '<div style="display:flex;justify-content:space-between;margin-bottom:2px">' +
+          '<span style="font-size:11px;font-weight:600;color:var(--rojo)">⚠️ Caída</span>' +
+          '<span style="font-size:11px;color:var(--suave)">'+dt+'</span></div>' +
+          '<div style="font-size:12px">'+ca.texto+'</div>' +
+          '</div>';
       }).join('') :
       '<div style="font-size:12px;color:var(--suave);text-align:center;padding:8px">Sin caídas registradas</div>';
   }
 
-  // Datos clínicos del residente (contenciones, salidas, etc)
-  var r = DB.residentes.find(function(x){ return String(x.id) === String(resId); });
+  // Restaurar chips clínicos desde clinico_json del residente
+  var r = DB.residentes.find(function(x){ return String(x.id)===String(resId); });
   if (r && r.clinico_json) {
     try {
       var clinico = JSON.parse(r.clinico_json);
-      // Restore chips
-      if (clinico.auxiliar)   preselChip('auxiliares-grupo', clinico.auxiliar);
-      if (clinico.salida)     preselChip('salidas-grupo', clinico.salida);
-      if (clinico.lpp)        preselChipMulti('lpp', clinico.lpp);
-      if (clinico.cont_obs)   { var el = document.getElementById('cont-obs');   if(el) el.value = clinico.cont_obs; }
-      if (clinico.salidas_just){ var el = document.getElementById('salidas-just'); if(el) el.value = clinico.salidas_just; }
-      if (clinico.lpp_desc)   { var el = document.getElementById('lpp-desc');   if(el) el.value = clinico.lpp_desc; }
+      if (clinico.auxiliar)    preselChip('auxiliares-grupo', clinico.auxiliar);
+      if (clinico.salida)      preselChipGrupo(clinico.salida, 'salida');
+      if (clinico.lpp)         preselChipGrupo(clinico.lpp, 'lpp');
+      if (clinico.cont_obs) {
+        var el = document.getElementById('cont-obs');
+        if(el) el.value = clinico.cont_obs;
+      }
+      if (clinico.salidas_just) {
+        var el2 = document.getElementById('salidas-just');
+        if(el2) el2.value = clinico.salidas_just;
+      }
+      if (clinico.lpp_desc) {
+        var el3 = document.getElementById('lpp-desc');
+        if(el3) el3.value = clinico.lpp_desc;
+      }
     } catch(e) {}
   }
 }
@@ -6152,6 +6173,10 @@ async function guardarCaida() {
   var result = await apiPost('historial', 'insert', data);
   hideLoading();
   if (result) {
+    result.tipo = 'caida';
+    result.residente_id = residenteActual;
+    result.created_at = result.created_at || new Date().toISOString();
+    DB.historial.unshift(result);
     toast('✅ Caída registrada', 'ok');
     resCloseM('modal-caida');
     cargarDatosClinicos(residenteActual);
@@ -6206,6 +6231,11 @@ async function guardarVacuna() {
   var result = await apiPost('historial', 'insert', data);
   hideLoading();
   if (result) {
+    // Update DB.historial in memory
+    result.tipo = 'vacuna';
+    result.residente_id = residenteActual;
+    result.created_at = result.created_at || new Date().toISOString();
+    DB.historial.unshift(result);
     toast('✅ Vacuna registrada', 'ok');
     resCloseM('modal-vacuna');
     cargarDatosClinicos(residenteActual);
@@ -6222,7 +6252,7 @@ async function generarInformeMSP() {
   if (!r) return;
 
   showLoading('Generando informe MSP...');
-  var hist = await apiGet('historial');
+  var hist = DB.historial || [];
   var resHist = hist.filter(function(h){ return String(h.residente_id) === String(residenteActual); });
   hideLoading();
 
@@ -6667,7 +6697,7 @@ async function generarFichaSalidaCompleta() {
   showLoading('Generando ficha PDF...');
 
   // Cargar historial para Barthel, vacunas, caídas
-  var hist = await apiGet('historial');
+  var hist = DB.historial || [];
   var resHist = hist.filter(function(h){ return String(h.residente_id) === String(residenteActual); });
 
   var barthelRecs = resHist.filter(function(h){ return h.tipo === 'barthel'; })
@@ -7390,6 +7420,201 @@ function onLiqMesChange() {
   var inpA = document.getElementById('liq-adel-emp');
   if (inpA) inpA.value = adelantosMes;
   calcLiqEmp();
+}
+
+
+
+// ═══════════════════════════════════════════════════════
+// PDF: REPORTE MSP — Estado clínico completo
+// ═══════════════════════════════════════════════════════
+function generarReporteMSP() {
+  if (!residenteActual) { toast('Sin residente seleccionado', 'error'); return; }
+  var r = DB.residentes.find(function(x){ return String(x.id)===String(residenteActual); }) || {};
+  var clinico = {};
+  try { clinico = JSON.parse(r.clinico_json || '{}'); } catch(e) {}
+  var hoy = new Date().toLocaleDateString('es-UY');
+  var resHist = (DB.historial||[]).filter(function(h){ return String(h.residente_id)===String(residenteActual); });
+  var barthelRecs = resHist.filter(function(h){ return h.tipo==='barthel'; })
+    .sort(function(a,b){ return b.created_at > a.created_at ? 1:-1; });
+  var vacunas = resHist.filter(function(h){ return h.tipo==='vacuna'; });
+  var caidas  = resHist.filter(function(h){ return h.tipo==='caida'; });
+  var meds    = (DB.medicacion||[]).filter(function(m){ return String(m.residente_id)===String(residenteActual) && m.activo==='Sí'; });
+  var barthelActual = barthelRecs.length > 0 ? (parseInt(barthelRecs[0].vit_pa)||0) : null;
+  var barthelCatLabel = barthelActual !== null ? barthelActual+' pts — '+categoriaBarthel(barthelActual).cat : 'Sin registros';
+
+  function row(lbl, val) {
+    if (!val) return '';
+    return '<tr><td style="color:#666;width:38%;padding:4px 8px;border-bottom:1px solid #f0ebe0">'+lbl+'</td>' +
+           '<td style="padding:4px 8px;border-bottom:1px solid #f0ebe0;font-weight:500">'+val+'</td></tr>';
+  }
+  function sec(titulo, contenido) {
+    return '<div style="margin-bottom:12px;border:1px solid #ddd;border-radius:6px;overflow:hidden">' +
+      '<div style="background:#1a3d35;color:white;padding:5px 10px;font-size:11px;font-weight:700;letter-spacing:.5px">'+titulo+'</div>' +
+      '<div style="padding:0">'+contenido+'</div></div>';
+  }
+
+  var html = '<!DOCTYPE html><html><head><meta charset="UTF-8">' +
+    '<style>body{font-family:Arial,sans-serif;font-size:11px;padding:14px;color:#222;max-width:720px;margin:0 auto}' +
+    '@media print{@page{margin:10mm;size:A4}}' +
+    'table{width:100%;border-collapse:collapse}' +
+    '.header{border-bottom:3px solid #1a3d35;margin-bottom:12px;padding-bottom:8px;display:flex;justify-content:space-between}' +
+    '.paciente{background:#f0f7f4;border-left:4px solid #1a3d35;padding:8px 12px;margin-bottom:12px;border-radius:0 4px 4px 0}' +
+    '</style></head><body>' +
+    '<div class="header"><div>' +
+    '<div style="font-size:15px;font-weight:bold;color:#1a3d35">REPORTE ESTADO CLÍNICO — MSP</div>' +
+    '<div style="font-size:10px;color:#666">Carrasco Elderly Care SAS · Rafael Barradas 1527 · Montevideo</div>' +
+    '</div><div style="text-align:right;font-size:10px;color:#666">'+hoy+'<br>'+
+    'Usuario: '+((typeof currentUser!=='undefined'&&currentUser.nombre)||'—')+'</div></div>' +
+    '<div class="paciente"><strong style="font-size:13px">'+r.nombre+'</strong> ' +
+    '<span style="color:#666;font-size:10px">CI: '+(r.ci||'—')+' · '+(r.edad?r.edad+' años · ':'')+'Hab. '+(r.hab||'—')+' · '+(r.mutualista||'—')+'</span><br>' +
+    '<span style="font-size:10px;color:#666">Médico: '+(r.medico||'—')+'</span></div>' +
+    (r.alergias && r.alergias!=='Sin alergias documentadas' ?
+      '<div style="background:#ffebee;border-left:4px solid #c62828;padding:6px 10px;margin-bottom:10px;font-weight:bold;font-size:11px">⚠️ '+r.alergias.replace(/\|/g,' · ')+'</div>' : '') +
+
+    sec('DIAGNÓSTICOS',
+      '<div style="padding:8px 10px;font-size:11px;line-height:1.8">' +
+      (r.diags||'—').split('|').filter(Boolean).map(function(d){ return '• '+d.trim(); }).join('<br>') +
+      '</div>') +
+
+    sec('ÍNDICE DE BARTHEL',
+      '<table>'+row('Último registro',barthelCatLabel)+
+      (barthelRecs.length>0?row('Fecha',new Date(barthelRecs[0].created_at).toLocaleDateString('es-UY'))+''+row('Evaluado por',barthelRecs[0].usuario):'')+
+      (barthelRecs.length>1?row('Evolución previa',barthelRecs.slice(1,4).map(function(b){ return (parseInt(b.vit_pa)||0)+' pts ('+new Date(b.created_at).toLocaleDateString('es-UY')+')'; }).join(' → ')):'')+
+      '</table>') +
+
+    sec('MOVILIDAD Y AUXILIARES',
+      '<table>'+row('Movilidad',r.cuid_movilidad)+row('Auxiliares de marcha',clinico.auxiliar||'No registrado')+
+      row('Continencia',r.cuid_continencia)+row('Pañal',r.cuid_panal)+'</table>') +
+
+    sec('CONTENCIONES',
+      '<table>'+row('Físicas',clinico.contencion_fisica||'No')+row('Farmacológicas',clinico.contencion_farm||'No')+
+      row('Observaciones',clinico.cont_obs)+'</table>') +
+
+    sec('SALIDAS DEL CENTRO',
+      '<table>'+row('Permitidas',clinico.salida||'No registrado')+row('Justificación',clinico.salidas_just)+'</table>') +
+
+    sec('LESIONES POR PRESIÓN',
+      '<table>'+row('Estadío',clinico.lpp||'Sin lesiones activas')+row('Descripción',clinico.lpp_desc)+'</table>') +
+
+    sec('VACUNAS EN EL CENTRO ('+vacunas.length+')',
+      vacunas.length>0 ?
+      '<table>'+vacunas.map(function(v){ return row(new Date(v.created_at).toLocaleDateString('es-UY'),v.texto); }).join('')+'</table>' :
+      '<div style="padding:8px 10px;color:#999">Sin vacunas registradas</div>') +
+
+    sec('REGISTRO DE CAÍDAS ('+caidas.length+')',
+      caidas.length>0 ?
+      '<div style="padding:6px 10px">'+caidas.map(function(ca){
+        return '<div style="padding:4px 0;border-bottom:1px solid #f0ebe0">' +
+          '<strong>'+new Date(ca.created_at).toLocaleDateString('es-UY')+'</strong> — '+ca.texto+'</div>';
+      }).join('')+'</div>' :
+      '<div style="padding:8px 10px;color:#999">Sin caídas registradas</div>') +
+
+    sec('FACTORES DE RIESGO DE CAÍDAS',
+      '<div style="padding:8px 10px;font-size:11px">'+(clinico.fr_caida&&clinico.fr_caida.length ?
+        clinico.fr_caida.join(' · ') : 'No registrados')+'</div>') +
+
+    (meds.length>0 ?
+    sec('MEDICACIÓN ACTUAL',
+      '<table><tr style="background:#f0f7f4"><th style="padding:4px 8px;text-align:left">Medicamento</th><th>Dosis</th><th>Horario</th><th>Notas</th></tr>' +
+      meds.map(function(m){ return '<tr><td style="padding:4px 8px;border-bottom:1px solid #f0ebe0">'+m.medicamento+'</td>' +
+        '<td style="padding:4px 8px;border-bottom:1px solid #f0ebe0">'+m.dosis+'</td>' +
+        '<td style="padding:4px 8px;border-bottom:1px solid #f0ebe0">'+m.horario+'</td>' +
+        '<td style="padding:4px 8px;border-bottom:1px solid #f0ebe0;color:'+(m.nota?'#c62828':'#666')+'">'+( m.nota||'—')+'</td></tr>'; }).join('') +
+      '</table>') : '') +
+
+    '<div style="margin-top:40px;display:flex;justify-content:space-between;font-size:10px">' +
+    '<div style="text-align:center;border-top:1px solid #aaa;padding-top:4px;width:38%">Médico responsable / Firma</div>' +
+    '<div style="text-align:center;border-top:1px solid #aaa;padding-top:4px;width:38%">Sello</div>' +
+    '</div></body></html>';
+
+  abrirPDF(html, 'Reporte MSP — '+(r.nombre||'').split(' ').slice(0,2).join(' '));
+}
+
+// ═══════════════════════════════════════════════════════
+// PDF: FICHA DE INTERNACIÓN — Para enviar con el paciente
+// ═══════════════════════════════════════════════════════
+function generarFichaInternacion() {
+  if (!residenteActual) { toast('Sin residente seleccionado', 'error'); return; }
+  var r = DB.residentes.find(function(x){ return String(x.id)===String(residenteActual); }) || {};
+  var motivo   = (document.getElementById('fs-motivo')||{}).value || '(sin completar)';
+  var fsDate   = (document.getElementById('fs-fecha')||{}).value  || '';
+  var fechaHora = fsDate ? new Date(fsDate).toLocaleString('es-UY') : new Date().toLocaleString('es-UY');
+  var pa    = (document.getElementById('fs-pa')||{}).value    || '—';
+  var pulso = (document.getElementById('fs-pulso')||{}).value || '—';
+  var temp  = (document.getElementById('fs-temp')||{}).value  || '—';
+  var sat   = (document.getElementById('fs-sat')||{}).value   || '—';
+  var gluc  = (document.getElementById('fs-gluc')||{}).value  || '—';
+  var peso  = (document.getElementById('fs-peso')||{}).value  || '—';
+  var meds  = (DB.medicacion||[]).filter(function(m){ return String(m.residente_id)===String(residenteActual)&&m.activo==='Sí'; });
+  var hoy   = new Date().toLocaleDateString('es-UY');
+
+  var alertas = r.alergias && r.alergias!=='Sin alergias documentadas'
+    ? '<div style="background:#ffebee;border:2px solid #c62828;border-radius:6px;padding:8px 12px;margin:10px 0;font-weight:bold;font-size:12px">⚠️ ALERTAS: '+r.alergias.replace(/\|/g,' · ')+'</div>' : '';
+
+  function fila(lbl, val) {
+    return '<tr><td style="padding:5px 8px;color:#555;width:38%;border-bottom:1px solid #f0ebe0">'+lbl+'</td>' +
+           '<td style="padding:5px 8px;border-bottom:1px solid #f0ebe0;font-weight:500">'+(val||'—')+'</td></tr>';
+  }
+
+  var html = '<!DOCTYPE html><html><head><meta charset="UTF-8">' +
+    '<style>body{font-family:Arial,sans-serif;font-size:12px;padding:16px;color:#222;max-width:720px;margin:0 auto}' +
+    '@media print{@page{margin:10mm;size:A4}}' +
+    'table{width:100%;border-collapse:collapse}' +
+    '.sec{margin-bottom:14px}.sec-tit{background:#1a3d35;color:white;padding:6px 10px;font-size:11px;font-weight:700;letter-spacing:.5px;border-radius:4px 4px 0 0}' +
+    '.sec-body{border:1px solid #ddd;border-top:none;border-radius:0 0 4px 4px}' +
+    '.vitales{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:10px}' +
+    '.vital{border:1px solid #ddd;border-radius:6px;padding:8px;text-align:center}' +
+    '.vval{font-size:18px;font-weight:bold;color:#1a3d35}.vlbl{font-size:9px;color:#666;text-transform:uppercase}' +
+    '</style></head><body>' +
+
+    '<div style="border-bottom:3px solid #1a3d35;margin-bottom:14px;padding-bottom:10px;display:flex;justify-content:space-between;align-items:flex-end">' +
+    '<div><div style="font-size:17px;font-weight:bold;color:#1a3d35">FICHA DE INTERNACIÓN / DERIVACIÓN</div>' +
+    '<div style="font-size:10px;color:#666">Carrasco Elderly Care SAS · Rafael Barradas 1527 · Montevideo · Tel: ___________</div></div>' +
+    '<div style="text-align:right;font-size:11px;color:#444">'+fechaHora+'</div></div>' +
+
+    alertas +
+
+    '<div class="sec"><div class="sec-tit">DATOS DEL PACIENTE</div>' +
+    '<div class="sec-body"><table>' +
+    fila('Nombre completo',r.nombre) + fila('CI',r.ci) +
+    fila('Edad',r.edad?r.edad+' años':'—') + fila('Mutualista',r.mutualista) +
+    fila('Médico de cabecera',r.medico) +
+    fila('Familiar de referencia',(r.familiar_nom||r.familiar||'—')+(r.familiar_parentesco?' ('+r.familiar_parentesco+')':'')) +
+    fila('Tel. familiar',r.familiar_tel) +
+    '</table></div></div>' +
+
+    '<div class="sec"><div class="sec-tit">DIAGNÓSTICOS</div>' +
+    '<div class="sec-body" style="padding:8px 10px;line-height:1.8">' +
+    (r.diags||'—').split('|').filter(Boolean).map(function(d){ return '• '+d.trim(); }).join('<br>') +
+    '</div></div>' +
+
+    '<div class="sec"><div class="sec-tit">MOTIVO DE INTERNACIÓN / DERIVACIÓN</div>' +
+    '<div class="sec-body" style="padding:12px;font-size:13px;min-height:70px">'+motivo+'</div></div>' +
+
+    '<div class="sec"><div class="sec-tit">SIGNOS VITALES AL MOMENTO DE LA SALIDA</div>' +
+    '<div class="vitales">' +
+    '<div class="vital"><div class="vval">'+pa+'</div><div class="vlbl">Presión arterial</div></div>' +
+    '<div class="vital"><div class="vval">'+pulso+'</div><div class="vlbl">Pulso</div></div>' +
+    '<div class="vital"><div class="vval">'+temp+'°C</div><div class="vlbl">Temperatura</div></div>' +
+    '<div class="vital"><div class="vval">'+sat+'%</div><div class="vlbl">Sat O₂</div></div>' +
+    '<div class="vital"><div class="vval">'+gluc+'</div><div class="vlbl">Glucemia</div></div>' +
+    '<div class="vital"><div class="vval">'+peso+'kg</div><div class="vlbl">Peso</div></div>' +
+    '</div></div>' +
+
+    (meds.length>0 ?
+    '<div class="sec"><div class="sec-tit">MEDICACIÓN HABITUAL</div><div class="sec-body">' +
+    '<table><tr style="background:#f0f7f4"><th style="padding:5px 8px;text-align:left">Medicamento</th><th>Dosis</th><th>Horario</th></tr>' +
+    meds.map(function(m){ return '<tr><td style="padding:5px 8px;border-bottom:1px solid #f0ebe0">'+m.medicamento+'</td>' +
+      '<td style="padding:5px 8px;border-bottom:1px solid #f0ebe0">'+m.dosis+'</td>' +
+      '<td style="padding:5px 8px;border-bottom:1px solid #f0ebe0">'+m.horario+'</td></tr>'; }).join('') +
+    '</table></div></div>' : '') +
+
+    '<div style="margin-top:40px;display:flex;justify-content:space-between;font-size:10px">' +
+    '<div style="text-align:center;border-top:1px solid #aaa;padding-top:4px;width:38%">Médico / Firma</div>' +
+    '<div style="text-align:center;border-top:1px solid #aaa;padding-top:4px;width:38%">Sello institucional</div>' +
+    '</div></body></html>';
+
+  abrirPDF(html, 'Internación — '+(r.nombre||'').split(' ').slice(0,2).join(' '));
 }
 
 
