@@ -873,17 +873,17 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:19px;heigh
   <div id="lista-residentes"></div>
 
   <div class="sg">
-    <div class="sc vbg"><div class="sn">9</div><div class="sl">Activos</div></div>
-    <div class="sc"><div class="sn" style="color:var(--rojo)">3</div><div class="sl">Fragilidad severa</div></div>
-    <div class="sc"><div class="sn" style="color:var(--morado)">8</div><div class="sl">Con demencia</div></div>
-    <div class="sc dbg"><div class="sn">3</div><div class="sl">Anticoagulados</div></div>
+    <div class="sc vbg"><div class="sn" id="ind-activos">—</div><div class="sl">Activos</div></div>
+    <div class="sc"><div class="sn" id="ind-fragilidad" style="color:var(--rojo)">—</div><div class="sl">Fragilidad severa</div></div>
+    <div class="sc"><div class="sn" id="ind-demencia" style="color:var(--morado)">—</div><div class="sl">Con demencia</div></div>
+    <div class="sc dbg"><div class="sn" id="ind-anticoag">—</div><div class="sl">Anticoagulados</div></div>
   </div>
 
-  <div class="alerta al-r">
+  <!-- Alerta dinámica de anticoagulados — se muestra/oculta automáticamente -->
+  <div class="alerta al-r" id="alerta-anticoag-dinamica" style="display:none">
     <div class="al-ico">⚠️</div>
-    <div><div class="al-tit">Medicación de alto riesgo</div><div class="al-txt">Morgade, Tarrio, Rodríguez — anticoagulados. Farji — ERC G4 ajuste dosis</div></div>
+    <div><div class="al-tit">Anticoagulados activos</div><div class="al-txt"></div></div>
   </div>
-
   <div style="height:8px"></div>
   <div style="display:flex;gap:10px;margin-bottom:0">
   <button class="btn bv" style="flex:1" onclick="abrirPastilleroSemanal()">💊 Pastillero semanal</button>
@@ -3500,32 +3500,93 @@ function renderListaResidentes() {
   var container = document.getElementById('lista-residentes');
   if (!container) return;
   var activos = DB.residentes.filter(function(r){ return r.activo === 'Sí'; });
-  var el = document.querySelector('#mod-residentes .ssub');
-  if (el) el.textContent = activos.length + ' residentes activos';
 
+  // ── Actualizar indicadores dinámicamente ──
+  var nActivos    = activos.length;
+
+  // Fragilidad severa: demencia GDS 5-7 o Barthel < 40 o campo cuid_movilidad con "silla"/"cama"
+  var nFragilidad = activos.filter(function(r){
+    var gds = parseInt((r.dem_estadio||'').replace(/[^0-9]/g,'')) || 0;
+    var movilidad = (r.cuid_movilidad||'').toLowerCase();
+    return gds >= 5 || movilidad.includes('silla') || movilidad.includes('cama') || movilidad.includes('postrado');
+  }).length;
+
+  // Con demencia: campo demencia = 'Sí'
+  var nDemencia = activos.filter(function(r){
+    return r.demencia === 'Sí' || r.demencia === 'si' || r.demencia === true;
+  }).length;
+
+  // Anticoagulados: alertas o diagnósticos contienen ANTICOAG o Apixaban o Acenocumarol etc.
+  var nAnticoag = activos.filter(function(r){
+    var texto = ((r.alergias||'') + ' ' + (r.diags||'')).toUpperCase();
+    return texto.includes('ANTICOAG') || texto.includes('APIXABAN') ||
+           texto.includes('ACENOCUMAROL') || texto.includes('RIVAROXABAN') ||
+           texto.includes('DABIGATRAN') || texto.includes('WARFARINA');
+  }).length;
+
+  // Actualizar los spans
+  var sv = function(id, val) { var el=document.getElementById(id); if(el) el.textContent=val; };
+  sv('ind-activos',    nActivos);
+  sv('ind-fragilidad', nFragilidad);
+  sv('ind-demencia',   nDemencia);
+  sv('ind-anticoag',   nAnticoag);
+
+  // Actualizar subtitle
+  var el = document.querySelector('#mod-residentes .ssub');
+  if (el) el.textContent = nActivos + ' residentes activos';
+
+  // ── Alerta dinámica de anticoagulados ──
+  var alertaEl = document.getElementById('alerta-anticoag-dinamica');
+  if (alertaEl) {
+    if (nAnticoag > 0) {
+      var nombres = activos.filter(function(r){
+        var texto = ((r.alergias||'') + ' ' + (r.diags||'')).toUpperCase();
+        return texto.includes('ANTICOAG') || texto.includes('APIXABAN') ||
+               texto.includes('ACENOCUMAROL') || texto.includes('RIVAROXABAN') ||
+               texto.includes('DABIGATRAN') || texto.includes('WARFARINA');
+      }).map(function(r){ return r.nombre.split(' ')[0]; }).join(', ');
+      alertaEl.style.display = 'flex';
+      var txtEl = alertaEl.querySelector('.al-txt');
+      if (txtEl) txtEl.textContent = nombres + ' — anticoagulados. Verificar antes de procedimientos.';
+    } else {
+      alertaEl.style.display = 'none';
+    }
+  }
+
+  // ── Renderizar lista de tarjetas ──
   if (activos.length === 0) {
-    container.innerHTML = '<div style="text-align:center;padding:30px;color:var(--suave)">Sin residentes cargados.<br>Tocá ＋ para agregar.</div>';
+    container.innerHTML = '<div style="text-align:center;padding:30px;color:var(--suave)">Sin residentes cargados.<br>Tocá + para agregar.</div>';
     return;
   }
+
   container.innerHTML = activos.map(function(r) {
-    var ini = r.nombre.split(' ').map(function(w){ return w[0]; }).slice(0,2).join('');
+    var diags = (r.diags||'').split('|').filter(Boolean).slice(0,4).join(' · ');
+    if (diags.length > 80) diags = diags.substring(0,80) + '…';
+    var ini = r.nombre.split(' ').map(function(w){return w[0]||'';}).filter(Boolean).slice(0,2).join('');
     var badges = '';
-    if (r.alergias && r.alergias.includes('ANTICOAG'))   badges += '<span class="badge b-azul" style="margin-right:4px">Anticoagulada</span>';
-    if (r.cuid_espesantes && r.cuid_espesantes.includes('OBLIGATORIO')) badges += '<span class="badge b-critico">Espesantes</span>';
-    var estadio = r.dem_estadio || '';
-    var bcolor  = estadio.includes('6') || estadio.includes('7') ? 'b-critico' :
-                  estadio.includes('5') ? 'b-morado' : 'b-alerta';
+    // GDS badge
+    var gds = (r.dem_estadio||'').match(/\d+/);
+    if (gds) {
+      var g = parseInt(gds[0]);
+      var dep = g >= 6 ? 'Dep. total' : g >= 5 ? 'Dep. severa' : g >= 4 ? 'Dep. moderada' : 'Dep. leve';
+      var bcls = g >= 6 ? 'b-critico' : g >= 5 ? 'b-alerta' : g >= 4 ? 'b-morado' : 'b-verde';
+      badges += '<span class="badge '+bcls+'">'+dep+'</span> ';
+      badges += '<span class="badge b-morado" style="margin-left:4px">GDS '+g+'</span> ';
+    }
+    // Anticoagulado badge
+    var textoR = ((r.alergias||'')+(r.diags||'')).toUpperCase();
+    if (textoR.includes('ANTICOAG')||textoR.includes('APIXABAN')||textoR.includes('ACENOCUMAROL')||textoR.includes('RIVAROXABAN')) {
+      badges += '<span class="badge b-azul" style="margin-left:4px">Anticoagulada</span>';
+    }
     return '<div class="res-card" onclick="abrirResidente(\'' + r.id + '\')">' +
-      '<div class="res-av">' + ini + '</div>' +
+      '<div class="res-av">'+ini+'</div>' +
       '<div style="flex:1">' +
-        '<div class="res-nom">' + r.nombre + '</div>' +
-        '<div class="res-sub">' + r.edad + ' años · Hab. ' + r.hab + ' · CI ' + r.ci + '</div>' +
-        '<div style="margin-top:4px">' +
-          (estadio ? '<span class="badge ' + bcolor + '" style="margin-right:4px">' + estadio + '</span>' : '') +
-          badges +
-        '</div>' +
-      '</div>' +
-    '</div>';
+        '<div class="res-nom">'+r.nombre+'</div>' +
+        '<div class="res-sub">'+(r.edad?r.edad+' años · ':'')+
+          (r.hab?'Hab. '+r.hab+' · ':'')+'CI '+(r.ci||'—')+'</div>' +
+        (diags ? '<div class="res-diag">'+diags+'</div>' : '') +
+        (badges ? '<div style="margin-top:4px">'+badges+'</div>' : '') +
+      '</div></div>';
   }).join('');
 }
 
