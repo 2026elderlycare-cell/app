@@ -2,11 +2,12 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-  <!-- Evitar caché del browser — importante para Safari y Chrome -->
+  <!-- Cache busting v202605021252 — fuerza descarga de versión nueva -->
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta name="version" content="202605021252">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Elderly Care Carrasco — Sistema de Gestión</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -520,6 +521,17 @@ input.fi, select.fi, textarea.fi { max-width:100% !important; min-width:0 !impor
 .past-med-nom{font-size:13px;font-weight:600;color:var(--texto);}
 .past-med-det{font-size:11px;color:var(--suave);margin-top:2px;}
 .past-med-alerta{color:var(--rojo)!important;}
+
+
+/* ── Prevenir zoom en iOS/Safari al tocar inputs ── */
+input, select, textarea {
+  font-size: 16px !important;
+}
+/* Override para labels y textos pequeños que no son inputs */
+.fl, .field-lbl, .norma, .msub, .ssub, .past-med-det,
+.fe-lic-calc-info, .reg-hex-resultado, .reg-hnoct-resultado {
+  font-size: inherit;
+}
 
 </style>
 </head>
@@ -2529,7 +2541,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:19px;heigh
       <div class="mtab active" onclick="switchMtab('mr-ficha',this)">📋 Ficha</div>
       <div class="mtab" onclick="switchMtab('mr-historial',this)">📜 Historial</div>
       <div class="mtab" onclick="switchMtab('mr-medicacion',this)">💊 Medicación</div>
-      <div class="mtab" id="tab-mr-salida" onclick="switchMtab('mr-salida',this)">📄 Salida / Clínico</div>
+      <div class="mtab" id="tab-mr-salida" onclick="switchMtab('mr-salida',this)">📋 Reporte MSP / Internación</div>
     </div>
 
     <!-- TAB: FICHA -->
@@ -3137,6 +3149,25 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:19px;heigh
 </div>
 
 <script>
+// ── Cache busting: si la versión cambió, forzar reload limpio ──
+(function() {
+  var APP_VERSION = '202605021252';
+  var stored = localStorage.getItem('ec_version');
+  if (stored && stored !== APP_VERSION) {
+    localStorage.setItem('ec_version', APP_VERSION);
+    // Clear all caches and reload
+    if ('caches' in window) {
+      caches.keys().then(function(names) {
+        names.forEach(function(name) { caches.delete(name); });
+      });
+    }
+    window.location.reload(true);
+  } else {
+    localStorage.setItem('ec_version', APP_VERSION);
+  }
+})();
+
+
 // ═══════════════════════════════════════════════════════
 // ELDERLY CARE — API + DB LAYER
 // ═══════════════════════════════════════════════════════
