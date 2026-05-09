@@ -540,6 +540,14 @@ input, select, textarea {
 }
 
 html{overflow-x:hidden;}
+
+/* ── KPI grid diagnóstico financiero ── */
+.kpi-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.kpi-card { background:var(--crema); border-radius:10px; padding:12px; }
+.kpi-tit  { font-size:10px; color:var(--suave); letter-spacing:.5px; text-transform:uppercase; margin-bottom:4px; }
+.kpi-val  { font-size:18px; font-weight:700; color:var(--verde); line-height:1.1; }
+.kpi-sub  { font-size:10px; color:var(--suave); margin-top:3px; }
+
 </style>
 </head>
 <body>
@@ -1573,6 +1581,15 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:19px;heigh
         <div style="text-align:center;padding:20px;color:var(--suave);font-size:12px">Sin gastos puntuales</div>
       </div>
 
+
+      <!-- ══ ACTIVOS PATRIMONIALES ══ -->
+      <div class="sep" style="margin-top:16px">🏛️ Activos patrimoniales</div>
+      <div style="font-size:11px;color:var(--suave);margin-bottom:10px">Equipamiento e inversiones del residencial · usados para calcular ROI</div>
+      <div id="lista-activos"></div>
+      <div style="display:flex;justify-content:flex-end;margin-top:8px">
+        <button class="btn bv btn-sm" onclick="showM('modal-activo')">＋ Cargar activo</button>
+      </div>
+
       <div style="height:80px"></div>
     </div>
   </div>
@@ -2528,6 +2545,52 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:19px;heigh
 
 
 
+
+<!-- MODAL: CARGAR ACTIVO PATRIMONIAL -->
+<div class="moverlay" id="modal-activo" onclick="if(event.target===this)closeM('modal-activo')">
+  <div class="modal">
+    <div class="mhandle"></div>
+    <div class="mtit">Cargar activo patrimonial</div>
+    <div class="msub">Equipamiento e inversiones del residencial</div>
+
+    <div class="fg"><label class="fl">Etiqueta / Descripción</label>
+      <input class="fi" id="activo-etiqueta" placeholder="Ej: Silla escalera, cama articulada...">
+    </div>
+    <div class="fr">
+      <div class="fg"><label class="fl">Valor total ($)</label>
+        <input class="fi" type="number" id="activo-monto" placeholder="Ej: 150000">
+      </div>
+      <div class="fg"><label class="fl">Fecha adquisición</label>
+        <input class="fi" type="date" id="activo-fecha">
+      </div>
+    </div>
+
+    <div class="card" style="background:var(--crema);padding:12px;margin-top:4px">
+      <div class="toggle-row">
+        <div><div class="toggle-lbl">¿Se pagó en cuotas?</div></div>
+        <div class="toggle" id="activo-tog-cuotas" onclick="this.classList.toggle('on');toggleActivoCuotas()"></div>
+      </div>
+    </div>
+
+    <div id="activo-cuotas-section" style="display:none;margin-top:8px">
+      <div class="fr">
+        <div class="fg"><label class="fl">Total de cuotas</label>
+          <input class="fi" type="number" id="activo-cuotas-total" placeholder="Ej: 12" min="1" oninput="calcCuotaActivo()">
+        </div>
+        <div class="fg"><label class="fl">Cuotas pagadas</label>
+          <input class="fi" type="number" id="activo-cuotas-pagadas" placeholder="Ej: 3" min="0" oninput="calcCuotaActivo()">
+        </div>
+      </div>
+      <div style="font-size:11px;color:var(--verde);font-weight:600;margin-top:4px" id="activo-cuota-info"></div>
+    </div>
+
+    <div style="display:flex;gap:8px;margin-top:16px">
+      <button class="btn bs" style="flex:1" onclick="closeM('modal-activo')">Cancelar</button>
+      <button class="btn bv" style="flex:2" onclick="guardarActivo()">✅ Guardar activo</button>
+    </div>
+  </div>
+</div>
+
 <!-- ═══════ MODALES RESIDENTES ═══════ -->
 <!-- ══════════════════════════════
      MODAL FICHA RESIDENTE
@@ -2574,6 +2637,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:19px;heigh
           <div class="field-row"><span class="field-lbl">Familiar</span><span id="vw-familiar" class="field-val">—</span></div>
           <div class="field-row"><span class="field-lbl">Tel.</span><span id="vw-ftel" class="field-val">—</span></div>
           <div class="field-row"><span class="field-lbl">Parentesco</span><span id="vw-fpar" class="field-val">—</span></div>
+          <div class="field-row"><span class="field-lbl">💰 Cuota mensual</span><span id="vw-cuota" class="field-val" style="font-weight:700;color:var(--verde)">—</span></div>
         </div>
         <div class="sec-edit" id="edit-res-datos" style="display:none">
           <div class="fr">
@@ -2594,6 +2658,11 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:19px;heigh
           <div class="fr">
             <div class="fg"><label class="fl">Tel. familiar</label><input class="fi" id="ef-familiar-tel" placeholder="09X XXX XXX"></div>
             <div class="fg"><label class="fl">Parentesco</label><input class="fi" id="ef-familiar-par" placeholder="Hijo/a, cónyuge..."></div>
+          </div>
+          <div class="fg">
+            <label class="fl">💰 Cuota mensual ($)</label>
+            <input class="fi" type="number" id="ef-cuota" placeholder="Ej: 45000" style="font-size:16px;font-weight:600;color:var(--verde)">
+            <div style="font-size:10px;color:var(--suave);margin-top:3px">Se usa para calcular ingresos totales del residencial</div>
           </div>
         </div>
       </div>
@@ -3475,7 +3544,8 @@ async function cargarDatos() {
       renderListaResidentes();
       renderListaEmpleadas();
       renderGastos();
-      try { renderSocias(); } catch(e) {}
+      try { renderDiagnostico(); } catch(e) {}
+      try { renderActivos(); } catch(e) {}
       try { renderPastillero(); } catch(e) {}
       try { refreshLiqEmpDropdown(); } catch(e) {}
       try { refreshEgEmpDropdown(); } catch(e) {}
@@ -3592,10 +3662,7 @@ function renderListaResidentes() {
       '<div class="res-av">'+ini+'</div>' +
       '<div style="flex:1">' +
         '<div class="res-nom">'+r.nombre+'</div>' +
-        '<div class="res-sub">'+(r.edad?r.edad+' años · ':'')+
-          (r.hab?'Hab. '+r.hab+' · ':'')+'CI '+(r.ci||'—')+'</div>' +
-        (diags ? '<div class="res-diag">'+diags+'</div>' : '') +
-        (badges ? '<div style="margin-top:4px">'+badges+'</div>' : '') +
+        '<div class="res-sub">'+(r.edad?r.edad+' años':'—')+(r.hab?' · Hab. '+r.hab:'')+'</div>' +
       '</div></div>';
   }).join('');
 }
@@ -5198,7 +5265,8 @@ var GASTOS_FIJOS = [
   { categoria:'Agua',          descripcion:'OSE',           ico:'💧', orden:2 },
   { categoria:'Gas',           descripcion:'Gas',           ico:'🔥', orden:3 },
   { categoria:'Alimentación',  descripcion:'Alimentación',  ico:'🛒', orden:4 },
-  { categoria:'Personal',      descripcion:'Sueldos',       ico:'👥', orden:5 }
+  { categoria:'Personal',      descripcion:'Sueldos',       ico:'👥', orden:5 },
+  { categoria:'Alquiler',      descripcion:'Alquiler',      ico:'🏠', orden:6 }
 ];
 
 // ── RENDER GASTOS — versión final con fijos + puntuales ──
@@ -5315,7 +5383,8 @@ async function guardarGastoFijo(input) {
     }
   }
   renderGastos();
-  renderSocias();
+  renderActivos();
+  renderDiagnostico();
 }
 
 // ── Guardar gasto puntual (sin foto) ──
@@ -5339,7 +5408,8 @@ async function guardarGastoManual() {
   if (result) {
     DB.gastos.push(result);
     renderGastos();
-    renderSocias();
+  renderActivos();
+    renderDiagnostico();
     toast('✅ Gasto guardado', 'ok');
     closeM('modal-gasto-manual');
     ['gasto-desc','gasto-monto-inp','gasto-proveedor','gasto-factura'].forEach(function(id){
@@ -5357,7 +5427,8 @@ async function eliminarGasto(id) {
   if (result) {
     DB.gastos = DB.gastos.filter(function(g){ return String(g.id) !== String(id); });
     renderGastos();
-    renderSocias();
+  renderActivos();
+    renderDiagnostico();
     toast('✅ Gasto eliminado', 'ok');
   } else toast('❌ Error al eliminar', 'error');
 }
@@ -6244,7 +6315,8 @@ async function guardarSeccion(secId) {
       hab: get('ef-hab'), mutualista: get('ef-mutualista'),
       ingreso: ingresoRaw, medico: get('ef-medico'),
       familiar_nom: get('ef-familiar'), familiar_tel: get('ef-familiar-tel'),
-      familiar_parentesco: get('ef-familiar-par')
+      familiar_parentesco: get('ef-familiar-par'),
+      cuota_mensual: parseFloat(get('ef-cuota'))||0
     };
   } else if (secId === 'res-diags') {
     var raw = get('ef-diags').replace(/\n/g,'|').replace(/\s*\|\s*/g,'|').replace(/^\||\|$/g,'');
@@ -6279,6 +6351,7 @@ async function guardarSeccion(secId) {
     actualizarVistaFicha(r || data);
     closeSecEdit(secId);
     renderListaResidentes();
+    try { renderDiagnostico(); } catch(e) {}
     toast('✅ Guardado', 'ok');
   } else {
     toast('❌ Error al guardar', 'error');
@@ -6297,6 +6370,7 @@ function actualizarVistaFicha(r) {
   sv('vw-familiar',   (r.familiar_nom||r.familiar||'') + (r.familiar_parentesco?' ('+r.familiar_parentesco+')':''));
   sv('vw-ftel',       r.familiar_tel);
   sv('vw-fpar',       r.familiar_parentesco);
+  sv('vw-cuota',      r.cuota_mensual ? '$' + Number(r.cuota_mensual).toLocaleString('es-UY') + '/mes' : '');
 
   var diagEl = document.getElementById('vw-diags');
   if (diagEl) {
@@ -6345,6 +6419,7 @@ function cargarFichaEnFormulario(r) {
   set('ef-familiar',    r.familiar_nom);
   set('ef-familiar-tel', r.familiar_tel);
   set('ef-familiar-par', r.familiar_parentesco);
+  set('ef-cuota',       r.cuota_mensual || '');
   set('ef-diags',       (r.diags || '').replace(/\|/g, '\n'));
   set('ef-alergias',    (r.alergias || '').replace(/\|/g, '\n'));
   set('ef-dieta',       r.cuid_dieta);
@@ -7330,6 +7405,305 @@ function generarFichaInternacion() {
     '</div></body></html>';
 
   abrirPDF(html, 'Internación — '+(r.nombre||'').split(' ').slice(0,2).join(' '));
+}
+
+
+
+// ═══════════════════════════════════════════════════════
+// ACTIVOS PATRIMONIALES
+// ═══════════════════════════════════════════════════════
+
+function toggleActivoCuotas() {
+  var tog = document.getElementById('activo-tog-cuotas');
+  var sec = document.getElementById('activo-cuotas-section');
+  if (sec) sec.style.display = tog && tog.classList.contains('on') ? 'block' : 'none';
+}
+
+function calcCuotaActivo() {
+  var monto   = parseFloat((document.getElementById('activo-monto')||{}).value)||0;
+  var total   = parseInt((document.getElementById('activo-cuotas-total')||{}).value)||0;
+  var pagadas = parseInt((document.getElementById('activo-cuotas-pagadas')||{}).value)||0;
+  var info    = document.getElementById('activo-cuota-info');
+  if (!info || !monto || !total) return;
+  var cuotaVal  = Math.round(monto / total);
+  var pendientes = Math.max(0, total - pagadas);
+  info.textContent = 'Cuota: $' + cuotaVal.toLocaleString('es-UY') + '/mes · Pendientes: ' + pendientes + ' cuotas ($' + (cuotaVal*pendientes).toLocaleString('es-UY') + ')';
+}
+
+async function guardarActivo() {
+  var etiqueta = (document.getElementById('activo-etiqueta')||{}).value || '';
+  var monto    = parseFloat((document.getElementById('activo-monto')||{}).value)||0;
+  var fecha    = (document.getElementById('activo-fecha')||{}).value || new Date().toISOString().split('T')[0];
+  var tieneCuotas = document.getElementById('activo-tog-cuotas')?.classList.contains('on');
+  var cuotasTotal  = parseInt((document.getElementById('activo-cuotas-total')||{}).value)||1;
+  var cuotasPagadas= parseInt((document.getElementById('activo-cuotas-pagadas')||{}).value)||0;
+
+  if (!etiqueta) { toast('Ingresá una etiqueta para el activo', 'error'); return; }
+  if (!monto)    { toast('Ingresá el valor del activo', 'error'); return; }
+
+  var data = {
+    descripcion:   etiqueta,
+    monto:         monto,
+    fecha:         fecha,
+    categoria:     'Activo',
+    es_fijo:       'No',
+    registrado_por: currentUser.nombre,
+    proveedor:     tieneCuotas ? 'cuotas:'+cuotasTotal+'/'+cuotasPagadas : 'contado'
+  };
+
+  showLoading('Guardando activo...');
+  var result = await apiPost('gastos', 'insert', data);
+  hideLoading();
+
+  if (result) {
+    result.categoria = 'Activo';
+    DB.gastos.unshift(result);
+    closeM('modal-activo');
+    // Reset form
+    ['activo-etiqueta','activo-monto','activo-fecha','activo-cuotas-total','activo-cuotas-pagadas'].forEach(function(id){
+      var el=document.getElementById(id); if(el) el.value='';
+    });
+    var tog = document.getElementById('activo-tog-cuotas');
+    if (tog) tog.classList.remove('on');
+    toggleActivoCuotas();
+    renderActivos();
+    renderDiagnostico();
+    toast('✅ Activo guardado', 'ok');
+  } else {
+    toast('❌ Error al guardar', 'error');
+  }
+}
+
+function renderActivos() {
+  var container = document.getElementById('lista-activos');
+  if (!container) return;
+
+  var activos = DB.gastos.filter(function(g){ return g.categoria === 'Activo'; });
+
+  if (activos.length === 0) {
+    container.innerHTML = '<div style="text-align:center;padding:12px;color:var(--suave);font-size:12px">Sin activos cargados</div>';
+    return;
+  }
+
+  var hoy = new Date();
+  container.innerHTML = activos.map(function(a) {
+    var monto = Number(a.monto);
+    var esCuotas = a.proveedor && a.proveedor.startsWith('cuotas:');
+    var cuotaInfo = '';
+    var cuotaMensual = 0;
+
+    if (esCuotas) {
+      var parts = a.proveedor.replace('cuotas:','').split('/');
+      var cuotasTotal   = parseInt(parts[0])||1;
+      var cuotasPagadas = parseInt(parts[1])||0;
+      // Auto-calcular cuotas pagadas según meses transcurridos desde fecha de adquisición
+      var fechaAdq = new Date(a.fecha || a.created_at);
+      var mesesTranscurridos = Math.floor((hoy - fechaAdq) / (1000*60*60*24*30.44));
+      var cuotasActuales = Math.min(cuotasPagadas + mesesTranscurridos, cuotasTotal);
+      var pendientes = Math.max(0, cuotasTotal - cuotasActuales);
+      cuotaMensual = Math.round(monto / cuotasTotal);
+      cuotaInfo = pendientes > 0
+        ? '<span style="color:var(--rojo);font-size:10px">$' + cuotaMensual.toLocaleString('es-UY') + '/mes · ' + pendientes + ' cuotas pendientes</span>'
+        : '<span style="color:var(--verde);font-size:10px">✅ Pagado en cuotas</span>';
+    } else {
+      cuotaInfo = '<span style="color:var(--suave);font-size:10px">Pago contado</span>';
+    }
+
+    var fechaStr = a.fecha ? String(a.fecha).split('T')[0] : '—';
+
+    return '<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--crema-o)">' +
+      '<div style="width:36px;height:36px;border-radius:8px;background:var(--crema);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">🏛️</div>' +
+      '<div style="flex:1">' +
+        '<div style="font-size:13px;font-weight:600">' + a.descripcion + '</div>' +
+        '<div style="font-size:11px;color:var(--suave)">Adquirido: ' + fechaStr + '</div>' +
+        cuotaInfo +
+      '</div>' +
+      '<div style="text-align:right">' +
+        '<div style="font-size:14px;font-weight:700;color:var(--verde)">$' + monto.toLocaleString('es-UY') + '</div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+// Calcular total capital en activos
+function calcTotalActivos() {
+  return DB.gastos
+    .filter(function(g){ return g.categoria === 'Activo'; })
+    .reduce(function(s,a){ return s + Number(a.monto); }, 0);
+}
+
+// Calcular cuotas de activos pendientes este mes
+function calcCuotasActivosMes() {
+  var total = 0;
+  var hoy = new Date();
+  DB.gastos.filter(function(g){ return g.categoria === 'Activo' && g.proveedor && g.proveedor.startsWith('cuotas:'); })
+    .forEach(function(a) {
+      var parts = a.proveedor.replace('cuotas:','').split('/');
+      var cuotasTotal   = parseInt(parts[0])||1;
+      var cuotasPagadas = parseInt(parts[1])||0;
+      var fechaAdq = new Date(a.fecha || a.created_at);
+      var mesesTranscurridos = Math.floor((hoy - fechaAdq) / (1000*60*60*24*30.44));
+      var cuotasActuales = Math.min(cuotasPagadas + mesesTranscurridos, cuotasTotal);
+      var pendientes = Math.max(0, cuotasTotal - cuotasActuales);
+      if (pendientes > 0) {
+        total += Math.round(Number(a.monto) / cuotasTotal);
+      }
+    });
+  return total;
+}
+
+// ═══════════════════════════════════════════════════════
+// INGRESOS: suma de cuotas de residentes activos
+// ═══════════════════════════════════════════════════════
+function calcIngresosMensuales() {
+  return DB.residentes
+    .filter(function(r){ return r.activo === 'Sí'; })
+    .reduce(function(s,r){ return s + (parseFloat(r.cuota_mensual)||0); }, 0);
+}
+
+// ═══════════════════════════════════════════════════════
+// DIAGNÓSTICO FINANCIERO — render completo
+// ═══════════════════════════════════════════════════════
+function renderDiagnostico() {
+  var mesActual = new Date().toISOString().slice(0,7);
+  var mesLabel  = new Date().toLocaleString('es-UY', { month:'long', year:'numeric' });
+  mesLabel = mesLabel.charAt(0).toUpperCase() + mesLabel.slice(1);
+
+  // ── Datos base ──
+  var ingresos      = calcIngresosMensuales();
+  var residActivos  = DB.residentes.filter(function(r){ return r.activo === 'Sí'; });
+  var nActivos      = residActivos.length;
+  var CAPACIDAD     = 16;
+
+  // Gastos del mes (excluye activos)
+  var gastosM = DB.gastos.filter(function(g){
+    return g.categoria !== 'Activo' &&
+      g.fecha && String(g.fecha).startsWith(mesActual);
+  });
+  var totalGastos = gastosM.reduce(function(s,g){ return s + Number(g.monto); }, 0);
+
+  // Cuotas de activos este mes
+  var cuotasActivos = calcCuotasActivosMes();
+  var totalEgresos  = totalGastos + cuotasActivos;
+
+  // ── Indicadores ──
+  var resultado    = ingresos - totalEgresos;
+  var margen       = ingresos > 0 ? Math.round((resultado / ingresos) * 100) : 0;
+  var ocupacion    = Math.round((nActivos / CAPACIDAD) * 100);
+  var costoPorRes  = nActivos > 0 ? Math.round(totalEgresos / nActivos) : 0;
+  var ingresoPorCama = nActivos > 0 ? Math.round(ingresos / nActivos) : 0;
+
+  // Punto de equilibrio: gastos fijos / ingreso promedio por residente
+  var ingresoPromedio = nActivos > 0 ? ingresos / nActivos : 45000;
+  var puntoEquilibrio = ingresoPromedio > 0 ? Math.ceil(totalEgresos / ingresoPromedio) : 0;
+
+  // ROI
+  var capitalActivos = calcTotalActivos();
+  var resultadoAnual = resultado * 12;
+  var roi = capitalActivos > 0 ? Math.round((resultadoAnual / capitalActivos) * 100) : 0;
+  var recupero = resultado > 0 && capitalActivos > 0 ? Math.ceil(capitalActivos / resultado) : null;
+
+  // ── Semáforo ──
+  var semColor = resultado > 0 ? 'verde' : resultado > -10000 ? 'amarillo' : 'rojo';
+  var semTexto = resultado > 0 ? 'Superávit — empresa saludable' :
+                 resultado === 0 ? 'En equilibrio' : 'Déficit — revisar gastos';
+
+  var fmt = function(n) { return '$' + Math.round(Math.abs(n)).toLocaleString('es-UY'); };
+  var fmtN = function(n) { return (n >= 0 ? '+' : '-') + '$' + Math.round(Math.abs(n)).toLocaleString('es-UY'); };
+
+  // ── Helper para cards ──
+  function kpi(titulo, valor, sub, color) {
+    return '<div class="kpi-card">' +
+      '<div class="kpi-tit">' + titulo + '</div>' +
+      '<div class="kpi-val" style="color:' + (color||'var(--verde)') + '">' + valor + '</div>' +
+      (sub ? '<div class="kpi-sub">' + sub + '</div>' : '') +
+    '</div>';
+  }
+
+  // ── Render en dsub-resumen ──
+  var elRes = document.getElementById('dsub-resumen');
+  if (!elRes) return;
+
+  elRes.innerHTML =
+    '<div class="mod-pad">' +
+    '<div class="stitle">Diagnóstico financiero</div>' +
+    '<div class="ssub">' + mesLabel + ' · ' + nActivos + '/' + CAPACIDAD + ' camas ocupadas</div>' +
+
+    // Semáforo
+    '<div class="semaforo ' + semColor + '" style="margin-bottom:12px">' +
+      '<div class="sem-dot"></div>' +
+      '<div class="sem-texto">' + semTexto + '</div>' +
+    '</div>' +
+
+    // Hero card resultado neto
+    '<div class="hero-card" style="margin-bottom:14px">' +
+      '<div style="font-size:10px;color:rgba(255,255,255,.5);letter-spacing:1px;margin-bottom:3px">RESULTADO NETO</div>' +
+      '<div class="hero-num">' + fmtN(resultado) + '</div>' +
+      '<div style="font-size:12px;color:rgba(255,255,255,.45);margin-top:3px">' +
+        'Ingresos ' + fmt(ingresos) + (ingresos===0?' (sin cuotas cargadas)':'') +
+        ' — Egresos ' + fmt(totalEgresos) +
+      '</div>' +
+      '<div style="display:flex;gap:14px;margin-top:12px;padding-top:10px;border-top:1px solid rgba(255,255,255,.15)">' +
+        '<div><div style="font-size:10px;color:rgba(255,255,255,.45);letter-spacing:1px">MARGEN</div>' +
+          '<div style="font-size:18px;font-weight:700;color:' + (margen>=0?'#C9A84C':'#ef9a9a') + '">' + margen + '%</div></div>' +
+        '<div><div style="font-size:10px;color:rgba(255,255,255,.45);letter-spacing:1px">OCUPACIÓN</div>' +
+          '<div style="font-size:18px;font-weight:700;color:#C9A84C">' + nActivos + '/' + CAPACIDAD + ' · ' + ocupacion + '%</div></div>' +
+        '<div><div style="font-size:10px;color:rgba(255,255,255,.45);letter-spacing:1px">ANUAL EST.</div>' +
+          '<div style="font-size:18px;font-weight:700;color:' + (resultadoAnual>=0?'#C9A84C':'#ef9a9a') + '">' + fmtN(resultadoAnual) + '</div></div>' +
+      '</div>' +
+    '</div>' +
+
+    // KPIs grid
+    '<div class="kpi-grid" style="margin-bottom:14px">' +
+      kpi('Ingreso por cama', fmt(ingresoPorCama), 'promedio mensual') +
+      kpi('Costo por residente', fmt(costoPorRes), 'egresos/activos') +
+      kpi('Punto equilibrio', puntoEquilibrio + ' residentes', 'para cubrir egresos', puntoEquilibrio<=nActivos?'var(--verde)':'var(--rojo)') +
+      kpi('Cuotas activos/mes', fmt(cuotasActivos), 'deuda mensual activos') +
+    '</div>' +
+
+    // ROI section
+    (capitalActivos > 0 ?
+    '<div class="fs-section" style="margin-bottom:14px">' +
+      '<div class="fs-titulo">🏛️ ROI sobre activos patrimoniales</div>' +
+      '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px">' +
+        '<div class="kpi-card">' + '<div class="kpi-tit">Capital invertido</div>' + '<div class="kpi-val">' + fmt(capitalActivos) + '</div></div>' +
+        '<div class="kpi-card">' + '<div class="kpi-tit">ROI anual</div>' + '<div class="kpi-val" style="color:' + (roi>=0?'var(--verde)':'var(--rojo)') + '">' + roi + '%</div></div>' +
+        (recupero ? '<div class="kpi-card">' + '<div class="kpi-tit">Recupero</div>' + '<div class="kpi-val">' + recupero + ' meses</div></div>' : '') +
+      '</div>' +
+    '</div>' : '') +
+
+    // Proyección
+    '<div class="fs-section" style="margin-bottom:14px">' +
+      '<div class="fs-titulo">📈 Proyección</div>' +
+      '<div style="display:flex;gap:10px;margin-top:8px;flex-wrap:wrap">' +
+        '<div class="kpi-card">' + '<div class="kpi-tit">A 3 meses</div>' + '<div class="kpi-val" style="color:' + (resultado*3>=0?'var(--verde)':'var(--rojo)') + '">' + fmtN(resultado*3) + '</div></div>' +
+        '<div class="kpi-card">' + '<div class="kpi-tit">A 6 meses</div>' + '<div class="kpi-val" style="color:' + (resultado*6>=0?'var(--verde)':'var(--rojo)') + '">' + fmtN(resultado*6) + '</div></div>' +
+        '<div class="kpi-card">' + '<div class="kpi-tit">A 12 meses</div>' + '<div class="kpi-val" style="color:' + (resultadoAnual>=0?'var(--verde)':'var(--rojo)') + '">' + fmtN(resultadoAnual) + '</div></div>' +
+      '</div>' +
+      (ingresos===0 ? '<div style="font-size:11px;color:var(--rojo);margin-top:8px">⚠️ Sin cuotas de residentes cargadas — cargalas en la ficha de cada residente para ver la proyección real</div>' : '') +
+    '</div>' +
+
+    // Distribución socias
+    '<div class="sep">👩‍💼 Distribución entre socias (33.33% cada una)</div>' +
+    '<div style="display:flex;gap:10px;margin-top:10px">' +
+      ['Juliana','Lucía','Flavia'].map(function(s){
+        return '<div style="flex:1;background:var(--crema);border-radius:10px;padding:12px;text-align:center">' +
+          '<div style="font-size:11px;color:var(--suave)">' + s + '</div>' +
+          '<div style="font-size:16px;font-weight:700;color:var(--verde)">' + fmtN(resultado/3) + '</div>' +
+          '<div style="font-size:10px;color:var(--suave)">33%</div>' +
+        '</div>';
+      }).join('') +
+    '</div>' +
+
+    '</div>';
+
+  // Also update socias cards (legacy IDs)
+  ['socia-juli','socia-luci','socia-flav'].forEach(function(id){
+    var el = document.getElementById(id);
+    if (el) el.textContent = fmtN(resultado/3);
+  });
+  var totEl = document.getElementById('resultado-neto');
+  if (totEl) totEl.textContent = fmtN(resultado);
 }
 
 
