@@ -7790,35 +7790,37 @@ function renderDiagnostico() {
         return '<span style="font-size:10px;font-weight:700;color:'+color+';margin-left:4px">'+arrow+Math.abs(diff)+'%</span>';
       }
 
-      // Variación total de egresos
-      var varTotal = (totalAnt > 0)
-        ? (function(){
-            var diff = Math.round(((totalEgresos - totalAnt) / totalAnt) * 100);
-            if (diff === 0) return '';
-            var col = diff > 0 ? '#c62828' : '#2e7d32';
-            var arr = diff > 0 ? '▲' : '▼';
-            return ' <span style="font-size:11px;font-weight:700;color:'+col+'">'+arr+Math.abs(diff)+'% vs mes ant.</span>';
-          })()
-        : '';
+
 
       return items.length > 0 ?
         '<div class="card" style="margin-bottom:14px">' +
           '<div class="card-title">📊 Distribución de costos</div>' +
-          '<div class="card-sub">Total: $' + Math.round(totalEgresos).toLocaleString('es-UY') + varTotal + ' · ' + mesLabel + '</div>' +
+          '<div class="card-sub">Total egresos: $' + Math.round(totalEgresos).toLocaleString('es-UY') + ' · ' + mesLabel + '</div>' +
           '<div style="margin-top:10px">' +
           items.map(function(it){
-            var pct = Math.round((it.monto / totalChart) * 100);
-            var antMonto = totAntMap[it.key] || 0;
+            var pct     = Math.round((it.monto / totalChart) * 100);
+            var antMonto= totAntMap[it.key] || 0;
+            // Variación vs mes anterior
+            var varStr  = '';
+            if (antMonto > 0) {
+              var diffPct = Math.round(((it.monto - antMonto) / antMonto) * 100);
+              if (diffPct !== 0) {
+                var col = diffPct > 0 ? '#c62828' : '#2e7d32';
+                var arr = diffPct > 0 ? '▲' : '▼';
+                varStr = ' <span style="font-size:10px;font-weight:700;color:'+col+'">'+arr+Math.abs(diffPct)+'%</span>';
+              }
+            }
             return '<div class="bar-h">' +
-              '<div class="bar-h-label">' + it.label + varBadge(it.monto, antMonto) + '</div>' +
+              '<div class="bar-h-label" style="display:flex;align-items:center;gap:2px">' + it.label + '</div>' +
               '<div class="bar-h-track"><div class="bar-h-fill" style="width:' + pct + '%;background:' + it.color + '"></div></div>' +
-              '<div class="bar-h-val">$' + Math.round(it.monto).toLocaleString('es-UY') + '</div>' +
+              '<div class="bar-h-val" style="display:flex;align-items:center;gap:4px">' +
+                '$' + Math.round(it.monto).toLocaleString('es-UY') +
+                ' <span style="font-size:10px;color:var(--suave);font-weight:400">[' + pct + '%]</span>' +
+                varStr +
+              '</div>' +
             '</div>';
           }).join('') +
           '</div>' +
-          (totalAnt > 0 ?
-          '<div style="font-size:10px;color:var(--suave);margin-top:8px;text-align:right">▲ aumento · ▼ ahorro vs ' +
-            mesAntD.toLocaleString('es-UY',{month:'long',year:'numeric'}) + '</div>' : '') +
           // Ingresos vs Egresos
           (ingresos > 0 ?
           '<div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--crema-o)">' +
