@@ -5168,7 +5168,7 @@ function renderGastos() {
       var esSueldos = f.descripcion === 'Sueldos';
 
       if (esSueldos) {
-        return '<div class="gasto-fijo-row">' +
+        return '<div style="display:flex;align-items:center;gap:11px;padding:11px 0;border-bottom:1px solid var(--crema-o)">' +
           '<div class="gasto-ico">' + f.ico + '</div>' +
           '<div style="flex:1">' +
             '<div style="font-size:13px;font-weight:500">Sueldos</div>' +
@@ -5184,7 +5184,7 @@ function renderGastos() {
         '</div>';
       }
 
-      return '<div class="gasto-fijo-row">' +
+      return '<div style="display:flex;align-items:center;gap:11px;padding:11px 0;border-bottom:1px solid var(--crema-o)">' +
         '<div class="gasto-ico">' + f.ico + '</div>' +
         '<div style="flex:1">' +
           '<div style="font-size:13px;font-weight:500">' + f.descripcion + '</div>' +
