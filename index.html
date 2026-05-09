@@ -6,7 +6,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <meta name="version" content="202605021252">
+  <meta name="version" content="202605092233">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Elderly Care Carrasco — Sistema de Gestión</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
@@ -557,279 +557,9 @@ html{overflow-x:hidden;}
 
 </style>
 </head>
+
 <body>
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Elderly Care — Sistema de Gestión v2</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-<style>
-:root{
-  --verde:#1a3d35;--verde-medio:#2a5a4e;--verde-claro:#3d7a6a;
-  --dorado:#c9a84c;--dorado-claro:#e8d08a;--crema:#f5f0e8;--crema-oscura:#ede5d4;
-  --texto:#1a1a1a;--texto-suave:#5a5a5a;--rojo:#c0392b;
-  --sombra:0 4px 24px rgba(26,61,53,0.13);--radio:16px;--radio-sm:10px;
-}
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-body{font-family:'DM Sans',sans-serif;background:var(--crema);color:var(--texto);min-height:100vh;max-width:430px;margin:0 auto;overflow-x:hidden;}
 
-/* SPLASH */
-#splash{position:fixed;inset:0;z-index:200;background:var(--verde);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;transition:opacity .5s,transform .5s;}
-#splash.hidden{opacity:0;pointer-events:none;transform:translateY(-20px);}
-.splash-marca{font-family:'Cormorant Garamond',serif;font-size:54px;font-weight:300;font-style:italic;color:var(--dorado-claro);line-height:1;}
-.splash-sub{font-size:11px;letter-spacing:4px;color:rgba(255,255,255,.4);text-transform:uppercase;margin-top:4px;text-align:center;}
-.pin-box{background:rgba(255,255,255,.07);border:1px solid rgba(201,168,76,.25);border-radius:var(--radio);padding:26px 30px;width:276px;text-align:center;}
-.pin-label{font-size:12px;letter-spacing:2px;color:rgba(255,255,255,.5);text-transform:uppercase;margin-bottom:14px;}
-.pin-dots{display:flex;gap:12px;justify-content:center;margin-bottom:18px;}
-.pin-dot{width:14px;height:14px;border-radius:50%;border:2px solid rgba(201,168,76,.4);background:transparent;transition:all .2s;}
-.pin-dot.filled{background:var(--dorado);border-color:var(--dorado);}
-.pin-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;}
-.pin-btn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);border-radius:var(--radio-sm);color:white;font-family:'DM Sans',sans-serif;font-size:20px;font-weight:300;padding:15px;cursor:pointer;transition:background .15s;}
-.pin-btn:active{background:rgba(201,168,76,.25);}
-.pin-btn.del{font-size:15px;color:rgba(255,255,255,.5);}
-.pin-btn.empty{background:transparent;border-color:transparent;pointer-events:none;}
-.pin-users{display:flex;gap:10px;justify-content:center;margin-top:6px;}
-.pin-user{padding:6px 14px;border-radius:20px;border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.6);font-size:12px;cursor:pointer;transition:all .2s;}
-.pin-user.sel{background:var(--dorado);border-color:var(--dorado);color:var(--verde);font-weight:500;}
-
-/* HEADER */
-#app-header{background:var(--verde);padding:16px 18px 0;position:sticky;top:0;z-index:50;box-shadow:0 2px 16px rgba(0,0,0,.18);}
-.header-top{display:flex;align-items:center;justify-content:space-between;padding-bottom:11px;}
-.header-logo{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;font-style:italic;color:var(--dorado-claro);}
-.header-info{font-size:11px;color:rgba(255,255,255,.4);margin-top:2px;}
-.header-user{width:34px;height:34px;border-radius:50%;background:rgba(201,168,76,.2);border:1.5px solid var(--dorado);display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--dorado-claro);cursor:pointer;font-weight:500;}
-.nav-tabs{display:flex;padding:0 12px 11px;gap:5px;overflow-x:auto;scrollbar-width:none;}
-.nav-tabs::-webkit-scrollbar{display:none;}
-.nav-tab{flex-shrink:0;padding:6px 13px;border-radius:20px;font-size:11px;font-weight:400;cursor:pointer;color:rgba(255,255,255,.5);transition:all .2s;}
-.nav-tab.active{background:var(--dorado);color:var(--verde);font-weight:500;}
-.subtabs{background:white;border-bottom:1px solid var(--crema-oscura);display:none;overflow-x:auto;scrollbar-width:none;padding:0 12px;}
-.subtabs::-webkit-scrollbar{display:none;}
-.subtab{flex-shrink:0;display:inline-block;padding:10px 13px;font-size:11px;font-weight:500;color:var(--texto-suave);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap;}
-.subtab.active{color:var(--verde);border-bottom-color:var(--dorado);}
-
-/* MAIN */
-.main{padding:16px 14px 100px;}
-.module{display:none;}.module.active{display:block;}
-.subview{display:none;}.subview.active{display:block;animation:fadeUp .3s ease;}
-@keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
-
-/* BOTTOM NAV */
-.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:white;border-top:1px solid rgba(26,61,53,.1);display:flex;padding:7px 0 18px;z-index:50;box-shadow:0 -4px 20px rgba(0,0,0,.08);}
-.bnav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:4px 0;color:var(--texto-suave);}
-.bnav-item.active{color:var(--verde);}
-.bnav-icon{font-size:19px;}.bnav-label{font-size:9px;letter-spacing:.4px;font-weight:500;}
-
-/* TYPOGRAPHY */
-.section-title{font-family:'Cormorant Garamond',serif;font-size:25px;font-weight:400;font-style:italic;color:var(--verde);margin-bottom:3px;}
-.section-sub{font-size:12px;color:var(--texto-suave);margin-bottom:14px;}
-.sep-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--texto-suave);text-align:center;margin:13px 0 10px;}
-.divider{height:1px;background:var(--crema-oscura);margin:11px 0;}
-
-/* CARDS */
-.card{background:white;border-radius:var(--radio);padding:15px;margin-bottom:10px;box-shadow:var(--sombra);border:1px solid rgba(26,61,53,.06);}
-.card-title{font-weight:500;font-size:14px;color:var(--verde);margin-bottom:2px;}
-.card-sub{font-size:12px;color:var(--texto-suave);}
-
-/* STATS */
-.stats-row{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:11px;}
-.stat-card{background:white;border-radius:var(--radio);padding:13px;box-shadow:var(--sombra);border:1px solid rgba(26,61,53,.06);text-align:center;}
-.stat-card.verde-bg{background:var(--verde);} .stat-card.dorado-bg{background:var(--dorado);}
-.stat-num{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:300;color:var(--verde);line-height:1;}
-.stat-card.verde-bg .stat-num,.stat-card.dorado-bg .stat-num{color:white;}
-.stat-label{font-size:10px;color:var(--texto-suave);margin-top:3px;}
-.stat-card.verde-bg .stat-label,.stat-card.dorado-bg .stat-label{color:rgba(255,255,255,.7);}
-
-/* HERO */
-.hero-card{background:linear-gradient(145deg,var(--verde),var(--verde-medio));border-radius:var(--radio);padding:18px;margin-bottom:10px;color:white;}
-.hero-num{font-family:'Cormorant Garamond',serif;font-size:40px;font-weight:300;color:var(--dorado-claro);line-height:1;}
-
-/* BADGES */
-.badge{display:inline-flex;align-items:center;gap:3px;border-radius:20px;padding:3px 9px;font-size:11px;font-weight:500;margin:2px;}
-.badge-ok{background:#e8f5e9;color:#2e7d32;} .badge-alerta{background:#fff3e0;color:#e65100;} .badge-critico{background:#fce4ec;color:#c62828;}
-.turno{font-size:10px;padding:3px 8px;border-radius:20px;font-weight:500;}
-.t-m{background:#e3f2fd;color:#1565c0;} .t-t{background:#fff8e1;color:#f57f17;} .t-n{background:#ede7f6;color:#4527a0;} .t-a{background:#fce4ec;color:#c62828;}
-
-/* FORMS */
-.form-group{margin-bottom:12px;}
-.form-label{font-size:11px;font-weight:500;letter-spacing:.8px;text-transform:uppercase;color:var(--verde);margin-bottom:5px;display:block;}
-.form-input{width:100%;background:var(--crema);border:1.5px solid var(--crema-oscura);border-radius:var(--radio-sm);padding:10px 12px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--texto);outline:none;transition:border-color .2s;}
-.form-input:focus{border-color:var(--verde-claro);}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
-textarea.form-input{resize:none;min-height:80px;}
-
-/* BUTTONS */
-.btn{border:none;border-radius:var(--radio-sm);padding:12px 17px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;width:100%;display:flex;align-items:center;justify-content:center;gap:7px;transition:opacity .15s;}
-.btn:active{opacity:.8;}
-.btn-verde{background:var(--verde);color:white;}
-.btn-sec{background:transparent;color:var(--verde);border:1.5px solid var(--verde);}
-.btn-dorado{background:var(--dorado);color:var(--verde);}
-.btn-rojo{background:var(--rojo);color:white;}
-.btn-sm{padding:7px 13px;font-size:12px;width:auto;}
-
-/* FAB */
-.fab{position:fixed;bottom:82px;right:18px;width:52px;height:52px;border-radius:50%;background:var(--dorado);color:var(--verde);font-size:24px;display:flex;align-items:center;justify-content:center;box-shadow:0 5px 18px rgba(201,168,76,.45);cursor:pointer;z-index:40;border:none;transition:transform .2s;}
-.fab:active{transform:scale(.93);}
-
-/* MODAL */
-.modal-overlay{position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.5);display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .3s;}
-.modal-overlay.open{opacity:1;pointer-events:all;}
-.modal{background:white;border-radius:22px 22px 0 0;width:100%;padding:20px 17px 38px;transform:translateY(100%);transition:transform .35s cubic-bezier(.34,1.56,.64,1);max-height:93vh;overflow-y:auto;}
-.modal-overlay.open .modal{transform:translateY(0);}
-.modal-handle{width:38px;height:4px;border-radius:2px;background:var(--crema-oscura);margin:0 auto 17px;}
-.modal-title{font-family:'Cormorant Garamond',serif;font-size:23px;font-style:italic;color:var(--verde);margin-bottom:3px;}
-.modal-sub{font-size:12px;color:var(--texto-suave);margin-bottom:16px;}
-.mtab-row{display:flex;gap:5px;margin-bottom:16px;border-bottom:1px solid var(--crema-oscura);padding-bottom:11px;}
-.mtab{flex:1;text-align:center;padding:7px;border-radius:var(--radio-sm);font-size:12px;font-weight:500;cursor:pointer;color:var(--texto-suave);}
-.mtab.active{background:var(--verde);color:white;}
-
-/* RESIDENTE CARD */
-.res-card{background:white;border-radius:var(--radio);padding:13px;margin-bottom:8px;box-shadow:var(--sombra);border:1px solid rgba(26,61,53,.06);display:flex;align-items:center;gap:12px;cursor:pointer;transition:transform .15s;}
-.res-card:active{transform:scale(.98);}
-.res-avatar{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--verde-medio),var(--verde-claro));display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:17px;font-style:italic;color:var(--dorado-claro);flex-shrink:0;border:2px solid rgba(201,168,76,.3);}
-
-/* HISTORIAL */
-.hist-entry{background:white;border-radius:var(--radio-sm);padding:13px;margin-bottom:9px;box-shadow:0 2px 10px rgba(26,61,53,.08);border-left:4px solid var(--verde-claro);position:relative;}
-.hist-entry.tipo-vital{border-left-color:#2196f3;}
-.hist-entry.tipo-incidente{border-left-color:var(--rojo);}
-.hist-entry.tipo-medico{border-left-color:var(--dorado);}
-.hist-entry.tipo-estudio{border-left-color:#9c27b0;}
-.hist-entry.tipo-medicacion{border-left-color:#4caf50;}
-.hist-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:7px;gap:8px;}
-.hist-tipo-badge{font-size:10px;padding:3px 8px;border-radius:20px;font-weight:600;flex-shrink:0;letter-spacing:.3px;}
-.tipo-nota .hist-tipo-badge{background:#e8f5e9;color:#2e7d32;}
-.tipo-vital .hist-tipo-badge{background:#e3f2fd;color:#1565c0;}
-.tipo-incidente .hist-tipo-badge{background:#fce4ec;color:#c62828;}
-.tipo-medico .hist-tipo-badge{background:#fff8e1;color:#f57f17;}
-.tipo-estudio .hist-tipo-badge{background:#f3e5f5;color:#7b1fa2;}
-.tipo-medicacion .hist-tipo-badge{background:#e8f5e9;color:#2e7d32;}
-.hist-fecha{font-size:11px;color:var(--texto-suave);}
-.hist-usuario{font-size:11px;font-weight:500;color:var(--verde);margin-bottom:5px;}
-.hist-texto{font-size:13px;color:var(--texto);line-height:1.5;}
-.hist-adjunto{margin-top:8px;background:var(--crema);border-radius:var(--radio-sm);padding:8px 10px;display:flex;align-items:center;gap:8px;font-size:12px;color:var(--texto-suave);}
-.hist-adj-icon{font-size:17px;}
-.hist-vitales{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:7px;}
-.vital-chip{background:var(--crema);border-radius:8px;padding:6px 8px;text-align:center;}
-.vital-val{font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--verde);font-weight:600;line-height:1;}
-.vital-lbl{font-size:10px;color:var(--texto-suave);margin-top:2px;}
-
-/* TIPO SELECTOR */
-.tipo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
-.tipo-btn{border:1.5px solid var(--crema-oscura);background:white;border-radius:var(--radio-sm);padding:11px 8px;text-align:center;cursor:pointer;transition:all .15s;}
-.tipo-btn.sel{border-color:var(--verde);background:rgba(26,61,53,.06);}
-.tipo-btn:active{background:var(--crema);}
-.tipo-btn .ico{font-size:20px;margin-bottom:4px;}
-.tipo-btn .lbl{font-size:11px;font-weight:500;color:var(--verde);}
-
-/* VITALES GRID INPUT */
-.vitales-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-
-/* ADJUNTOS */
-.adj-area{border:2px dashed var(--dorado);border-radius:var(--radio);padding:18px 14px;text-align:center;background:rgba(201,168,76,.04);cursor:pointer;margin-bottom:12px;}
-.adj-area:active{background:rgba(201,168,76,.1);}
-.adj-icon{font-size:28px;margin-bottom:5px;}
-.adj-label{font-size:13px;font-weight:500;color:var(--verde);}
-.adj-sub{font-size:11px;color:var(--texto-suave);margin-top:3px;}
-.adj-preview{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:12px;}
-.adj-thumb{width:60px;height:60px;border-radius:9px;background:var(--crema);border:1px solid var(--crema-oscura);display:flex;align-items:center;justify-content:center;font-size:22px;position:relative;cursor:pointer;}
-.adj-thumb .del-adj{position:absolute;top:-4px;right:-4px;width:16px;height:16px;background:var(--rojo);color:white;border-radius:50%;font-size:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
-
-/* NORMA */
-.norma-box{background:var(--crema);border-left:3px solid var(--verde-claro);border-radius:0 var(--radio-sm) var(--radio-sm) 0;padding:9px 12px;margin-bottom:9px;font-size:12px;color:var(--texto-suave);line-height:1.6;}
-
-/* EMP CARD */
-.emp-card{background:white;border-radius:var(--radio);padding:13px;margin-bottom:8px;box-shadow:var(--sombra);border:1px solid rgba(26,61,53,.06);display:flex;align-items:center;gap:12px;cursor:pointer;}
-.emp-avatar{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,var(--dorado),var(--dorado-claro));display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:17px;font-style:italic;color:var(--verde);font-weight:600;flex-shrink:0;}
-
-/* GASTOS */
-.gasto-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--crema-oscura);}
-.gasto-item:last-child{border-bottom:none;}
-.gasto-cat{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
-.gasto-monto{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:600;color:var(--verde);}
-
-/* OCR */
-.ocr-area{border:2px dashed var(--dorado);border-radius:var(--radio);padding:22px 14px;text-align:center;background:rgba(201,168,76,.04);cursor:pointer;margin-bottom:12px;}
-.ocr-icon{font-size:30px;margin-bottom:5px;}
-.ocr-label{font-size:13px;font-weight:500;color:var(--verde);}
-.ocr-sub{font-size:11px;color:var(--texto-suave);margin-top:3px;}
-
-/* LIQ */
-.liq-res{background:var(--verde);border-radius:var(--radio);padding:16px;margin:12px 0;color:white;}
-.liq-total{font-family:'Cormorant Garamond',serif;font-size:38px;font-weight:300;color:var(--dorado-claro);line-height:1;}
-.liq-row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.1);font-size:13px;}
-.liq-row:last-child{border-bottom:none;}
-.liq-row .c{color:rgba(255,255,255,.7);} .liq-row .m{color:white;font-weight:500;}
-.liq-row.desc .m{color:#ff8a80;} .liq-row.neto .c,.liq-row.neto .m{color:var(--dorado-claro);font-weight:600;font-size:14px;}
-
-/* DIAG */
-.semaforo{display:flex;align-items:center;gap:10px;padding:10px 13px;border-radius:var(--radio-sm);margin-bottom:10px;}
-.semaforo.verde{background:#e8f5e9;border:1px solid #c8e6c9;}
-.sem-dot{width:12px;height:12px;border-radius:50%;background:#4caf50;flex-shrink:0;}
-.sem-texto{font-size:13px;font-weight:500;color:#2e7d32;}
-.bar-h{display:flex;align-items:center;gap:9px;margin-bottom:9px;}
-.bar-h-label{font-size:12px;color:var(--texto-suave);min-width:85px;flex-shrink:0;}
-.bar-h-track{flex:1;height:9px;background:var(--crema-oscura);border-radius:4px;}
-.bar-h-fill{height:9px;border-radius:4px;}
-.bar-h-val{font-size:12px;font-weight:500;color:var(--verde);min-width:50px;text-align:right;flex-shrink:0;}
-.socia-card{background:white;border-radius:var(--radio);padding:14px;margin-bottom:9px;box-shadow:var(--sombra);border:1px solid rgba(26,61,53,.06);}
-.socia-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--crema-oscura);font-size:13px;}
-.socia-row:last-child{border-bottom:none;}
-.socia-monto{font-family:'Cormorant Garamond',serif;font-size:15px;color:var(--verde);font-weight:600;}
-input[type=range]{-webkit-appearance:none;width:100%;height:6px;border-radius:3px;background:var(--crema-oscura);outline:none;margin-bottom:9px;}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:19px;height:19px;border-radius:50%;background:var(--dorado);cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.2);}
-.esc-box{border-radius:var(--radio-sm);padding:12px;margin-bottom:7px;}
-.esc-min{background:#fce4ec;border:1px solid #f48fb1;} .esc-eq{background:#e8f5e9;border:1px solid #c8e6c9;} .esc-obj{background:#e3f2fd;border:1px solid #90caf9;}
-.esc-titulo{font-size:12px;font-weight:600;margin-bottom:3px;}
-.esc-min .esc-titulo{color:#c62828;} .esc-eq .esc-titulo{color:#2e7d32;} .esc-obj .esc-titulo{color:#1565c0;}
-.esc-precio{font-family:'Cormorant Garamond',serif;font-size:23px;font-weight:300;}
-.esc-min .esc-precio{color:#c62828;} .esc-eq .esc-precio{color:#2e7d32;} .esc-obj .esc-precio{color:#1565c0;}
-.svg-chart{width:100%;height:105px;display:block;}
-.chart-labels{display:flex;justify-content:space-between;padding:0 3px;margin-top:2px;}
-.chart-label{font-size:10px;color:var(--texto-suave);}
-.ala-box{background:#fff3e0;border:1px solid #ffe0b2;border-radius:var(--radio-sm);padding:10px 12px;display:flex;gap:9px;margin-bottom:10px;font-size:13px;color:#e65100;}
-.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-top:9px;}
-.cal-dh{font-size:10px;color:var(--texto-suave);text-align:center;font-weight:500;padding:3px 0;}
-.cal-d{aspect-ratio:1;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer;}
-.cal-d.vac{pointer-events:none;} .cal-d.tr{background:var(--verde);color:white;font-weight:500;}
-.cal-d.li{background:var(--crema-oscura);color:var(--texto-suave);} .cal-d.au{background:#fce4ec;color:var(--rojo);}
-.cal-d.ex{background:var(--dorado);color:var(--verde);font-weight:500;} .cal-d.hoy{box-shadow:0 0 0 2px var(--dorado);}
-.ley{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px;}
-.ley-i{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--texto-suave);}
-.ley-d{width:11px;height:11px;border-radius:3px;}
-.ipd-box{background:linear-gradient(135deg,var(--verde),var(--verde-medio));border-radius:var(--radio);padding:16px;color:white;margin-bottom:11px;}
-.ipd-monto{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:300;color:var(--dorado-claro);}
-.qa-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:13px;}
-.qa-btn{background:white;border:1.5px solid var(--crema-oscura);border-radius:var(--radio);padding:12px 10px;text-align:center;cursor:pointer;}
-.qa-btn:active{border-color:var(--verde-claro);background:var(--crema);}
-.qa-ico{font-size:21px;margin-bottom:4px;} .qa-lbl{font-size:12px;font-weight:500;color:var(--verde);} .qa-sub{font-size:10px;color:var(--texto-suave);margin-top:2px;}
-#voice-status{display:none;background:var(--crema);border-radius:var(--radio-sm);padding:10px;margin-bottom:10px;text-align:center;font-size:13px;color:var(--verde);}
-.alert-s{background:linear-gradient(135deg,#fff3e0,#fff8e1);border:1px solid #ffe0b2;border-radius:var(--radio-sm);padding:10px 12px;display:flex;align-items:center;gap:9px;margin-bottom:10px;}
-.med-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--crema-oscura);}
-.med-item:last-child{border-bottom:none;}
-.med-ico{width:34px;height:34px;border-radius:8px;background:var(--crema);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
-.med-check{margin-left:auto;width:24px;height:24px;border-radius:50%;border:2px solid var(--verde-claro);background:transparent;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;font-size:12px;}
-.med-check.done{background:var(--verde);border-color:var(--verde);color:white;}
-
-/* PASTILLERO */
-.past-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--crema-oscura);cursor:pointer;transition:opacity .2s;}
-.past-row:last-child{border-bottom:none;}
-.past-row.past-done{opacity:.5;}
-.past-check{width:26px;height:26px;border-radius:50%;border:2px solid var(--verde-claro);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;transition:all .2s;color:var(--texto-suave);}
-.past-check.done{background:var(--verde);border-color:var(--verde);color:white;}
-.past-info{flex:1;min-width:0;}
-.past-res{font-size:13px;font-weight:500;color:var(--verde);}
-.past-med{font-size:11px;color:var(--texto-suave);margin-top:1px;}
-.past-hab{font-size:11px;color:var(--texto-suave);flex-shrink:0;font-weight:500;}
-/* AGENDA */
-.agenda-item{padding:10px 0;border-bottom:1px solid var(--crema-oscura);}
-.agenda-item:last-child{border-bottom:none;}
-.agenda-hora{font-size:11px;font-weight:600;color:var(--dorado);margin-bottom:2px;}
-.agenda-res{font-size:13px;font-weight:500;color:var(--verde);}
-.agenda-act{font-size:12px;color:var(--texto-suave);margin-top:1px;}
-</style>
-</head>
-<body>
 
 <!-- SPLASH / LOGIN -->
 <div id="splash">
@@ -3263,7 +2993,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:19px;heigh
 <script>
 // ── Cache busting: si la versión cambió, forzar reload limpio ──
 (function() {
-  var APP_VERSION = '202605021252';
+  var APP_VERSION = '202605092233';
   var stored = localStorage.getItem('ec_version');
   if (stored && stored !== APP_VERSION) {
     localStorage.setItem('ec_version', APP_VERSION);
@@ -8332,4 +8062,149 @@ function abrirPDFiOS(html, titulo) {
     '<button onclick="document.getElementById(\'modal-pdf-ios\').remove()" ' +
     'style="background:rgba(255,255,255,.2);border:none;color:white;border-radius:8px;' +
     'padding:8px 14px;font-size:14px;cursor:pointer;font-family:DM Sans,sans-serif">← Volver</button>' +
-    '<span style="flex:1;font-size:14px;font-weight:600">' + (titulo||'PDF') 
+    '<span style="flex:1;font-size:14px;font-weight:600">' + (titulo||'PDF') + '</span>' +
+    '<button onclick="compartirPDFiOS()" ' +
+    'style="background:rgba(255,255,255,.2);border:none;color:white;border-radius:8px;' +
+    'padding:8px 14px;font-size:14px;cursor:pointer;font-family:DM Sans,sans-serif">⬆️ Compartir</button>' +
+    '</div>' +
+    '<iframe id="pdf-ios-frame" style="flex:1;border:none;width:100%;height:100%"></iframe>';
+
+  document.body.appendChild(modal);
+
+  // Escribir el HTML en el iframe
+  var frame = document.getElementById('pdf-ios-frame');
+  frame.contentDocument.open();
+  frame.contentDocument.write(html);
+  frame.contentDocument.close();
+
+  // Guardar para compartir
+  window._pdfHTML  = html;
+  window._pdfTitulo = titulo;
+}
+
+function compartirPDFiOS() {
+  if (!window._pdfHTML) return;
+  try {
+    var blob = new Blob([window._pdfHTML], {type: 'text/html'});
+    var file = new File([blob], (window._pdfTitulo||'documento')+'.html', {type:'text/html'});
+    if (navigator.share && navigator.canShare({files:[file]})) {
+      navigator.share({files:[file], title: window._pdfTitulo||'PDF'});
+    } else {
+      // Fallback: descargar
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url; a.download = (window._pdfTitulo||'documento')+'.html';
+      a.click();
+    }
+  } catch(e) {
+    toast('Usá el botón compartir del navegador', 'warn');
+  }
+}
+
+
+function generarHistorialPDF() {
+  if (!residenteActual) { toast('Sin residente', 'error'); return; }
+  var r = DB.residentes.find(function(x){ return String(x.id)===String(residenteActual); }) || {};
+
+  // Usar DB.historial ya cargado en memoria — sin await
+  var hist = (DB.historial || []).filter(function(h){
+    return String(h.residente_id) === String(residenteActual);
+  });
+  hist.sort(function(a,b){ return b.created_at > a.created_at ? 1 : -1; });
+
+  var hoy = new Date().toLocaleDateString('es-UY');
+  var TIPO = {
+    nota:'NOTA CLÍNICA', vital:'SIGNOS VITALES', incidente:'INCIDENTE',
+    medico:'NOTA MÉDICA', estudio:'ESTUDIO', medicacion:'MEDICACIÓN',
+    barthel:'BARTHEL', vacuna:'VACUNA', caida:'CAÍDA'
+  };
+  var COLOR = {
+    nota:'#1565c0', vital:'#2e7d32', incidente:'#c62828',
+    medico:'#6a1b9a', estudio:'#e65100', medicacion:'#1a3d35',
+    barthel:'#00695c', vacuna:'#1565c0', caida:'#b71c1c'
+  };
+
+  var html = '<!DOCTYPE html><html><head><meta charset="UTF-8">' +
+    '<style>' +
+    'body{font-family:Arial,sans-serif;font-size:11px;padding:16px;color:#222;max-width:700px;margin:0 auto}' +
+    '@media print{@page{margin:10mm;size:A4}.reg{page-break-inside:avoid}}' +
+    '.header{border-bottom:3px solid #1a3d35;padding-bottom:8px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:flex-end}' +
+    '.paciente{background:#f0f7f4;border-left:4px solid #1a3d35;padding:8px 12px;margin-bottom:12px;border-radius:0 4px 4px 0;font-size:11px}' +
+    '.reg{margin-bottom:10px;border:1px solid #e0d8cc;border-radius:6px;overflow:hidden}' +
+    '.reg-header{padding:5px 10px;color:white;font-size:10px;font-weight:bold;letter-spacing:.5px;display:flex;justify-content:space-between}' +
+    '.reg-body{padding:8px 10px;font-size:11px;line-height:1.6}' +
+    '.vitales{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}' +
+    '.vital{background:#f0f7f4;border-radius:4px;padding:3px 8px;font-size:10px}' +
+    '.diags{background:#f9f6f0;border-radius:4px;padding:8px;font-size:11px;line-height:1.8;margin-bottom:8px}' +
+    '</style></head><body>' +
+    '<div class="header">' +
+    '<div><strong style="font-size:15px;color:#1a3d35">HISTORIAL CLÍNICO</strong>' +
+    '<div style="font-size:10px;color:#555">Carrasco Elderly Care SAS · Rafael Barradas 1527</div></div>' +
+    '<div style="text-align:right;font-size:10px;color:#555">Generado: '+hoy+'</div>' +
+    '</div>' +
+
+    // Datos del paciente
+    '<div class="paciente">' +
+    '<div style="font-size:14px;font-weight:bold;color:#1a3d35;margin-bottom:4px">' + r.nombre + '</div>' +
+    '<div>CI: '+(r.ci||'—')+' · '+(r.edad?r.edad+' años · ':'')+'Hab. '+(r.hab||'—')+' · Mutualista: '+(r.mutualista||'—')+'</div>' +
+    '<div>Ingreso: '+(r.ingreso?String(r.ingreso).split('T')[0]:'—')+' · Médico: '+(r.medico||'—')+'</div>' +
+    (r.familiar_nom ? '<div>Familiar: '+r.familiar_nom+(r.familiar_parentesco?' ('+r.familiar_parentesco+')':'')+' — '+( r.familiar_tel||'')+'</div>' : '') +
+    '</div>' +
+
+    // Diagnósticos
+    (r.diags ? '<div class="diags"><strong>Diagnósticos:</strong><br>' +
+      r.diags.split('|').filter(Boolean).map(function(d){ return '• '+d.trim(); }).join('<br>') +
+    '</div>' : '') +
+
+    // Alertas
+    (r.alergias && r.alergias !== 'Sin alergias documentadas' ?
+      '<div style="background:#ffebee;border-left:4px solid #c62828;padding:6px 10px;margin-bottom:10px;font-size:11px;font-weight:bold">⚠️ '+r.alergias.replace(/\|/g,' · ')+'</div>' : '') +
+
+    '<div style="font-size:12px;font-weight:bold;color:#1a3d35;margin-bottom:8px">REGISTROS ('+ hist.length +')</div>';
+
+  if (hist.length === 0) {
+    html += '<div style="text-align:center;padding:20px;color:#999">Sin registros en el historial</div>';
+  } else {
+    hist.forEach(function(h) {
+      var tipo  = h.tipo || 'nota';
+      var color = COLOR[tipo] || '#1a3d35';
+      var label = TIPO[tipo]  || tipo.toUpperCase();
+      var fecha = h.fecha || (h.created_at ? new Date(h.created_at).toLocaleDateString('es-UY') : '—');
+      var hora  = h.created_at ? new Date(h.created_at).toLocaleTimeString('es-UY',{hour:'2-digit',minute:'2-digit'}) : '';
+
+      html += '<div class="reg">' +
+        '<div class="reg-header" style="background:'+color+'">' +
+        '<span>'+label+'</span>' +
+        '<span>'+fecha+(hora?' '+hora:'')+' · '+(h.usuario||'—')+(h.turno?' · '+h.turno:'')+'</span>' +
+        '</div><div class="reg-body">' +
+        (h.texto ? '<div>'+h.texto+'</div>' : '');
+
+      // Vitales si los tiene
+      var vitales = [];
+      if (tipo === 'barthel' && h.vit_pa) { vitales.push('Barthel: '+h.vit_pa+' pts'); }
+      else {
+        if (h.vit_pa)    vitales.push('PA: '+h.vit_pa);
+        if (h.vit_pulso) vitales.push('Pulso: '+h.vit_pulso);
+        if (h.vit_temp)  vitales.push('Temp: '+h.vit_temp+'°C');
+        if (h.vit_sat)   vitales.push('Sat: '+h.vit_sat+'%');
+        if (h.vit_gluc)  vitales.push('Glucemia: '+h.vit_gluc);
+        if (h.vit_peso)  vitales.push('Peso: '+h.vit_peso+'kg');
+      }
+      if (vitales.length) {
+        html += '<div class="vitales">'+vitales.map(function(v){
+          return '<span class="vital">'+v+'</span>';
+        }).join('')+'</div>';
+      }
+      html += '</div></div>';
+    });
+  }
+
+  html += '<div style="border-top:1px solid #1a3d35;margin-top:14px;padding-top:6px;font-size:9px;color:#555;text-align:center">' +
+    'Carrasco Elderly Care SAS · Historial de '+r.nombre+' · Generado el '+hoy+'</div>' +
+    '</body></html>';
+
+  abrirPDF(html, 'Historial — '+(r.nombre||'').split(' ').slice(0,2).join(' '));
+}
+</script>
+</body>
+</html>
