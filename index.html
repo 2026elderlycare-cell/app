@@ -5297,25 +5297,45 @@ function renderGastos() {
   // ── GASTOS FIJOS (recurrentes) ──
   var fijosDiv = document.getElementById('lista-gastos-fijos');
   if (fijosDiv) {
+    // Calcular sueldos automáticamente desde DB.empleadas
+      var sueldosAuto = DB.empleadas
+        .filter(function(e){ return e.activo === 'Sí'; })
+        .reduce(function(s, e){ return s + (parseFloat(e.sueldo)||0) + (parseFloat(e.presentismo)||0); }, 0);
+
     fijosDiv.innerHTML = GASTOS_FIJOS.map(function(f) {
-      // Buscar gasto del mes para esta categoría/descripción
+      var esSueldos = f.descripcion === 'Sueldos';
       var gastoMes = gastosM.find(function(g) {
         return g.descripcion === f.descripcion && (g.es_fijo === 'Sí' || g.es_fijo === true);
       });
-      var monto = gastoMes ? Number(gastoMes.monto) : 0;
+      // Sueldos: usa valor calculado desde empleadas (no editable)
+      var monto = esSueldos ? sueldosAuto : (gastoMes ? Number(gastoMes.monto) : 0);
       var id = gastoMes ? gastoMes.id : '';
+      var nEmp = esSueldos ? DB.empleadas.filter(function(e){ return e.activo === 'Sí'; }).length : 0;
+      var subLabel = esSueldos
+        ? f.categoria + ' · ' + nEmp + ' empleadas activas'
+        : f.categoria + ' · mensual fijo';
+
+      var montoWidget = esSueldos
+        ? '<div style="display:flex;align-items:center;gap:4px;background:var(--crema);border-radius:8px;padding:4px 8px">' +
+            '<span style="font-size:11px;color:var(--suave)">$</span>' +
+            '<span style="font-size:13px;font-weight:600;color:var(--verde);font-family:DM Sans,sans-serif;min-width:80px;text-align:right">' +
+              Math.round(monto).toLocaleString('es-UY') +
+            '</span>' +
+          '</div>'
+        : '<div style="display:flex;align-items:center;gap:4px;background:var(--crema);border-radius:8px;padding:4px 8px">' +
+            '<span style="font-size:11px;color:var(--suave)">$</span>' +
+            '<input type="number" value="' + monto + '" data-fijo-desc="' + f.descripcion + '" data-fijo-cat="' + f.categoria + '" data-fijo-id="' + id + '" ' +
+              'onblur="guardarGastoFijo(this)" placeholder="0" ' +
+              'style="width:80px;text-align:right;border:none;background:transparent;font-size:13px;font-weight:600;color:var(--verde);font-family:DM Sans,sans-serif;outline:none">' +
+          '</div>';
+
       return '<div class="gasto-fijo-row" style="display:flex;align-items:center;gap:11px;padding:11px 0;border-bottom:1px solid var(--crema-o)">' +
         '<div class="gasto-ico">' + f.ico + '</div>' +
         '<div style="flex:1">' +
           '<div style="font-size:13px;font-weight:500">' + f.descripcion + '</div>' +
-          '<div style="font-size:11px;color:var(--suave)">' + f.categoria + ' · mensual fijo</div>' +
+          '<div style="font-size:11px;color:var(--suave)">' + subLabel + '</div>' +
         '</div>' +
-        '<div style="display:flex;align-items:center;gap:4px;background:var(--crema);border-radius:8px;padding:4px 8px">' +
-          '<span style="font-size:11px;color:var(--suave)">$</span>' +
-          '<input type="number" value="' + monto + '" data-fijo-desc="' + f.descripcion + '" data-fijo-cat="' + f.categoria + '" data-fijo-id="' + id + '" ' +
-            'onblur="guardarGastoFijo(this)" placeholder="0" ' +
-            'style="width:80px;text-align:right;border:none;background:transparent;font-size:13px;font-weight:600;color:var(--verde);font-family:DM Sans,sans-serif;outline:none">' +
-        '</div>' +
+        montoWidget +
       '</div>';
     }).join('');
   }
@@ -6316,7 +6336,7 @@ async function guardarSeccion(secId) {
       ingreso: ingresoRaw, medico: get('ef-medico'),
       familiar_nom: get('ef-familiar'), familiar_tel: get('ef-familiar-tel'),
       familiar_parentesco: get('ef-familiar-par'),
-      cuota_mensual: parseFloat(get('ef-cuota'))||0
+      cuota_mensual: parseFloat(get('ef-cuota'))||90000
     };
   } else if (secId === 'res-diags') {
     var raw = get('ef-diags').replace(/\n/g,'|').replace(/\s*\|\s*/g,'|').replace(/^\||\|$/g,'');
@@ -6419,7 +6439,7 @@ function cargarFichaEnFormulario(r) {
   set('ef-familiar',    r.familiar_nom);
   set('ef-familiar-tel', r.familiar_tel);
   set('ef-familiar-par', r.familiar_parentesco);
-  set('ef-cuota',       r.cuota_mensual || '');
+  set('ef-cuota',       r.cuota_mensual || 90000);
   set('ef-diags',       (r.diags || '').replace(/\|/g, '\n'));
   set('ef-alergias',    (r.alergias || '').replace(/\|/g, '\n'));
   set('ef-dieta',       r.cuid_dieta);
@@ -7634,6 +7654,66 @@ function renderDiagnostico() {
       '<div class="sem-dot"></div>' +
       '<div class="sem-texto">' + semTexto + '</div>' +
     '</div>' +
+
+    // ── Gráfico de distribución de costos ──
+    (function() {
+      var items = [];
+      // Group gastos by category
+      var COLORS = {
+        'Personal':       'var(--verde)',
+        'Alimentación':   'var(--verde-claro)',
+        'Electricidad':   'var(--dorado)',
+        'Agua':           '#29b6f6',
+        'Gas':            '#ff7043',
+        'Alquiler':       '#ab47bc',
+        'Otro':           '#8d6e63'
+      };
+      // Agregar sueldos (calculado)
+      var sueldoTotal = DB.empleadas
+        .filter(function(e){ return e.activo === 'Sí'; })
+        .reduce(function(s,e){ return s+(parseFloat(e.sueldo)||0)+(parseFloat(e.presentismo)||0); },0);
+      if (sueldoTotal > 0) items.push({ label:'👥 Sueldos', monto: sueldoTotal, color: COLORS['Personal'] });
+      // Gastos fijos del mes (excluye Sueldos y Activos)
+      gastosM.filter(function(g){ return g.categoria !== 'Activo' && g.descripcion !== 'Sueldos'; })
+        .forEach(function(g) {
+          var existing = items.find(function(it){ return it.label.includes(g.descripcion||g.categoria); });
+          if (existing) { existing.monto += Number(g.monto); }
+          else { items.push({ label: g.descripcion||g.categoria, monto: Number(g.monto), color: COLORS[g.categoria]||COLORS['Otro'] }); }
+        });
+      items.sort(function(a,b){ return b.monto - a.monto; });
+      var totalChart = items.reduce(function(s,it){ return s+it.monto; },0)||1;
+
+      return items.length > 0 ?
+        '<div class="card" style="margin-bottom:14px">' +
+          '<div class="card-title">📊 Distribución de costos</div>' +
+          '<div class="card-sub">Total egresos: $' + Math.round(totalEgresos).toLocaleString('es-UY') + ' · ' + mesLabel + '</div>' +
+          '<div style="margin-top:10px">' +
+          items.map(function(it){
+            var pct = Math.round((it.monto / totalChart) * 100);
+            return '<div class="bar-h">' +
+              '<div class="bar-h-label">' + it.label + '</div>' +
+              '<div class="bar-h-track"><div class="bar-h-fill" style="width:' + pct + '%;background:' + it.color + '"></div></div>' +
+              '<div class="bar-h-val">$' + Math.round(it.monto).toLocaleString('es-UY') + '</div>' +
+            '</div>';
+          }).join('') +
+          '</div>' +
+          // Ingresos vs Egresos bar
+          (ingresos > 0 ?
+          '<div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--crema-o)">' +
+            '<div class="card-sub" style="margin-bottom:8px">💰 Ingresos vs Egresos</div>' +
+            '<div class="bar-h">' +
+              '<div class="bar-h-label">Ingresos</div>' +
+              '<div class="bar-h-track"><div class="bar-h-fill" style="width:100%;background:#2e7d32"></div></div>' +
+              '<div class="bar-h-val">$' + Math.round(ingresos).toLocaleString('es-UY') + '</div>' +
+            '</div>' +
+            '<div class="bar-h">' +
+              '<div class="bar-h-label">Egresos</div>' +
+              '<div class="bar-h-track"><div class="bar-h-fill" style="width:' + Math.min(100, Math.round((totalEgresos/ingresos)*100)) + '%;background:' + (totalEgresos > ingresos ? 'var(--rojo)' : 'var(--dorado)') + '"></div></div>' +
+              '<div class="bar-h-val" style="color:' + (totalEgresos > ingresos ? 'var(--rojo)' : 'var(--verde)') + '">$' + Math.round(totalEgresos).toLocaleString('es-UY') + '</div>' +
+            '</div>' +
+          '</div>' : '') +
+        '</div>' : '';
+    })() +
 
     // Hero card resultado neto
     '<div class="hero-card" style="margin-bottom:14px">' +
