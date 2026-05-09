@@ -1574,6 +1574,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:19px;heigh
       <div id="lista-gastos-fijos">
         <div style="text-align:center;padding:20px;color:var(--suave);font-size:12px">Cargando...</div>
       </div>
+      <button class="btn bv" style="width:100%;margin-top:8px" onclick="guardarTodosLosFijos()">💾 Guardar gastos fijos</button>
 
       <!-- Gastos puntuales del mes -->
       <div class="sep">Otros gastos del mes</div>
@@ -3640,24 +3641,7 @@ function renderListaResidentes() {
   }
 
   container.innerHTML = activos.map(function(r) {
-    var diags = (r.diags||'').split('|').filter(Boolean).slice(0,4).join(' · ');
-    if (diags.length > 80) diags = diags.substring(0,80) + '…';
     var ini = r.nombre.split(' ').map(function(w){return w[0]||'';}).filter(Boolean).slice(0,2).join('');
-    var badges = '';
-    // GDS badge
-    var gds = (r.dem_estadio||'').match(/\d+/);
-    if (gds) {
-      var g = parseInt(gds[0]);
-      var dep = g >= 6 ? 'Dep. total' : g >= 5 ? 'Dep. severa' : g >= 4 ? 'Dep. moderada' : 'Dep. leve';
-      var bcls = g >= 6 ? 'b-critico' : g >= 5 ? 'b-alerta' : g >= 4 ? 'b-morado' : 'b-verde';
-      badges += '<span class="badge '+bcls+'">'+dep+'</span> ';
-      badges += '<span class="badge b-morado" style="margin-left:4px">GDS '+g+'</span> ';
-    }
-    // Anticoagulado badge
-    var textoR = ((r.alergias||'')+(r.diags||'')).toUpperCase();
-    if (textoR.includes('ANTICOAG')||textoR.includes('APIXABAN')||textoR.includes('ACENOCUMAROL')||textoR.includes('RIVAROXABAN')) {
-      badges += '<span class="badge b-azul" style="margin-left:4px">Anticoagulada</span>';
-    }
     return '<div class="res-card" onclick="abrirResidente(\'' + r.id + '\')">' +
       '<div class="res-av">'+ini+'</div>' +
       '<div style="flex:1">' +
@@ -5270,6 +5254,62 @@ var GASTOS_FIJOS = [
 ];
 
 // ── RENDER GASTOS — versión final con fijos + puntuales ──
+
+// ═══════════════════════════════════════════════════════
+// GUARDAR TODOS LOS GASTOS FIJOS DE UNA VEZ
+// ═══════════════════════════════════════════════════════
+async function guardarTodosLosFijos() {
+  var mesActual = new Date().toISOString().slice(0,7);
+  var fecha = mesActual + '-01';
+  var inputs = document.querySelectorAll('#lista-gastos-fijos input[type="number"]');
+  if (!inputs.length) { toast('Sin gastos fijos para guardar', 'warn'); return; }
+
+  showLoading('Guardando gastos fijos...');
+  var guardados = 0, errores = 0;
+
+  for (var k = 0; k < inputs.length; k++) {
+    var input = inputs[k];
+    var monto = parseFloat(input.value) || 0;
+    var desc  = input.dataset.fijoDesc;
+    var cat   = input.dataset.fijoCat;
+    var id    = input.dataset.fijoId;
+    if (!desc) continue;
+
+    if (id && id !== '') {
+      // Actualizar existente
+      var result = await apiPost('gastos', 'update', { monto: monto, descripcion: desc, categoria: cat, es_fijo: 'Sí' }, id);
+      if (result) {
+        var g = DB.gastos.find(function(x){ return String(x.id) === String(id); });
+        if (g) { g.monto = monto; g.es_fijo = 'Sí'; }
+        guardados++;
+      } else errores++;
+    } else if (monto > 0) {
+      // Crear nuevo para este mes
+      var data = {
+        fecha: fecha, categoria: cat, descripcion: desc, monto: monto,
+        proveedor: '', nro_factura: '',
+        registrado_por: currentUser.nombre, es_fijo: 'Sí'
+      };
+      var result2 = await apiPost('gastos', 'insert', data);
+      if (result2) {
+        result2.es_fijo = 'Sí';
+        DB.gastos.push(result2);
+        input.dataset.fijoId = result2.id;
+        guardados++;
+      } else errores++;
+    }
+  }
+
+  hideLoading();
+  renderGastos();
+  renderActivos();
+  renderDiagnostico();
+
+  if (errores === 0) toast('✅ ' + guardados + ' gastos fijos guardados', 'ok');
+  else toast('⚠️ ' + guardados + ' guardados, ' + errores + ' errores', 'warn');
+}
+
+
 function renderGastos() {
   var mesActual = new Date().toISOString().slice(0,7);
   var mesLabel  = new Date().toLocaleString('es-UY', { month:'long', year:'numeric' });
@@ -5298,9 +5338,28 @@ function renderGastos() {
   var fijosDiv = document.getElementById('lista-gastos-fijos');
   if (fijosDiv) {
     // Calcular sueldos automáticamente desde DB.empleadas
+      // Costo laboral REAL: sueldo + presentismo + horas extra del mes
+      //   + provisión aguinaldo (nominal/12) + aportes patronales BPS 7.5% + FONASA 5%
+      var mesActualSuel = new Date().toISOString().slice(0,7);
       var sueldosAuto = DB.empleadas
         .filter(function(e){ return e.activo === 'Sí'; })
-        .reduce(function(s, e){ return s + (parseFloat(e.sueldo)||0) + (parseFloat(e.presentismo)||0); }, 0);
+        .reduce(function(s, e){
+          var sueldo  = parseFloat(e.sueldo)||0;
+          var pres    = parseFloat(e.presentismo)||0;
+          var nominal = sueldo + pres;
+          // Horas extra nocturnas del mes (desde registros_json)
+          var regs = {};
+          try { regs = JSON.parse(e.registros_json||'{}'); } catch(_){}
+          var regMes = regs[mesActualSuel] || {};
+          var hexExtra  = (parseFloat(regMes.hex)||0)  * (sueldo/200) * 2;    // recargo 100%
+          var hnoctExtra= (parseFloat(regMes.hnoct)||0) * (sueldo/200) * 0.20; // recargo 20%
+          nominal += hexExtra + hnoctExtra;
+          // Provisión aguinaldo: nominal / 12
+          var aguinaldo = nominal / 12;
+          // Aportes patronales: BPS 7.5% + FONASA patronal 5%
+          var aportesPatronales = nominal * 0.125;
+          return s + nominal + aguinaldo + aportesPatronales;
+        }, 0);
 
     fijosDiv.innerHTML = GASTOS_FIJOS.map(function(f) {
       var esSueldos = f.descripcion === 'Sueldos';
@@ -5310,9 +5369,10 @@ function renderGastos() {
       // Sueldos: usa valor calculado desde empleadas (no editable)
       var monto = esSueldos ? sueldosAuto : (gastoMes ? Number(gastoMes.monto) : 0);
       var id = gastoMes ? gastoMes.id : '';
-      var nEmp = esSueldos ? DB.empleadas.filter(function(e){ return e.activo === 'Sí'; }).length : 0;
+
+      var nEmpActivas = DB.empleadas.filter(function(e){ return e.activo === 'Sí'; }).length;
       var subLabel = esSueldos
-        ? f.categoria + ' · ' + nEmp + ' empleadas activas'
+        ? 'Costo laboral · ' + nEmpActivas + ' empleadas · incl. aguinaldo y patronal'
         : f.categoria + ' · mensual fijo';
 
       var montoWidget = esSueldos
@@ -5325,7 +5385,7 @@ function renderGastos() {
         : '<div style="display:flex;align-items:center;gap:4px;background:var(--crema);border-radius:8px;padding:4px 8px">' +
             '<span style="font-size:11px;color:var(--suave)">$</span>' +
             '<input type="number" value="' + monto + '" data-fijo-desc="' + f.descripcion + '" data-fijo-cat="' + f.categoria + '" data-fijo-id="' + id + '" ' +
-              'onblur="guardarGastoFijo(this)" placeholder="0" ' +
+              'placeholder="0" id="fijo-inp-' + f.descripcion.replace(/ /g,'-') + '" ' +
               'style="width:80px;text-align:right;border:none;background:transparent;font-size:13px;font-weight:600;color:var(--verde);font-family:DM Sans,sans-serif;outline:none">' +
           '</div>';
 
@@ -5343,7 +5403,13 @@ function renderGastos() {
   // ── GASTOS PUNTUALES (no fijos) ──
   var puntDiv = document.getElementById('lista-gastos-puntuales');
   if (puntDiv) {
-    var puntuales = gastosM.filter(function(g){ return g.es_fijo !== 'Sí' && g.es_fijo !== true; });
+    var DESCS_FIJAS = GASTOS_FIJOS.map(function(f){ return f.descripcion; });
+    var puntuales = gastosM.filter(function(g){
+      // Excluir: marcados como fijos, o cuya descripción coincide con un gasto fijo, o Activos
+      return g.es_fijo !== 'Sí' && g.es_fijo !== true
+        && !DESCS_FIJAS.includes(g.descripcion)
+        && g.categoria !== 'Activo';
+    });
     if (puntuales.length === 0) {
       puntDiv.innerHTML = '<div style="text-align:center;padding:20px;color:var(--suave);font-size:12px">Sin gastos puntuales este mes</div>';
     } else {
