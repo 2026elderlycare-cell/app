@@ -3542,6 +3542,22 @@ async function cargarDatos() {
       }
 
       mostrarIndicadorCarga(false);
+
+      // ── Aplicar cuota default $90.000 a residentes sin cuota ──
+      var sinCuota = DB.residentes.filter(function(r){
+        return r.activo === 'Sí' && (!r.cuota_mensual || Number(r.cuota_mensual) === 0);
+      });
+      if (sinCuota.length > 0) {
+        sinCuota.forEach(function(r){ r.cuota_mensual = 90000; });
+        // Guardar en Sheets en background (sin bloquear la UI)
+        sinCuota.forEach(function(r){
+          apiPost('residentes','update',{cuota_mensual:90000},r.id)
+            .then(function(){ /* ok */ })
+            .catch(function(){ /* silencioso */ });
+        });
+        console.log('Cuota default $90.000 aplicada a ' + sinCuota.length + ' residentes');
+      }
+
       renderListaResidentes();
       renderListaEmpleadas();
       renderGastos();
@@ -7721,10 +7737,8 @@ function renderDiagnostico() {
       '<div class="sem-texto">' + semTexto + '</div>' +
     '</div>' +
 
-    // ── Gráfico de distribución de costos ──
+    // ── Gráfico de distribución de costos con variación vs mes anterior ──
     (function() {
-      var items = [];
-      // Group gastos by category
       var COLORS = {
         'Personal':       'var(--verde)',
         'Alimentación':   'var(--verde-claro)',
@@ -7734,36 +7748,78 @@ function renderDiagnostico() {
         'Alquiler':       '#ab47bc',
         'Otro':           '#8d6e63'
       };
-      // Agregar sueldos (calculado)
+
+      // ── Mes anterior ──
+      var hoyD = new Date();
+      var mesAntD = new Date(hoyD.getFullYear(), hoyD.getMonth() - 1, 1);
+      var mesAnt = mesAntD.toISOString().slice(0,7);
+      var gastosMesAnt = DB.gastos.filter(function(g){
+        return g.categoria !== 'Activo' && g.fecha && String(g.fecha).startsWith(mesAnt);
+      });
+      // Agrupar mes anterior por descripción
+      var totAntMap = {};
+      gastosMesAnt.forEach(function(g){
+        var key = g.descripcion || g.categoria;
+        totAntMap[key] = (totAntMap[key]||0) + Number(g.monto);
+      });
+      var totalAnt = gastosMesAnt.reduce(function(s,g){ return s+Number(g.monto); }, 0);
+
+      // ── Mes actual ──
+      var items = [];
       var sueldoTotal = DB.empleadas
         .filter(function(e){ return e.activo === 'Sí'; })
         .reduce(function(s,e){ return s+(parseFloat(e.sueldo)||0)+(parseFloat(e.presentismo)||0); },0);
-      if (sueldoTotal > 0) items.push({ label:'👥 Sueldos', monto: sueldoTotal, color: COLORS['Personal'] });
-      // Gastos fijos del mes (excluye Sueldos y Activos)
+      if (sueldoTotal > 0) items.push({ label:'👥 Sueldos', monto: sueldoTotal, color: COLORS['Personal'], key:'Sueldos' });
       gastosM.filter(function(g){ return g.categoria !== 'Activo' && g.descripcion !== 'Sueldos'; })
         .forEach(function(g) {
-          var existing = items.find(function(it){ return it.label.includes(g.descripcion||g.categoria); });
+          var key = g.descripcion || g.categoria;
+          var existing = items.find(function(it){ return it.key === key; });
           if (existing) { existing.monto += Number(g.monto); }
-          else { items.push({ label: g.descripcion||g.categoria, monto: Number(g.monto), color: COLORS[g.categoria]||COLORS['Otro'] }); }
+          else { items.push({ label: g.descripcion||g.categoria, monto: Number(g.monto), color: COLORS[g.categoria]||COLORS['Otro'], key: key }); }
         });
       items.sort(function(a,b){ return b.monto - a.monto; });
       var totalChart = items.reduce(function(s,it){ return s+it.monto; },0)||1;
 
+      // ── Helper variación ──
+      function varBadge(actual, anterior) {
+        if (!anterior || anterior === 0) return '';
+        var diff = Math.round(((actual - anterior) / anterior) * 100);
+        if (diff === 0) return '';
+        var color = diff > 0 ? '#c62828' : '#2e7d32';
+        var arrow = diff > 0 ? '▲' : '▼';
+        return '<span style="font-size:10px;font-weight:700;color:'+color+';margin-left:4px">'+arrow+Math.abs(diff)+'%</span>';
+      }
+
+      // Variación total de egresos
+      var varTotal = (totalAnt > 0)
+        ? (function(){
+            var diff = Math.round(((totalEgresos - totalAnt) / totalAnt) * 100);
+            if (diff === 0) return '';
+            var col = diff > 0 ? '#c62828' : '#2e7d32';
+            var arr = diff > 0 ? '▲' : '▼';
+            return ' <span style="font-size:11px;font-weight:700;color:'+col+'">'+arr+Math.abs(diff)+'% vs mes ant.</span>';
+          })()
+        : '';
+
       return items.length > 0 ?
         '<div class="card" style="margin-bottom:14px">' +
           '<div class="card-title">📊 Distribución de costos</div>' +
-          '<div class="card-sub">Total egresos: $' + Math.round(totalEgresos).toLocaleString('es-UY') + ' · ' + mesLabel + '</div>' +
+          '<div class="card-sub">Total: $' + Math.round(totalEgresos).toLocaleString('es-UY') + varTotal + ' · ' + mesLabel + '</div>' +
           '<div style="margin-top:10px">' +
           items.map(function(it){
             var pct = Math.round((it.monto / totalChart) * 100);
+            var antMonto = totAntMap[it.key] || 0;
             return '<div class="bar-h">' +
-              '<div class="bar-h-label">' + it.label + '</div>' +
+              '<div class="bar-h-label">' + it.label + varBadge(it.monto, antMonto) + '</div>' +
               '<div class="bar-h-track"><div class="bar-h-fill" style="width:' + pct + '%;background:' + it.color + '"></div></div>' +
               '<div class="bar-h-val">$' + Math.round(it.monto).toLocaleString('es-UY') + '</div>' +
             '</div>';
           }).join('') +
           '</div>' +
-          // Ingresos vs Egresos bar
+          (totalAnt > 0 ?
+          '<div style="font-size:10px;color:var(--suave);margin-top:8px;text-align:right">▲ aumento · ▼ ahorro vs ' +
+            mesAntD.toLocaleString('es-UY',{month:'long',year:'numeric'}) + '</div>' : '') +
+          // Ingresos vs Egresos
           (ingresos > 0 ?
           '<div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--crema-o)">' +
             '<div class="card-sub" style="margin-bottom:8px">💰 Ingresos vs Egresos</div>' +
@@ -7774,8 +7830,8 @@ function renderDiagnostico() {
             '</div>' +
             '<div class="bar-h">' +
               '<div class="bar-h-label">Egresos</div>' +
-              '<div class="bar-h-track"><div class="bar-h-fill" style="width:' + Math.min(100, Math.round((totalEgresos/ingresos)*100)) + '%;background:' + (totalEgresos > ingresos ? 'var(--rojo)' : 'var(--dorado)') + '"></div></div>' +
-              '<div class="bar-h-val" style="color:' + (totalEgresos > ingresos ? 'var(--rojo)' : 'var(--verde)') + '">$' + Math.round(totalEgresos).toLocaleString('es-UY') + '</div>' +
+              '<div class="bar-h-track"><div class="bar-h-fill" style="width:' + Math.min(100,Math.round((totalEgresos/ingresos)*100)) + '%;background:' + (totalEgresos>ingresos?'var(--rojo)':'var(--dorado)') + '"></div></div>' +
+              '<div class="bar-h-val" style="color:' + (totalEgresos>ingresos?'var(--rojo)':'var(--verde)') + '">$' + Math.round(totalEgresos).toLocaleString('es-UY') + '</div>' +
             '</div>' +
           '</div>' : '') +
         '</div>' : '';
