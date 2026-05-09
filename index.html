@@ -548,6 +548,13 @@ html{overflow-x:hidden;}
 .kpi-val  { font-size:18px; font-weight:700; color:var(--verde); line-height:1.1; }
 .kpi-sub  { font-size:10px; color:var(--suave); margin-top:3px; }
 
+
+/* ── Chip filter buttons ── */
+.chip { flex-shrink:0; padding:6px 12px; border-radius:20px; border:1px solid var(--crema-oscura);
+  background:white; color:var(--verde); font-size:12px; font-weight:600; cursor:pointer;
+  font-family:'DM Sans',sans-serif; }
+.chip.active { background:var(--verde); color:white; border-color:var(--verde); }
+
 </style>
 </head>
 <body>
@@ -1570,16 +1577,27 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:19px;heigh
       </div>
 
       <!-- Gastos recurrentes (fijos) -->
-      <div class="sep">Gastos recurrentes</div>
+      <!-- ══ GASTOS FIJOS ══ -->
+      <div class="sep">📌 Gastos fijos</div>
+      <div style="font-size:11px;color:var(--suave);margin-bottom:8px">Se mantienen mes a mes · editables</div>
       <div id="lista-gastos-fijos">
         <div style="text-align:center;padding:20px;color:var(--suave);font-size:12px">Cargando...</div>
       </div>
       <button class="btn bv" style="width:100%;margin-top:8px" onclick="guardarTodosLosFijos()">💾 Guardar gastos fijos</button>
 
-      <!-- Gastos puntuales del mes -->
-      <div class="sep">Otros gastos del mes</div>
-      <div id="lista-gastos-puntuales">
-        <div style="text-align:center;padding:20px;color:var(--suave);font-size:12px">Sin gastos puntuales</div>
+      <!-- ══ GASTOS VARIABLES ══ -->
+      <div class="sep" style="margin-top:16px">📊 Gastos variables</div>
+      <div style="font-size:11px;color:var(--suave);margin-bottom:8px">Se mantienen mes a mes · editables · clasificados por subgrupo</div>
+      <!-- Filtro por subgrupo -->
+      <div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;margin-bottom:8px" id="filtro-subgrupos">
+        <button class="chip active" onclick="filtrarSubgrupo('Todos',this)">Todos</button>
+        <button class="chip" onclick="filtrarSubgrupo('Comida',this)">🍽 Comida</button>
+        <button class="chip" onclick="filtrarSubgrupo('Medicación',this)">💊 Medicación</button>
+        <button class="chip" onclick="filtrarSubgrupo('Servicios',this)">⚡ Servicios</button>
+        <button class="chip" onclick="filtrarSubgrupo('Otros',this)">📦 Otros</button>
+      </div>
+      <div id="lista-gastos-variables">
+        <div style="text-align:center;padding:20px;color:var(--suave);font-size:12px">Cargando...</div>
       </div>
 
 
@@ -3146,9 +3164,25 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:19px;heigh
     <div class="mhandle"></div>
     <div class="mtit">Nuevo gasto</div>
     <div class="msub">Carrasco Elderly Care</div>
+    <div class="fr" style="margin-bottom:4px">
+      <div class="fg"><label class="fl">Tipo de gasto</label>
+        <select class="fi" id="gasto-tipo" onchange="toggleSubgrupo()">
+          <option value="variable">Variable</option>
+          <option value="fijo">Fijo</option>
+        </select>
+      </div>
+      <div class="fg" id="fg-subgrupo"><label class="fl">Subgrupo</label>
+        <select class="fi" id="gasto-subgrupo">
+          <option>Comida</option>
+          <option>Medicación</option>
+          <option>Servicios</option>
+          <option>Otros</option>
+        </select>
+      </div>
+    </div>
     <div class="fg">
       <label class="fl">Descripción</label>
-      <input class="fi" id="gasto-desc" placeholder="Ej: UTE — Factura mayo">
+      <input class="fi" id="gasto-desc" placeholder="Ej: Farmacia, Super, Factura...">
     </div>
     <div class="fr">
       <div class="fg"><label class="fl">Monto ($)</label>
@@ -3542,6 +3576,9 @@ async function cargarDatos() {
       }
 
       mostrarIndicadorCarga(false);
+
+      // ── Inicializar gastos predeterminados si el mes no tiene datos ──
+      try { await inicializarGastosDefecto(); } catch(e) {}
 
       // ── Aplicar cuota default $90.000 a residentes sin cuota ──
       var sinCuota = DB.residentes.filter(function(r){
@@ -5261,12 +5298,23 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // ── Lista FIJA de gastos recurrentes (no se pueden eliminar) ──
 var GASTOS_FIJOS = [
-  { categoria:'Electricidad',  descripcion:'UTE',           ico:'⚡', orden:1 },
-  { categoria:'Agua',          descripcion:'OSE',           ico:'💧', orden:2 },
-  { categoria:'Gas',           descripcion:'Gas',           ico:'🔥', orden:3 },
-  { categoria:'Alimentación',  descripcion:'Alimentación',  ico:'🛒', orden:4 },
-  { categoria:'Personal',      descripcion:'Sueldos',       ico:'👥', orden:5 },
-  { categoria:'Alquiler',      descripcion:'Alquiler',      ico:'🏠', orden:6 }
+  { categoria:'Servicios',   descripcion:'UTE',       ico:'⚡', orden:1, default:10000 },
+  { categoria:'Servicios',   descripcion:'OSE',       ico:'💧', orden:2, default:5000  },
+  { categoria:'Servicios',   descripcion:'Gas',       ico:'🔥', orden:3, default:5000  },
+  { categoria:'Alquiler',    descripcion:'Alquiler',  ico:'🏠', orden:4, default:90000 },
+  { categoria:'Deudas',      descripcion:'Préstamo',  ico:'💳', orden:5, default:40000 },
+  { categoria:'Cuidados',    descripcion:'Pañales',   ico:'🧴', orden:6, default:20000 },
+  { categoria:'Cuidados',    descripcion:'Pedicura',  ico:'💅', orden:7, default:7000  }
+]
+
+// Subgrupos de gastos variables
+var SUBGRUPOS_VARIABLES = ['Comida', 'Medicación', 'Servicios', 'Otros']
+
+// Gastos variables predeterminados (se cargan si no existen en el mes)
+var GASTOS_VARIABLES_DEFAULT = [
+  { descripcion:'Super',    monto:30000, subgrupo:'Comida'    },
+  { descripcion:'Feria',    monto:6000,  subgrupo:'Comida'    },
+  { descripcion:'Macro',    monto:5000,  subgrupo:'Comida'    }
 ];
 
 // ── RENDER GASTOS — versión final con fijos + puntuales ──
@@ -5334,119 +5382,167 @@ function renderGastos() {
   if (lbl) lbl.textContent = mesLabel;
 
   var gastosM = DB.gastos.filter(function(g){
-    return g.fecha && String(g.fecha).startsWith(mesActual);
+    return g.categoria !== 'Activo' &&
+      g.fecha && String(g.fecha).startsWith(mesActual);
   });
 
-  // Calcular total (fijos del mes + puntuales)
-  var total = gastosM.reduce(function(s,g){ return s + Number(g.monto); }, 0);
+  // Sueldos calculados desde empleadas
+  var sueldosRender = DB.empleadas
+    .filter(function(e){ return e.activo === 'Sí'; })
+    .reduce(function(s,e){
+      var nom = (parseFloat(e.sueldo)||0) + (parseFloat(e.presentismo)||0);
+      return s + nom + (nom/12) + (nom*0.125);
+    }, 0);
+
+  // Total real = gastos DB + sueldos
+  var totalGastosDB = gastosM.reduce(function(s,g){ return s+Number(g.monto); }, 0);
+  var total = totalGastosDB + sueldosRender;
   var tercio = Math.round(total / 3);
 
   var elTot = document.getElementById('gastos-total');
   if (elTot) elTot.textContent = '$' + Math.round(total).toLocaleString('es-UY');
-  var elJ = document.getElementById('gastos-juli');
-  if (elJ) elJ.textContent = '$' + tercio.toLocaleString('es-UY');
-  var elL = document.getElementById('gastos-lucia');
-  if (elL) elL.textContent = '$' + tercio.toLocaleString('es-UY');
-  var elF = document.getElementById('gastos-flavia');
-  if (elF) elF.textContent = '$' + tercio.toLocaleString('es-UY');
+  ['gastos-juli','gastos-luci','gastos-flav'].forEach(function(id,i){
+    var el = document.getElementById(id);
+    if (el) el.textContent = '$' + tercio.toLocaleString('es-UY');
+  });
+  var socCards = document.querySelectorAll('.tercio-card .tercio-monto');
+  socCards.forEach(function(el){ el.textContent = '$' + tercio.toLocaleString('es-UY'); });
 
-  // ── GASTOS FIJOS (recurrentes) ──
+  // ══ GASTOS FIJOS ══
   var fijosDiv = document.getElementById('lista-gastos-fijos');
   if (fijosDiv) {
-    // Calcular sueldos automáticamente desde DB.empleadas
-      // Costo laboral REAL: sueldo + presentismo + horas extra del mes
-      //   + provisión aguinaldo (nominal/12) + aportes patronales BPS 7.5% + FONASA 5%
-      var mesActualSuel = new Date().toISOString().slice(0,7);
-      var sueldosAuto = DB.empleadas
-        .filter(function(e){ return e.activo === 'Sí'; })
-        .reduce(function(s, e){
-          var sueldo  = parseFloat(e.sueldo)||0;
-          var pres    = parseFloat(e.presentismo)||0;
-          var nominal = sueldo + pres;
-          // Horas extra nocturnas del mes (desde registros_json)
-          var regs = {};
-          try { regs = JSON.parse(e.registros_json||'{}'); } catch(_){}
-          var regMes = regs[mesActualSuel] || {};
-          var hexExtra  = (parseFloat(regMes.hex)||0)  * (sueldo/200) * 2;    // recargo 100%
-          var hnoctExtra= (parseFloat(regMes.hnoct)||0) * (sueldo/200) * 0.20; // recargo 20%
-          nominal += hexExtra + hnoctExtra;
-          // Provisión aguinaldo: nominal / 12
-          var aguinaldo = nominal / 12;
-          // Aportes patronales: BPS 7.5% + FONASA patronal 5%
-          var aportesPatronales = nominal * 0.125;
-          return s + nominal + aguinaldo + aportesPatronales;
-        }, 0);
+    var sueldosAuto = DB.empleadas
+      .filter(function(e){ return e.activo === 'Sí'; })
+      .reduce(function(s,e){
+        var nom = (parseFloat(e.sueldo)||0)+(parseFloat(e.presentismo)||0);
+        var mesActualSuel = mesActual;
+        var regs = {};
+        try { regs = JSON.parse(e.registros_json||'{}'); } catch(_){}
+        var regMes = regs[mesActualSuel]||{};
+        var hexE   = (parseFloat(regMes.hex)||0)  * ((parseFloat(e.sueldo)||0)/200)*2;
+        var hnoctE = (parseFloat(regMes.hnoct)||0) * ((parseFloat(e.sueldo)||0)/200)*0.20;
+        nom += hexE + hnoctE;
+        return s + nom + (nom/12) + (nom*0.125);
+      }, 0);
 
     fijosDiv.innerHTML = GASTOS_FIJOS.map(function(f) {
-      var esSueldos = f.descripcion === 'Sueldos';
-      var gastoMes = gastosM.find(function(g) {
-        return g.descripcion === f.descripcion && (g.es_fijo === 'Sí' || g.es_fijo === true);
+      var gastoMes = gastosM.find(function(g){
+        return (g.descripcion === f.descripcion) && (g.es_fijo === 'Sí' || g.es_fijo === true);
       });
-      // Sueldos: usa valor calculado desde empleadas (no editable)
-      var monto = esSueldos ? sueldosAuto : (gastoMes ? Number(gastoMes.monto) : 0);
-      var id = gastoMes ? gastoMes.id : '';
+      // Also match by description even if not flagged
+      if (!gastoMes) {
+        gastoMes = gastosM.find(function(g){ return g.descripcion === f.descripcion; });
+      }
+      var monto = gastoMes ? Number(gastoMes.monto) : (f.default || 0);
+      var id    = gastoMes ? gastoMes.id : '';
+      var esSueldos = f.descripcion === 'Sueldos';
 
-      var nEmpActivas = DB.empleadas.filter(function(e){ return e.activo === 'Sí'; }).length;
-      var subLabel = esSueldos
-        ? 'Costo laboral · ' + nEmpActivas + ' empleadas · incl. aguinaldo y patronal'
-        : f.categoria + ' · mensual fijo';
-
-      var montoWidget = esSueldos
-        ? '<div style="display:flex;align-items:center;gap:4px;background:var(--crema);border-radius:8px;padding:4px 8px">' +
+      if (esSueldos) {
+        return '<div class="gasto-fijo-row">' +
+          '<div class="gasto-ico">' + f.ico + '</div>' +
+          '<div style="flex:1">' +
+            '<div style="font-size:13px;font-weight:500">Sueldos</div>' +
+            '<div style="font-size:11px;color:var(--suave)">Costo laboral · ' +
+              DB.empleadas.filter(function(e){return e.activo==='Sí';}).length +
+              ' empleadas · incl. aguinaldo y patronal</div>' +
+          '</div>' +
+          '<div style="display:flex;align-items:center;gap:4px;background:var(--crema);border-radius:8px;padding:4px 8px">' +
             '<span style="font-size:11px;color:var(--suave)">$</span>' +
-            '<span style="font-size:13px;font-weight:600;color:var(--verde);font-family:DM Sans,sans-serif;min-width:80px;text-align:right">' +
-              Math.round(monto).toLocaleString('es-UY') +
-            '</span>' +
-          '</div>'
-        : '<div style="display:flex;align-items:center;gap:4px;background:var(--crema);border-radius:8px;padding:4px 8px">' +
-            '<span style="font-size:11px;color:var(--suave)">$</span>' +
-            '<input type="number" value="' + monto + '" data-fijo-desc="' + f.descripcion + '" data-fijo-cat="' + f.categoria + '" data-fijo-id="' + id + '" ' +
-              'placeholder="0" id="fijo-inp-' + f.descripcion.replace(/ /g,'-') + '" ' +
-              'style="width:80px;text-align:right;border:none;background:transparent;font-size:13px;font-weight:600;color:var(--verde);font-family:DM Sans,sans-serif;outline:none">' +
-          '</div>';
+            '<span style="font-size:13px;font-weight:600;color:var(--verde);min-width:80px;text-align:right">' +
+              Math.round(sueldosAuto).toLocaleString('es-UY') + '</span>' +
+          '</div>' +
+        '</div>';
+      }
 
-      return '<div class="gasto-fijo-row" style="display:flex;align-items:center;gap:11px;padding:11px 0;border-bottom:1px solid var(--crema-o)">' +
+      return '<div class="gasto-fijo-row">' +
         '<div class="gasto-ico">' + f.ico + '</div>' +
         '<div style="flex:1">' +
           '<div style="font-size:13px;font-weight:500">' + f.descripcion + '</div>' +
-          '<div style="font-size:11px;color:var(--suave)">' + subLabel + '</div>' +
+          '<div style="font-size:11px;color:var(--suave)">' + f.categoria + ' · fijo</div>' +
         '</div>' +
-        montoWidget +
+        '<div style="display:flex;align-items:center;gap:4px;background:var(--crema);border-radius:8px;padding:4px 8px">' +
+          '<span style="font-size:11px;color:var(--suave)">$</span>' +
+          '<input type="number" value="' + monto + '" ' +
+            'data-fijo-desc="' + f.descripcion + '" data-fijo-cat="' + f.categoria + '" ' +
+            'data-fijo-id="' + id + '" data-fijo-default="' + (f.default||0) + '" ' +
+            'placeholder="' + (f.default||0) + '" ' +
+            'style="width:80px;text-align:right;border:none;background:transparent;' +
+            'font-size:13px;font-weight:600;color:var(--verde);font-family:DM Sans,sans-serif;outline:none">' +
+        '</div>' +
       '</div>';
     }).join('');
   }
 
-  // ── GASTOS PUNTUALES (no fijos) ──
-  var puntDiv = document.getElementById('lista-gastos-puntuales');
-  if (puntDiv) {
-    var DESCS_FIJAS = GASTOS_FIJOS.map(function(f){ return f.descripcion; });
-    var puntuales = gastosM.filter(function(g){
-      // Excluir: marcados como fijos, o cuya descripción coincide con un gasto fijo, o Activos
-      return g.es_fijo !== 'Sí' && g.es_fijo !== true
-        && !DESCS_FIJAS.includes(g.descripcion)
-        && g.categoria !== 'Activo';
+  // ══ GASTOS VARIABLES ══
+  renderGastosVariables(gastosM, 'Todos');
+}
+
+var _filtroSubgrupo = 'Todos';
+
+function filtrarSubgrupo(sub, btn) {
+  _filtroSubgrupo = sub;
+  document.querySelectorAll('#filtro-subgrupos .chip').forEach(function(b){
+    b.classList.remove('active');
+  });
+  if (btn) btn.classList.add('active');
+  var gastosM = DB.gastos.filter(function(g){
+    var mes = new Date().toISOString().slice(0,7);
+    return g.categoria !== 'Activo' && g.fecha && String(g.fecha).startsWith(mes);
+  });
+  renderGastosVariables(gastosM, sub);
+}
+
+function renderGastosVariables(gastosM, filtro) {
+  var varDiv = document.getElementById('lista-gastos-variables');
+  if (!varDiv) return;
+
+  var DESCS_FIJAS = GASTOS_FIJOS.map(function(f){ return f.descripcion; });
+  var variables = gastosM.filter(function(g){
+    return g.es_fijo !== 'Sí' && g.es_fijo !== true
+      && !DESCS_FIJAS.includes(g.descripcion)
+      && g.categoria !== 'Activo';
+  });
+
+  if (filtro && filtro !== 'Todos') {
+    variables = variables.filter(function(g){
+      return (g.proveedor === filtro) || (g.categoria === filtro);
     });
-    if (puntuales.length === 0) {
-      puntDiv.innerHTML = '<div style="text-align:center;padding:20px;color:var(--suave);font-size:12px">Sin gastos puntuales este mes</div>';
-    } else {
-      var ICONOS = {Electricidad:'⚡',Agua:'💧',Gas:'🔥',Alimentación:'🛒',Farmacia:'💊',Personal:'👥',Mantenimiento:'🔧',Otro:'📋'};
-      puntDiv.innerHTML = puntuales.slice().reverse().map(function(g) {
-        var ico   = ICONOS[g.categoria] || '📋';
-        var fecha = g.fecha ? new Date(g.fecha + 'T00:00:00').toLocaleDateString('es-UY') : '';
-        return '<div class="gasto-item">' +
-          '<div class="gasto-ico">' + ico + '</div>' +
-          '<div style="flex:1">' +
-            '<div style="font-size:13px;font-weight:500">' + g.descripcion + '</div>' +
-            '<div style="font-size:11px;color:var(--suave)">' + fecha + ' · ' + (g.categoria||'') + (g.registrado_por ? ' · ' + g.registrado_por : '') + '</div>' +
-          '</div>' +
-          '<div style="display:flex;align-items:center;gap:6px">' +
-            '<div class="gasto-monto">$' + Number(g.monto).toLocaleString('es-UY') + '</div>' +
-            '<button onclick="eliminarGasto(\'' + g.id + '\')" style="background:none;border:none;color:var(--rojo);font-size:14px;cursor:pointer;padding:4px">🗑️</button>' +
-          '</div>' +
-        '</div>';
-      }).join('');
-    }
   }
+
+  if (variables.length === 0) {
+    varDiv.innerHTML = '<div style="text-align:center;padding:16px;color:var(--suave);font-size:12px">' +
+      (filtro && filtro !== 'Todos' ? 'Sin gastos de ' + filtro + ' este mes' : 'Sin gastos variables este mes') +
+      '</div>';
+    return;
+  }
+
+  var ICONOS = { Comida:'🍽️', Medicación:'💊', Servicios:'⚡', Otros:'📦' };
+  var COLORES = { Comida:'var(--verde-claro)', Medicación:'#ab47bc', Servicios:'var(--dorado)', Otros:'#8d6e63' };
+
+  varDiv.innerHTML = variables.map(function(g) {
+    var sub  = g.proveedor || g.categoria || 'Otros';
+    var ico  = ICONOS[sub] || '📋';
+    var col  = COLORES[sub] || 'var(--suave)';
+    var fecha = g.fecha ? new Date(g.fecha + 'T00:00:00').toLocaleDateString('es-UY') : '';
+    return '<div class="gasto-fijo-row" style="align-items:flex-start">' +
+      '<div class="gasto-ico">' + ico + '</div>' +
+      '<div style="flex:1">' +
+        '<div style="font-size:13px;font-weight:500">' + (g.descripcion||'—') + '</div>' +
+        '<div style="font-size:11px;margin-top:2px">' +
+          '<span style="background:' + col + ';color:white;border-radius:4px;padding:1px 6px;font-size:10px;font-weight:600">' + sub + '</span>' +
+          (fecha ? ' · <span style="color:var(--suave)">' + fecha + '</span>' : '') +
+          (g.registrado_por ? ' · ' + g.registrado_por : '') +
+        '</div>' +
+      '</div>' +
+      '<div style="display:flex;align-items:center;gap:8px">' +
+        '<div style="font-size:14px;font-weight:700;color:var(--verde)">$' + Number(g.monto).toLocaleString('es-UY') + '</div>' +
+        '<button onclick="editarGastoVariable(\'' + g.id + '\')" ' +
+          'style="background:none;border:none;font-size:16px;cursor:pointer;padding:2px">✏️</button>' +
+        '<button onclick="eliminarGasto(\'' + g.id + '\')" ' +
+          'style="background:none;border:none;font-size:16px;cursor:pointer;padding:2px">🗑️</button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
 }
 
 // ── Guardar gasto fijo (al cambiar el monto) ──
@@ -5490,34 +5586,109 @@ async function guardarGastoFijo(input) {
 }
 
 // ── Guardar gasto puntual (sin foto) ──
+async function toggleSubgrupo() {
+  var tipo = (document.getElementById('gasto-tipo')||{}).value;
+  var fg   = document.getElementById('fg-subgrupo');
+  if (fg) fg.style.display = tipo === 'variable' ? 'block' : 'none';
+}
+
 async function guardarGastoManual() {
-  var desc  = (document.getElementById('gasto-desc')      || {}).value || '';
-  var monto = parseFloat((document.getElementById('gasto-monto-inp') || {}).value) || 0;
-  var cat   = (document.getElementById('gasto-cat')       || {}).value || 'Otro';
-  var fecha = (document.getElementById('gasto-fecha')     || {}).value || new Date().toISOString().split('T')[0];
-  desc = desc.trim();
+  var desc     = ((document.getElementById('gasto-desc')||{}).value||'').trim();
+  var monto    = parseFloat((document.getElementById('gasto-monto-inp')||{}).value)||0;
+  var fecha    = (document.getElementById('gasto-fecha')||{}).value || new Date().toISOString().split('T')[0];
+  var tipo     = (document.getElementById('gasto-tipo')||{}).value || 'variable';
+  var subgrupo = (document.getElementById('gasto-subgrupo')||{}).value || 'Otros';
+
   if (!desc || !monto) { toast('Completá descripción y monto', 'error'); return; }
+
+  var esFijo   = tipo === 'fijo';
+  var cat      = esFijo ? 'Fijo' : subgrupo;
+  var proveedor = esFijo ? '' : subgrupo;  // subgrupo guardado en proveedor para variables
+
   var data = {
     fecha: fecha, categoria: cat, descripcion: desc, monto: monto,
-    proveedor:   (document.getElementById('gasto-proveedor') || {}).value || '',
-    nro_factura: (document.getElementById('gasto-factura')   || {}).value || '',
+    proveedor: proveedor, nro_factura: '',
     registrado_por: currentUser.nombre,
-    es_fijo: 'No'
+    es_fijo: esFijo ? 'Sí' : 'No'
   };
-  showLoading('Guardando gasto...');
+  showLoading('Guardando...');
   var result = await apiPost('gastos', 'insert', data);
   hideLoading();
   if (result) {
+    result.proveedor = proveedor;
+    result.es_fijo   = esFijo ? 'Sí' : 'No';
     DB.gastos.push(result);
     renderGastos();
-  renderActivos();
+    renderActivos();
     renderDiagnostico();
     toast('✅ Gasto guardado', 'ok');
     closeM('modal-gasto-manual');
-    ['gasto-desc','gasto-monto-inp','gasto-proveedor','gasto-factura'].forEach(function(id){
+    ['gasto-desc','gasto-monto-inp'].forEach(function(id){
       var el = document.getElementById(id); if (el) el.value = '';
     });
   } else toast('❌ Error al guardar', 'error');
+}
+
+function editarGastoVariable(id) {
+  var g = DB.gastos.find(function(x){ return String(x.id)===String(id); });
+  if (!g) return;
+  // Pre-fill modal
+  var elDesc  = document.getElementById('gasto-desc');
+  var elMonto = document.getElementById('gasto-monto-inp');
+  var elSub   = document.getElementById('gasto-subgrupo');
+  var elTipo  = document.getElementById('gasto-tipo');
+  if (elDesc)  elDesc.value  = g.descripcion || '';
+  if (elMonto) elMonto.value = g.monto || '';
+  if (elSub)   elSub.value   = g.proveedor || g.categoria || 'Otros';
+  if (elTipo)  { elTipo.value = 'variable'; toggleSubgrupo(); }
+  // Store id for update
+  document.getElementById('modal-gasto-manual').dataset.editId = id;
+  showM('modal-gasto-manual');
+}
+
+// ── Inicializar gastos predeterminados si el mes no tiene datos ──
+async function inicializarGastosDefecto() {
+  var mesActual = new Date().toISOString().slice(0,7);
+  var fecha = mesActual + '-01';
+  var gastosM = DB.gastos.filter(function(g){
+    return g.fecha && String(g.fecha).startsWith(mesActual) && g.categoria !== 'Activo';
+  });
+  if (gastosM.length > 0) return; // Ya tiene datos este mes
+
+  console.log('Inicializando gastos predeterminados para ' + mesActual);
+  var todos = [];
+
+  // Fijos predeterminados
+  GASTOS_FIJOS.forEach(function(f){
+    if (f.descripcion === 'Sueldos') return; // sueldos son automáticos
+    todos.push({
+      fecha: fecha, categoria: f.categoria, descripcion: f.descripcion,
+      monto: f.default||0, proveedor: '', nro_factura: '',
+      registrado_por: 'Sistema', es_fijo: 'Sí'
+    });
+  });
+
+  // Variables predeterminadas
+  GASTOS_VARIABLES_DEFAULT.forEach(function(v){
+    todos.push({
+      fecha: fecha, categoria: v.subgrupo, descripcion: v.descripcion,
+      monto: v.monto, proveedor: v.subgrupo, nro_factura: '',
+      registrado_por: 'Sistema', es_fijo: 'No'
+    });
+  });
+
+  // Insertar todos
+  for (var k = 0; k < todos.length; k++) {
+    var result = await apiPost('gastos', 'insert', todos[k]);
+    if (result) {
+      result.es_fijo   = todos[k].es_fijo;
+      result.proveedor = todos[k].proveedor;
+      DB.gastos.push(result);
+    }
+  }
+  renderGastos();
+  renderDiagnostico();
+  toast('✅ Gastos del mes inicializados', 'ok');
 }
 
 // ── Eliminar gasto puntual ──
@@ -7770,12 +7941,27 @@ function renderDiagnostico() {
         .filter(function(e){ return e.activo === 'Sí'; })
         .reduce(function(s,e){ return s+(parseFloat(e.sueldo)||0)+(parseFloat(e.presentismo)||0); },0);
       if (sueldoTotal > 0) items.push({ label:'👥 Sueldos', monto: sueldoTotal, color: COLORS['Personal'], key:'Sueldos' });
-      gastosM.filter(function(g){ return g.categoria !== 'Activo' && g.descripcion !== 'Sueldos'; })
+      var DESCS_FIJAS_CHART = GASTOS_FIJOS.map(function(f){ return f.descripcion; });
+      gastosM.filter(function(g){ return g.categoria !== 'Activo'; })
         .forEach(function(g) {
-          var key = g.descripcion || g.categoria;
+          var esFijoDesc = DESCS_FIJAS_CHART.includes(g.descripcion);
+          // Fijos: agregar por descripción individual
+          // Variables: agregar por subgrupo (guardado en proveedor)
+          var key, label;
+          if (esFijoDesc || g.es_fijo === 'Sí' || g.es_fijo === true) {
+            key   = g.descripcion;
+            label = g.descripcion;
+          } else {
+            // Variable: agrupar por subgrupo
+            key   = g.proveedor || g.categoria || 'Otros';
+            label = key;
+          }
           var existing = items.find(function(it){ return it.key === key; });
           if (existing) { existing.monto += Number(g.monto); }
-          else { items.push({ label: g.descripcion||g.categoria, monto: Number(g.monto), color: COLORS[g.categoria]||COLORS['Otro'], key: key }); }
+          else {
+            var col = COLORS[g.categoria] || COLORS[g.descripcion] || COLORS['Otro'];
+            items.push({ label: label, monto: Number(g.monto), color: col, key: key });
+          }
         });
       items.sort(function(a,b){ return b.monto - a.monto; });
       var totalChart = items.reduce(function(s,it){ return s+it.monto; },0)||1;
@@ -8146,149 +8332,4 @@ function abrirPDFiOS(html, titulo) {
     '<button onclick="document.getElementById(\'modal-pdf-ios\').remove()" ' +
     'style="background:rgba(255,255,255,.2);border:none;color:white;border-radius:8px;' +
     'padding:8px 14px;font-size:14px;cursor:pointer;font-family:DM Sans,sans-serif">← Volver</button>' +
-    '<span style="flex:1;font-size:14px;font-weight:600">' + (titulo||'PDF') + '</span>' +
-    '<button onclick="compartirPDFiOS()" ' +
-    'style="background:rgba(255,255,255,.2);border:none;color:white;border-radius:8px;' +
-    'padding:8px 14px;font-size:14px;cursor:pointer;font-family:DM Sans,sans-serif">⬆️ Compartir</button>' +
-    '</div>' +
-    '<iframe id="pdf-ios-frame" style="flex:1;border:none;width:100%;height:100%"></iframe>';
-
-  document.body.appendChild(modal);
-
-  // Escribir el HTML en el iframe
-  var frame = document.getElementById('pdf-ios-frame');
-  frame.contentDocument.open();
-  frame.contentDocument.write(html);
-  frame.contentDocument.close();
-
-  // Guardar para compartir
-  window._pdfHTML  = html;
-  window._pdfTitulo = titulo;
-}
-
-function compartirPDFiOS() {
-  if (!window._pdfHTML) return;
-  try {
-    var blob = new Blob([window._pdfHTML], {type: 'text/html'});
-    var file = new File([blob], (window._pdfTitulo||'documento')+'.html', {type:'text/html'});
-    if (navigator.share && navigator.canShare({files:[file]})) {
-      navigator.share({files:[file], title: window._pdfTitulo||'PDF'});
-    } else {
-      // Fallback: descargar
-      var url = URL.createObjectURL(blob);
-      var a = document.createElement('a');
-      a.href = url; a.download = (window._pdfTitulo||'documento')+'.html';
-      a.click();
-    }
-  } catch(e) {
-    toast('Usá el botón compartir del navegador', 'warn');
-  }
-}
-
-
-function generarHistorialPDF() {
-  if (!residenteActual) { toast('Sin residente', 'error'); return; }
-  var r = DB.residentes.find(function(x){ return String(x.id)===String(residenteActual); }) || {};
-
-  // Usar DB.historial ya cargado en memoria — sin await
-  var hist = (DB.historial || []).filter(function(h){
-    return String(h.residente_id) === String(residenteActual);
-  });
-  hist.sort(function(a,b){ return b.created_at > a.created_at ? 1 : -1; });
-
-  var hoy = new Date().toLocaleDateString('es-UY');
-  var TIPO = {
-    nota:'NOTA CLÍNICA', vital:'SIGNOS VITALES', incidente:'INCIDENTE',
-    medico:'NOTA MÉDICA', estudio:'ESTUDIO', medicacion:'MEDICACIÓN',
-    barthel:'BARTHEL', vacuna:'VACUNA', caida:'CAÍDA'
-  };
-  var COLOR = {
-    nota:'#1565c0', vital:'#2e7d32', incidente:'#c62828',
-    medico:'#6a1b9a', estudio:'#e65100', medicacion:'#1a3d35',
-    barthel:'#00695c', vacuna:'#1565c0', caida:'#b71c1c'
-  };
-
-  var html = '<!DOCTYPE html><html><head><meta charset="UTF-8">' +
-    '<style>' +
-    'body{font-family:Arial,sans-serif;font-size:11px;padding:16px;color:#222;max-width:700px;margin:0 auto}' +
-    '@media print{@page{margin:10mm;size:A4}.reg{page-break-inside:avoid}}' +
-    '.header{border-bottom:3px solid #1a3d35;padding-bottom:8px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:flex-end}' +
-    '.paciente{background:#f0f7f4;border-left:4px solid #1a3d35;padding:8px 12px;margin-bottom:12px;border-radius:0 4px 4px 0;font-size:11px}' +
-    '.reg{margin-bottom:10px;border:1px solid #e0d8cc;border-radius:6px;overflow:hidden}' +
-    '.reg-header{padding:5px 10px;color:white;font-size:10px;font-weight:bold;letter-spacing:.5px;display:flex;justify-content:space-between}' +
-    '.reg-body{padding:8px 10px;font-size:11px;line-height:1.6}' +
-    '.vitales{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}' +
-    '.vital{background:#f0f7f4;border-radius:4px;padding:3px 8px;font-size:10px}' +
-    '.diags{background:#f9f6f0;border-radius:4px;padding:8px;font-size:11px;line-height:1.8;margin-bottom:8px}' +
-    '</style></head><body>' +
-    '<div class="header">' +
-    '<div><strong style="font-size:15px;color:#1a3d35">HISTORIAL CLÍNICO</strong>' +
-    '<div style="font-size:10px;color:#555">Carrasco Elderly Care SAS · Rafael Barradas 1527</div></div>' +
-    '<div style="text-align:right;font-size:10px;color:#555">Generado: '+hoy+'</div>' +
-    '</div>' +
-
-    // Datos del paciente
-    '<div class="paciente">' +
-    '<div style="font-size:14px;font-weight:bold;color:#1a3d35;margin-bottom:4px">' + r.nombre + '</div>' +
-    '<div>CI: '+(r.ci||'—')+' · '+(r.edad?r.edad+' años · ':'')+'Hab. '+(r.hab||'—')+' · Mutualista: '+(r.mutualista||'—')+'</div>' +
-    '<div>Ingreso: '+(r.ingreso?String(r.ingreso).split('T')[0]:'—')+' · Médico: '+(r.medico||'—')+'</div>' +
-    (r.familiar_nom ? '<div>Familiar: '+r.familiar_nom+(r.familiar_parentesco?' ('+r.familiar_parentesco+')':'')+' — '+( r.familiar_tel||'')+'</div>' : '') +
-    '</div>' +
-
-    // Diagnósticos
-    (r.diags ? '<div class="diags"><strong>Diagnósticos:</strong><br>' +
-      r.diags.split('|').filter(Boolean).map(function(d){ return '• '+d.trim(); }).join('<br>') +
-    '</div>' : '') +
-
-    // Alertas
-    (r.alergias && r.alergias !== 'Sin alergias documentadas' ?
-      '<div style="background:#ffebee;border-left:4px solid #c62828;padding:6px 10px;margin-bottom:10px;font-size:11px;font-weight:bold">⚠️ '+r.alergias.replace(/\|/g,' · ')+'</div>' : '') +
-
-    '<div style="font-size:12px;font-weight:bold;color:#1a3d35;margin-bottom:8px">REGISTROS ('+ hist.length +')</div>';
-
-  if (hist.length === 0) {
-    html += '<div style="text-align:center;padding:20px;color:#999">Sin registros en el historial</div>';
-  } else {
-    hist.forEach(function(h) {
-      var tipo  = h.tipo || 'nota';
-      var color = COLOR[tipo] || '#1a3d35';
-      var label = TIPO[tipo]  || tipo.toUpperCase();
-      var fecha = h.fecha || (h.created_at ? new Date(h.created_at).toLocaleDateString('es-UY') : '—');
-      var hora  = h.created_at ? new Date(h.created_at).toLocaleTimeString('es-UY',{hour:'2-digit',minute:'2-digit'}) : '';
-
-      html += '<div class="reg">' +
-        '<div class="reg-header" style="background:'+color+'">' +
-        '<span>'+label+'</span>' +
-        '<span>'+fecha+(hora?' '+hora:'')+' · '+(h.usuario||'—')+(h.turno?' · '+h.turno:'')+'</span>' +
-        '</div><div class="reg-body">' +
-        (h.texto ? '<div>'+h.texto+'</div>' : '');
-
-      // Vitales si los tiene
-      var vitales = [];
-      if (tipo === 'barthel' && h.vit_pa) { vitales.push('Barthel: '+h.vit_pa+' pts'); }
-      else {
-        if (h.vit_pa)    vitales.push('PA: '+h.vit_pa);
-        if (h.vit_pulso) vitales.push('Pulso: '+h.vit_pulso);
-        if (h.vit_temp)  vitales.push('Temp: '+h.vit_temp+'°C');
-        if (h.vit_sat)   vitales.push('Sat: '+h.vit_sat+'%');
-        if (h.vit_gluc)  vitales.push('Glucemia: '+h.vit_gluc);
-        if (h.vit_peso)  vitales.push('Peso: '+h.vit_peso+'kg');
-      }
-      if (vitales.length) {
-        html += '<div class="vitales">'+vitales.map(function(v){
-          return '<span class="vital">'+v+'</span>';
-        }).join('')+'</div>';
-      }
-      html += '</div></div>';
-    });
-  }
-
-  html += '<div style="border-top:1px solid #1a3d35;margin-top:14px;padding-top:6px;font-size:9px;color:#555;text-align:center">' +
-    'Carrasco Elderly Care SAS · Historial de '+r.nombre+' · Generado el '+hoy+'</div>' +
-    '</body></html>';
-
-  abrirPDF(html, 'Historial — '+(r.nombre||'').split(' ').slice(0,2).join(' '));
-}
-</script>
-</body>
-</html>
+    '<span style="flex:1;font-size:14px;font-weight:600">' + (titulo||'PDF') 
