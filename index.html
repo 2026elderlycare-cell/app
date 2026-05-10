@@ -2,11 +2,11 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-  <!-- Cache busting v202605021252 — fuerza descarga de versión nueva -->
+  <!-- Cache busting v202605100326 — fuerza descarga de versión nueva -->
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <meta name="version" content="202605092233">
+  <meta name="version" content="202605100326">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Elderly Care Carrasco — Sistema de Gestión</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
@@ -2061,15 +2061,15 @@ html{overflow-x:hidden;}
       <div class="fs-section">
         <div class="fs-titulo">🌴 Licencia anual</div>
         <!-- Resumen -->
-        <div style="background:var(--crema);border-radius:10px;padding:12px;margin-bottom:12px">
-          <div style="font-size:13px;line-height:2.2">
-            <div style="display:flex;justify-content:space-between"><span>Fecha ingreso</span><strong id="fe-lic-ing">—</strong></div>
-            <div style="display:flex;justify-content:space-between"><span>Días que corresponden/año</span><strong id="fe-lic-anual" style="color:var(--verde)">—</strong></div>
-            <div style="display:flex;justify-content:space-between"><span>Días generados (prop. al año)</span><strong id="fe-lic-gen" style="color:var(--verde)">—</strong></div>
-            <div style="display:flex;justify-content:space-between"><span>Días gozados</span><strong id="fe-lic-goz" style="color:#2e7d32">—</strong></div>
-            <div style="display:flex;justify-content:space-between;border-top:1px solid var(--crema-oscura);padding-top:6px;margin-top:4px">
-              <span style="font-weight:600;color:var(--verde)">Días pendientes</span>
-              <strong id="fe-lic-pend" style="color:var(--rojo);font-size:15px">—</strong>
+        <div style="background:white;border-radius:10px;padding:12px;margin-bottom:12px;border:1px solid var(--crema-oscura)">
+          <div style="font-size:12px">
+            <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--crema-oscura)"><span style="color:var(--texto-suave)">Fecha ingreso</span><strong id="fe-lic-ing">—</strong></div>
+            <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--crema-oscura)"><span style="color:var(--texto-suave)">Días/año</span><strong id="fe-lic-anual" style="color:var(--verde)">—</strong></div>
+            <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--crema-oscura)"><span style="color:var(--texto-suave)">Generados (prop.)</span><strong id="fe-lic-gen" style="color:var(--verde)">—</strong></div>
+            <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--crema-oscura)"><span style="color:var(--texto-suave)">Gozados</span><strong id="fe-lic-goz" style="color:#2e7d32">—</strong></div>
+            <div style="display:flex;justify-content:space-between;padding:8px 0 2px;align-items:baseline">
+              <span style="font-weight:600;color:var(--verde);font-size:12px">Pendientes</span>
+              <strong id="fe-lic-pend" style="color:var(--rojo);font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400">—</strong>
             </div>
           </div>
         </div>
@@ -2128,13 +2128,13 @@ html{overflow-x:hidden;}
 
       <!-- ══ SECCIÓN: ADELANTOS ══ -->
       <div class="fs-section">
-        <div class="fs-titulo">💵 Adelantos</div>
-        <div style="background:var(--verde);border-radius:10px;padding:10px;color:white;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center">
+        <div class="fs-titulo">💵 Adelantos pendientes</div>
+        <div style="background:linear-gradient(145deg,var(--verde),var(--verde-medio));border-radius:10px;padding:13px 15px;color:white;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center">
           <div>
-            <div style="font-size:10px;opacity:.7">PENDIENTE</div>
-            <div style="font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;color:#C9A84C" id="fe-adel-total">$0</div>
+            <div style="font-size:9.5px;letter-spacing:1.2px;opacity:.7;text-transform:uppercase;margin-bottom:2px">Pendiente de descuento</div>
+            <div style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:#C9A84C;line-height:1" id="fe-adel-total">$0</div>
           </div>
-          <div style="font-size:10px;opacity:.7">Se descuenta<br>en liquidación</div>
+          <div style="font-size:9.5px;opacity:.65;text-align:right;letter-spacing:.3px;line-height:1.5">Se descuenta<br>en próxima<br>liquidación</div>
         </div>
         <div id="adelantos-lista" style="margin-bottom:10px"></div>
         <div class="sep">Registrar adelanto</div>
@@ -2203,12 +2203,31 @@ html{overflow-x:hidden;}
           </div>
         </div>
 
+        <!-- Toggle: Considerar prima por antigüedad -->
+        <div class="card" style="background:var(--crema);padding:11px 13px;margin-top:8px">
+          <div class="toggle-row">
+            <div>
+              <div class="toggle-lbl">Considerar prima por antigüedad</div>
+              <div style="font-size:10px;color:var(--texto-suave);margin-top:2px" id="liq-antig-info">—</div>
+            </div>
+            <div class="toggle" id="liq-tog-antig-emp" onclick="this.classList.toggle('on');calcLiqEmp()"></div>
+          </div>
+        </div>
+
+        <!-- Indicador de situación familiar y franja FONASA (solo lectura) -->
+        <div id="liq-fonasa-info" style="background:#fff8e1;border-left:3px solid #c9a84c;padding:7px 10px;border-radius:0 6px 6px 0;font-size:10.5px;color:var(--texto-suave);margin-top:8px;line-height:1.5">—</div>
+
+        <!-- Desglose visible -->
+        <div class="card" style="margin-top:10px;padding:13px">
+          <div style="font-size:11px;letter-spacing:1.5px;color:var(--texto-suave);text-transform:uppercase;margin-bottom:6px">Desglose</div>
+          <div id="liq-emp-desglose"></div>
+        </div>
+
         <!-- Resultado liquidación -->
         <div style="background:var(--verde);border-radius:10px;padding:12px;color:white;margin-top:10px;margin-bottom:4px">
-          <div style="font-size:10px;opacity:.7;letter-spacing:1px">LIQUIDACIÓN MENSUAL</div>
-          <div id="liq-emp-detalle" style="font-size:11px;opacity:.8;margin:6px 0">—</div>
+          <div style="font-size:10px;opacity:.7;letter-spacing:1px">LÍQUIDO A COBRAR</div>
+          <div id="liq-emp-detalle" style="font-size:10px;opacity:.65;margin:6px 0;line-height:1.5">—</div>
           <div style="font-family:'Cormorant Garamond',serif;font-size:38px;font-weight:300;color:#C9A84C" id="liq-emp-liquido">$0</div>
-          <div style="font-size:10px;opacity:.6">LÍQUIDO A COBRAR</div>
         </div>
         <button class="btn bv" style="width:100%;margin-bottom:4px" onclick="generarReciboEmpPDF()">⬇️ Generar recibo PDF</button>
       </div>
@@ -2658,31 +2677,30 @@ html{overflow-x:hidden;}
 
         <!-- Vacunaciones -->
         <div class="fs-section" style="margin-bottom:10px">
-          <div class="fs-titulo" style="display:flex;justify-content:space-between;align-items:center">
-            <span>💉 Vacunaciones en el centro</span>
-            <button class="btn bv btn-sm" onclick="agregarVacuna()">＋</button>
+          <div class="sec-header">
+            <div class="fs-titulo">💉 Vacunaciones en el centro</div>
+            <button class="btn bv" style="font-size:11px;padding:5px 12px;border-radius:18px" onclick="agregarVacuna()">＋ Agregar</button>
           </div>
-          <div id="vacunas-lista"><div style="font-size:12px;color:var(--suave);text-align:center;padding:8px">Sin vacunas registradas</div></div>
+          <div id="vacunas-lista" style="margin-top:6px"><div style="font-size:11px;color:var(--suave);text-align:center;padding:10px 4px">Sin vacunas registradas</div></div>
         </div>
 
         <!-- Caídas -->
         <div class="fs-section" style="margin-bottom:10px">
-          <div class="fs-titulo" style="display:flex;justify-content:space-between;align-items:center">
-            <span>⚡ Caídas</span>
-            <button class="btn bv btn-sm" onclick="abrirRegistroCaida()">＋ Registrar</button>
+          <div class="sec-header">
+            <div class="fs-titulo">⚡ Caídas</div>
+            <button class="btn bv" style="font-size:11px;padding:5px 12px;border-radius:18px" onclick="abrirRegistroCaida()">＋ Registrar</button>
           </div>
-          <div class="fg"><label class="fl">Factores de riesgo</label>
-            <div class="chip-group">
-              <div class="chip" onclick="toggleClinico(this,'fr-caida')">Demencia</div>
-              <div class="chip" onclick="toggleClinico(this,'fr-caida')">Medicación de riesgo</div>
-              <div class="chip" onclick="toggleClinico(this,'fr-caida')">Incontinencia</div>
-              <div class="chip" onclick="toggleClinico(this,'fr-caida')">Marcha inestable</div>
-              <div class="chip" onclick="toggleClinico(this,'fr-caida')">Caída previa</div>
-              <div class="chip" onclick="toggleClinico(this,'fr-caida')">Hipotensión ortostática</div>
-              <div class="chip" onclick="toggleClinico(this,'fr-caida')">Déficit visual</div>
-            </div>
+          <div style="font-size:10px;letter-spacing:1px;color:var(--texto-suave);text-transform:uppercase;font-weight:600;margin:8px 0 6px">Factores de riesgo</div>
+          <div class="chip-group" style="margin-bottom:6px">
+            <div class="chip" onclick="toggleClinico(this,'fr-caida')">Demencia</div>
+            <div class="chip" onclick="toggleClinico(this,'fr-caida')">Medicación de riesgo</div>
+            <div class="chip" onclick="toggleClinico(this,'fr-caida')">Incontinencia</div>
+            <div class="chip" onclick="toggleClinico(this,'fr-caida')">Marcha inestable</div>
+            <div class="chip" onclick="toggleClinico(this,'fr-caida')">Caída previa</div>
+            <div class="chip" onclick="toggleClinico(this,'fr-caida')">Hipotensión ortostática</div>
+            <div class="chip" onclick="toggleClinico(this,'fr-caida')">Déficit visual</div>
           </div>
-          <div id="caidas-lista" style="margin-top:8px"><div style="font-size:12px;color:var(--suave);text-align:center;padding:8px">Sin caídas registradas</div></div>
+          <div id="caidas-lista" style="margin-top:6px"><div style="font-size:11px;color:var(--suave);text-align:center;padding:10px 4px">Sin caídas registradas</div></div>
         </div>
 
         <!-- Guardar datos clínicos -->
@@ -2706,16 +2724,16 @@ html{overflow-x:hidden;}
         <div class="fs-section">
           <div class="fs-titulo">💓 Signos vitales al momento de salida</div>
           <div class="fr">
-            <div class="fg"><label class="fl">PA</label><input class="fi" id="fs-pa" placeholder="120/80"></div>
-            <div class="fg"><label class="fl">Pulso</label><input class="fi" id="fs-pulso" placeholder="80"></div>
+            <div class="fg"><label class="fl">PA</label><input class="fi" id="fs-pa" placeholder="120/80 mmHg"></div>
+            <div class="fg"><label class="fl">Pulso (lpm)</label><input class="fi" id="fs-pulso" placeholder="80"></div>
           </div>
           <div class="fr">
-            <div class="fg"><label class="fl">Temp °C</label><input class="fi" id="fs-temp" placeholder="36.5"></div>
-            <div class="fg"><label class="fl">Sat O₂ %</label><input class="fi" id="fs-sat" placeholder="97"></div>
+            <div class="fg"><label class="fl">Temp (°C)</label><input class="fi" id="fs-temp" placeholder="36,5"></div>
+            <div class="fg"><label class="fl">Sat O₂ (%)</label><input class="fi" id="fs-sat" placeholder="97"></div>
           </div>
           <div class="fr">
-            <div class="fg"><label class="fl">Glucemia</label><input class="fi" id="fs-gluc" placeholder="mg/dL"></div>
-            <div class="fg"><label class="fl">Peso kg</label><input class="fi" id="fs-peso" placeholder="kg"></div>
+            <div class="fg"><label class="fl">Glucemia (mg/dL)</label><input class="fi" id="fs-gluc" placeholder="100"></div>
+            <div class="fg"><label class="fl">Peso (kg)</label><input class="fi" id="fs-peso" placeholder="65"></div>
           </div>
         </div>
 
@@ -2980,7 +2998,7 @@ html{overflow-x:hidden;}
 <script>
 // ── Cache busting: si la versión cambió, forzar reload limpio ──
 (function() {
-  var APP_VERSION = '202605092233';
+  var APP_VERSION = '202605100326';
   var stored = localStorage.getItem('ec_version');
   if (stored && stored !== APP_VERSION) {
     localStorage.setItem('ec_version', APP_VERSION);
@@ -3555,23 +3573,22 @@ function renderListaEmpleadas() {
   container.innerHTML = activas.map(function(e) {
     var ing   = new Date(e.ingreso);
     var meses = (hoy.getFullYear()-ing.getFullYear())*12 + hoy.getMonth()-ing.getMonth();
+    // En período de prueba durante los primeros 3 meses
     var prueba = meses < 3;
-    var ini   = e.nombre.split(' ').map(function(w){ return w[0]; }).filter(Boolean).slice(0,2).join('');
-    var nomCorto = e.nombre.split(' ').slice(0,2).join(' ');
+    var ini   = (e.nombre||'').split(' ').map(function(w){ return w[0]; }).filter(Boolean).slice(0,2).join('');
+    // Mostrar nombre + apellido (primeros dos términos)
+    var nomCorto = (e.nombre||'').split(' ').slice(0,2).join(' ');
+    var fechaIng = isNaN(ing.getTime()) ? '—' : ing.toLocaleDateString('es-UY', {day:'2-digit', month:'short', year:'numeric'});
     return '<div class="emp-card" onclick="abrirEmpleada(\'' + e.id + '\')">' +
       '<div class="emp-av">' + ini + '</div>' +
-      '<div style="flex:1">' +
-        '<div class="emp-nom">' + nomCorto + '</div>' +
-        '<div class="emp-rol">' + e.turno + ' · Ingreso ' + ing.toLocaleDateString('es-UY') + '</div>' +
-        '<div style="margin-top:4px">' +
-          '<span class="prueba-badge ' + (prueba ? 'pb-naranja' : 'pb-ok') + '">' +
-            (prueba ? '⏳ En prueba (' + meses + 'm)' : '✓ Consolidada') +
-          '</span>' +
-        '</div>' +
+      '<div style="flex:1;min-width:0">' +
+        '<div class="emp-nom" style="font-size:14px;font-weight:600">' + nomCorto + '</div>' +
+        '<div style="font-size:11px;color:var(--suave);margin-top:2px">Ingreso: ' + fechaIng + '</div>' +
       '</div>' +
-      '<div style="text-align:right">' +
-        '<div style="font-family:Cormorant Garamond,serif;font-size:15px;color:var(--verde);font-weight:600">$' + Number(e.sueldo).toLocaleString('es-UY') + '</div>' +
-        '<div style="font-size:10px;color:var(--suave)">nominal</div>' +
+      '<div style="text-align:right;flex-shrink:0">' +
+        '<span class="prueba-badge ' + (prueba ? 'pb-naranja' : 'pb-ok') + '" style="font-size:10px">' +
+          (prueba ? '⏳ A prueba' : '✓ Efectiva') +
+        '</span>' +
       '</div>' +
     '</div>';
   }).join('');
@@ -3661,6 +3678,41 @@ function abrirEmpleada(id) {
   setEl('liq-hex-emp',   (registros[mesActual]||{}).hex   || 0, 'val');
   setEl('liq-hnoct-emp', (registros[mesActual]||{}).hnoct || 0, 'val');
   setEl('liq-faltas-emp', 0, 'val');
+
+  // Reset toggle "considerar antigüedad" → off por defecto
+  var togAntig = document.getElementById('liq-tog-antig-emp');
+  if (togAntig) togAntig.classList.remove('on');
+
+  // Info de la prima de antigüedad de la ficha
+  var infoAntig = document.getElementById('liq-antig-info');
+  if (infoAntig) {
+    var anios = e.ingreso ? Math.floor((new Date() - new Date(String(e.ingreso).split('T')[0])) / (1000*60*60*24*365.25)) : 0;
+    var pct = parseFloat(e.antig_pct) || 0;
+    if (pct > 0) {
+      infoAntig.textContent = 'Ficha: ' + pct + '%/año · ' + anios + ' años de antigüedad';
+    } else {
+      infoAntig.textContent = 'No hay porcentaje configurado en la ficha de la empleada';
+    }
+  }
+
+  // Info FONASA según situación familiar
+  var infoFonasa = document.getElementById('liq-fonasa-info');
+  if (infoFonasa) {
+    var hH = e.hijos === 'Sí', hC = e.conyuge === 'Sí';
+    var nom = (parseFloat(e.sueldo)||0) + (parseFloat(e.presentismo)||0);
+    var sobre = nom > UMBRAL_FONASA;
+    var snisadPct = sobre ? (hH ? 3 : 1.5) : 0;
+    var snisconyPct = hC ? 2 : 0;
+    var totalFonasa = (3 + snisadPct + snisconyPct).toString().replace('.0','');
+    var sit = (hH ? 'con hijos' : 'sin hijos') + ' · ' + (hC ? 'con cónyuge' : 'sin cónyuge');
+    infoFonasa.innerHTML =
+      '<b>FONASA aplicado: ' + totalFonasa + '%</b> &nbsp;(SNIS 3%' +
+      (snisadPct > 0 ? ' + SNISAD ' + snisadPct + '%' : '') +
+      (snisconyPct > 0 ? ' + SNIS Cónyuge ' + snisconyPct + '%' : '') + ')<br>' +
+      '<span style="color:#888">Situación: ' + sit + ' · ' +
+      (sobre ? 'sobre' : 'bajo') + ' 2,5 BPC ($' + UMBRAL_FONASA.toLocaleString('es-UY') + ')</span>';
+  }
+
   try { calcLiqEmp(); } catch(ex) {}
 
   // ── Tab Liquidaciones: Egreso ──
@@ -6077,6 +6129,7 @@ function getSelChips(group) {
 
 // ── ABRIR MODAL CAÍDA ──
 function abrirRegistroCaida() {
+  if (!residenteActual) { toast('Abrí primero la ficha del residente', 'error'); return; }
   var r = DB.residentes.find(function(x){ return String(x.id) === String(residenteActual); });
   var nom = document.getElementById('caida-res-nom');
   if (nom) nom.textContent = r ? r.nombre : '';
@@ -6084,6 +6137,13 @@ function abrirRegistroCaida() {
   if (fec) {
     var now = new Date();
     fec.value = new Date(now - now.getTimezoneOffset()*60000).toISOString().slice(0,16);
+  }
+  // Limpiar selecciones anteriores
+  var modal = document.getElementById('modal-caida');
+  if (modal) {
+    modal.querySelectorAll('.chip.sel').forEach(function(c){ c.classList.remove('sel'); });
+    var desc = modal.querySelector('#caida-desc');
+    if (desc) desc.value = '';
   }
   resShowM('modal-caida');
 }
@@ -6138,17 +6198,20 @@ async function guardarCaida() {
 }
 
 function getSelChipByGroup(grupo) {
-  var chips = document.querySelectorAll('[onclick*="selChipGrupo"][onclick*="' + grupo + '"].chip.sel');
-  if (chips.length === 0) {
-    // try finding by data attribute approach
-    chips = document.querySelectorAll('.chip.sel');
+  // Busca chips seleccionados cuyo onclick contiene el nombre del grupo
+  var chips = document.querySelectorAll('.chip.sel');
+  for (var i = 0; i < chips.length; i++) {
+    var oc = chips[i].getAttribute('onclick') || '';
+    if (oc.indexOf("'" + grupo + "'") !== -1 || oc.indexOf('"' + grupo + '"') !== -1) {
+      return chips[i].textContent.trim();
+    }
   }
-  // More reliable: look in the parent chip-group
   return '';
 }
 
 // ── ABRIR MODAL VACUNA ──
 function agregarVacuna() {
+  if (!residenteActual) { toast('Abrí primero la ficha del residente', 'error'); return; }
   var r = DB.residentes.find(function(x){ return String(x.id) === String(residenteActual); });
   var nom = document.getElementById('vacuna-res-nom');
   if (nom) nom.textContent = r ? r.nombre : '';
@@ -6156,6 +6219,9 @@ function agregarVacuna() {
   if (fec) fec.value = new Date().toISOString().split('T')[0];
   var ap = document.getElementById('vacuna-aplicador');
   if (ap) ap.value = currentUser.nombre;
+  // Limpiar campos de sesión anterior
+  var lote = document.getElementById('vacuna-lote');     if (lote) lote.value = '';
+  var prox = document.getElementById('vacuna-proxima');  if (prox) prox.value = '';
   resShowM('modal-vacuna');
 }
 
@@ -6829,49 +6895,146 @@ function actualizarDisplayLicencia(e) {
 // LIQUIDACIONES DENTRO DEL MODAL EMPLEADA
 // ═══════════════════════════════════════════════════════
 
+// ═══════════════════════════════════════════════════════
+// NORMATIVA BPS / FONASA 2026 (Decreto BPC vigente)
+// BPC 2026 = $6.864 → 2,5 BPC = $17.160
+// Tasas FONASA según núcleo familiar y franja salarial:
+//
+//   Hasta 2,5 BPC                 Mayor a 2,5 BPC
+//   ─────────────────             ─────────────────
+//   Sin h / Sin c    →  3%        Sin h / Sin c    →  4,5% (3 + 1,5)
+//   Con h / Sin c    →  3%        Con h / Sin c    →  6%   (3 + 3)
+//   Sin h / Con c    →  5%        Sin h / Con c    →  6,5% (3 + 1,5 + 2)
+//   Con h / Con c    →  6%        Con h / Con c    →  8%   (3 + 3 + 2)
+//
+// El recibo discrimina: SNIS (3% básico), SNISAD (1,5%/3% adicional
+// por franja+hijos), SNISCONY (2% por cónyuge a cargo).
+// ═══════════════════════════════════════════════════════
+var BPC_2026 = 6864;
+var UMBRAL_FONASA = 2.5 * BPC_2026; // 17.160
+
+function tasasFONASA(nominal, tieneHijos, tieneConyuge) {
+  var sobreUmbral = nominal > UMBRAL_FONASA;
+  // SNIS básico: siempre 3% (ambas franjas)
+  var snisPct = 0.03;
+  // SNISAD: solo si está sobre el umbral
+  // - sin hijos → 1,5%
+  // - con hijos → 3%
+  var snisadPct = sobreUmbral ? (tieneHijos ? 0.03 : 0.015) : 0;
+  // SNISCONY: 2% si cónyuge a cargo (en ambas franjas)
+  var snisconyPct = tieneConyuge ? 0.02 : 0;
+  return { snisPct: snisPct, snisadPct: snisadPct, snisconyPct: snisconyPct, sobreUmbral: sobreUmbral };
+}
+
 function calcLiqEmp() {
-  var get  = function(id){ return parseFloat((document.getElementById(id)||{}).value)||0; };
-  var sueldo  = get('liq-sueldo-emp');
-  var pres    = get('liq-pres-emp');
-  var hexHoras  = get('liq-hex-emp');   // horas extra diurnas
-  var hnoctHoras= get('liq-hnoct-emp'); // horas nocturnas
-  var adel    = get('liq-adel-emp');
-  var faltas  = get('liq-faltas-emp');
+  var get   = function(id){ return parseFloat((document.getElementById(id)||{}).value)||0; };
+  var getCk = function(id){ var el = document.getElementById(id); return el && el.classList.contains('on'); };
+
+  var sueldo     = get('liq-sueldo-emp');
+  var pres       = get('liq-pres-emp');
+  var hexHoras   = get('liq-hex-emp');
+  var hnoctHoras = get('liq-hnoct-emp');
+  var adel       = get('liq-adel-emp');
+  var faltas     = get('liq-faltas-emp');
+
+  // Datos personales de la empleada (tomados de la ficha)
+  var emp = DB.empleadas.find(function(x){ return String(x.id) === String(empleadaActual); }) || {};
+  var tieneHijos    = emp.hijos === 'Sí';
+  var tieneConyuge  = emp.conyuge === 'Sí';
+  var antigPctAnio  = parseFloat(emp.antig_pct) || 0;
+
+  // Toggle "considerar prima por antigüedad" en la pantalla de liquidación
+  var aplicarAntig = getCk('liq-tog-antig-emp');
+
+  // Antigüedad en años desde fecha de ingreso
+  var anios = 0;
+  if (emp.ingreso) {
+    var ing = new Date(String(emp.ingreso).split('T')[0]);
+    if (!isNaN(ing.getTime())) anios = Math.floor((new Date() - ing) / (1000*60*60*24*365.25));
+  }
+  var primaAntig = aplicarAntig ? sueldo * (antigPctAnio/100) * anios : 0;
 
   // Jornal hora: sueldo / 200 (25 días × 8 horas)
   var jornalHora = sueldo / 200;
-
-  // Horas extra diurnas: recargo 100% = jornal × 2
-  var hex   = hexHoras * jornalHora * 2;
-
-  // Horas nocturnas: recargo 20% = jornal × 1.20
-  // (solo el recargo, no el jornal base que ya está incluido en el sueldo mensual)
+  // Horas extra diurnas: recargo 100% → jornal × 2
+  var hex = hexHoras * jornalHora * 2;
+  // Horas nocturnas: recargo 20% sobre jornal base
   var hnoct = hnoctHoras * jornalHora * 0.20;
-
   // Descuento por faltas: sueldo / 30 × días
   var descFaltas = faltas * (sueldo / 30);
 
-  var nominal = sueldo + pres + hex + hnoct - descFaltas;
-  var bps     = nominal * 0.15;
-  var frl     = nominal * 0.001;
-  var snis    = nominal * 0.03; // simplificado - sin cargas de familia extra
-  var liquido = nominal - bps - frl - snis - adel;
+  var nominal = sueldo + pres + hex + hnoct + primaAntig - descFaltas;
+
+  // Aportes personales según normativa BPS 2026
+  var bps = nominal * 0.15;
+  var frl = nominal * 0.001;
+  var t = tasasFONASA(nominal, tieneHijos, tieneConyuge);
+  var snis    = nominal * t.snisPct;
+  var snisad  = nominal * t.snisadPct;
+  var sniscony= nominal * t.snisconyPct;
+
+  var totalDesc = bps + frl + snis + snisad + sniscony;
+  var liquido = nominal - totalDesc - adel;
+
+  // Guardar resultado en variable global para PDF
+  window._liqEmpData = {
+    sueldo: sueldo, pres: pres, hex: hex, hnoct: hnoct, hexHoras: hexHoras, hnoctHoras: hnoctHoras,
+    primaAntig: primaAntig, anios: anios, antigPctAnio: antigPctAnio, aplicarAntig: aplicarAntig,
+    descFaltas: descFaltas, faltas: faltas, nominal: nominal,
+    bps: bps, frl: frl, snis: snis, snisad: snisad, sniscony: sniscony,
+    snisPct: t.snisPct, snisadPct: t.snisadPct, snisconyPct: t.snisconyPct,
+    sobreUmbral: t.sobreUmbral, tieneHijos: tieneHijos, tieneConyuge: tieneConyuge,
+    totalDesc: totalDesc, adel: adel, liquido: liquido,
+    bpc: BPC_2026, umbralFonasa: UMBRAL_FONASA
+  };
 
   var liqEl = document.getElementById('liq-emp-liquido');
   var detEl = document.getElementById('liq-emp-detalle');
   if (liqEl) liqEl.textContent = '$' + Math.round(liquido).toLocaleString('es-UY');
   if (detEl) {
+    var fonasaPct = ((t.snisPct + t.snisadPct + t.snisconyPct) * 100).toFixed(1).replace('.0','');
     var items = [
       'Nominal $' + Math.round(nominal).toLocaleString('es-UY'),
-      'BPS $' + Math.round(bps).toLocaleString('es-UY'),
-      'FRL $' + Math.round(frl).toLocaleString('es-UY'),
-      'SNIS $' + Math.round(snis).toLocaleString('es-UY')
+      'BPS 15% $' + Math.round(bps).toLocaleString('es-UY'),
+      'FRL 0,1% $' + Math.round(frl).toLocaleString('es-UY'),
+      'FONASA ' + fonasaPct + '% $' + Math.round(snis+snisad+sniscony).toLocaleString('es-UY')
     ];
-    if (hexHoras > 0) items.push('Hs extra ' + hexHoras + 'h = $' + Math.round(hex).toLocaleString('es-UY'));
-    if (hnoctHoras > 0) items.push('Hs noct. ' + hnoctHoras + 'h = +$' + Math.round(hnoct).toLocaleString('es-UY'));
-    if (adel > 0) items.push('Adelanto -$' + Math.round(adel).toLocaleString('es-UY'));
-    if (faltas > 0) items.push('Faltas ' + faltas + 'd = -$' + Math.round(descFaltas).toLocaleString('es-UY'));
+    if (hexHoras > 0)   items.push('H. extra ' + hexHoras + 'h = +$' + Math.round(hex).toLocaleString('es-UY'));
+    if (hnoctHoras > 0) items.push('H. noct. ' + hnoctHoras + 'h = +$' + Math.round(hnoct).toLocaleString('es-UY'));
+    if (primaAntig > 0) items.push('Antig. ' + anios + 'a × ' + antigPctAnio + '% = +$' + Math.round(primaAntig).toLocaleString('es-UY'));
+    if (faltas > 0)     items.push('Faltas ' + faltas + 'd = -$' + Math.round(descFaltas).toLocaleString('es-UY'));
+    if (adel > 0)       items.push('Adelanto -$' + Math.round(adel).toLocaleString('es-UY'));
     detEl.textContent = items.join(' · ');
+  }
+
+  // Render del desglose visible (debajo del card del líquido)
+  var desgEl = document.getElementById('liq-emp-desglose');
+  if (desgEl) {
+    var fila = function(lbl, val, neg){
+      var color = neg ? '#c0392b' : 'var(--verde)';
+      var signo = neg ? '-' : '';
+      return '<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--crema-oscura);font-size:12px">' +
+        '<span style="color:var(--texto-suave)">' + lbl + '</span>' +
+        '<span style="color:' + color + ';font-variant-numeric:tabular-nums">' + signo + '$' + Math.round(Math.abs(val)).toLocaleString('es-UY') + '</span>' +
+        '</div>';
+    };
+    var rows = '';
+    rows += fila('Sueldo laudo', sueldo, false);
+    rows += fila('Presentismo', pres, false);
+    if (hex > 0)        rows += fila('H. extra diurnas (' + hexHoras + 'h)', hex, false);
+    if (hnoct > 0)      rows += fila('H. nocturnas (' + hnoctHoras + 'h)', hnoct, false);
+    if (primaAntig > 0) rows += fila('Prima antigüedad (' + anios + 'a × ' + antigPctAnio + '%)', primaAntig, false);
+    if (descFaltas > 0) rows += fila('(-) Faltas (' + faltas + ' días)', descFaltas, true);
+    rows += '<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:2px solid var(--verde);font-weight:600;font-size:13px">' +
+            '<span style="color:var(--verde)">NOMINAL</span>' +
+            '<span style="color:var(--verde);font-variant-numeric:tabular-nums">$' + Math.round(nominal).toLocaleString('es-UY') + '</span></div>';
+    rows += fila('BPS Jubilatorio (15%)', bps, true);
+    rows += fila('FRL (0,1%)', frl, true);
+    rows += fila('SNIS (3%)', snis, true);
+    if (snisad > 0)   rows += fila('SNISAD (' + (t.snisadPct*100).toString().replace('.','.') + '%)', snisad, true);
+    if (sniscony > 0) rows += fila('SNIS Cónyuge (2%)', sniscony, true);
+    if (adel > 0)     rows += fila('Adelanto descontado', adel, true);
+    desgEl.innerHTML = rows;
   }
 }
 
@@ -6938,41 +7101,213 @@ function calcEgresoEmp() {
 
 function generarReciboEmpPDF() {
   var e = DB.empleadas.find(function(x){ return String(x.id) === String(empleadaActual); }) || {};
-  var get = function(id){ return (document.getElementById(id)||{}).value || ''; };
-  var getN = function(id){ return parseFloat(get(id)) || 0; };
-  var sueldo = getN('liq-sueldo-emp'), pres = getN('liq-pres-emp'), noct = getN('liq-noct-emp'), adel = getN('liq-adel-emp');
-  var nominal = sueldo + pres + (noct*304.16);
-  var bps = nominal*0.15, frl = nominal*0.001, snis = nominal*0.03;
-  var liquido = nominal - bps - frl - snis - adel;
-  var mes = get('liq-mes-emp') || new Date().toISOString().slice(0,7);
+  if (!e.id) { toast('Sin empleada seleccionada', 'error'); return; }
+
+  // Asegurar que el cálculo esté actualizado
+  try { calcLiqEmp(); } catch(ex) {}
+  var d = window._liqEmpData;
+  if (!d) { toast('Recalculá la liquidación', 'error'); return; }
+
+  var mes = (document.getElementById('liq-mes-emp') || {}).value || new Date().toISOString().slice(0,7);
+  var partes = mes.split('-');
+  var mesNombre = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'][parseInt(partes[1],10)-1] || '';
+  var mesLabel = mesNombre + ' ' + partes[0];
   var hoy = new Date().toLocaleDateString('es-UY');
 
-  var html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>' +
-    'body{font-family:Arial,sans-serif;font-size:11px;padding:20px;max-width:500px;margin:0 auto}' +
-    '@media print{@page{margin:10mm;size:A5}}' +
-    '.titulo{font-size:14px;font-weight:bold;color:#1a3d35;margin-bottom:4px}' +
-    '.row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #ede5d4}' +
-    '.total{font-size:16px;font-weight:bold;color:#1a3d35;padding:10px 0}' +
-    '</style></head><body>' +
-    '<div class="titulo">CARRASCO ELDERLY CARE SAS</div>' +
-    '<div style="font-size:10px;color:#555;margin-bottom:12px">Rafael Barradas 1527 · Montevideo · ' + hoy + '</div>' +
-    '<div style="font-weight:bold;margin-bottom:2px">' + (e.nombre||'—') + '</div>' +
-    '<div style="font-size:10px;color:#555;margin-bottom:12px">Grupo 15/200 · Mes: ' + mes + '</div>' +
-    '<div class="row"><span>Sueldo laudo</span><span>$' + Math.round(sueldo).toLocaleString('es-UY') + '</span></div>' +
-    '<div class="row"><span>Presentismo</span><span>$' + Math.round(pres).toLocaleString('es-UY') + '</span></div>' +
-    (noct>0?'<div class="row"><span>Horas nocturnas</span><span>$'+Math.round(noct*304.16).toLocaleString('es-UY')+'</span></div>':'') +
-    '<div class="row"><span>(-) BPS empleado (15%)</span><span style="color:#c62828">-$' + Math.round(bps).toLocaleString('es-UY') + '</span></div>' +
-    '<div class="row"><span>(-) FRL (0.1%)</span><span style="color:#c62828">-$' + Math.round(frl).toLocaleString('es-UY') + '</span></div>' +
-    '<div class="row"><span>(-) SNIS (3%)</span><span style="color:#c62828">-$' + Math.round(snis).toLocaleString('es-UY') + '</span></div>' +
-    (adel>0?'<div class="row"><span>(-) Adelanto</span><span style="color:#c62828">-$'+Math.round(adel).toLocaleString('es-UY')+'</span></div>':'') +
-    '<div class="row total"><span>LÍQUIDO A COBRAR</span><span>$' + Math.round(liquido).toLocaleString('es-UY') + '</span></div>' +
-    '<div style="margin-top:40px;display:flex;justify-content:space-between;font-size:10px">' +
-    '<div style="text-align:center;border-top:1px solid #555;padding-top:4px;width:40%">Firma empleada</div>' +
-    '<div style="text-align:center;border-top:1px solid #555;padding-top:4px;width:40%">Firma empleador</div></div>' +
-    '</body></html>';
+  function fmt(n)  { return Math.round(n).toLocaleString('es-UY'); }
+  function fmt4(n) { return n.toLocaleString('es-UY',{minimumFractionDigits:4, maximumFractionDigits:4}); }
+  function fmt2(n) { return n.toLocaleString('es-UY',{minimumFractionDigits:2, maximumFractionDigits:2}); }
 
-    abrirPDF(html, 'Recibo liquidación');
-  toast('✅ Recibo generado', 'ok');
+  // Importe en letras (para "Son Pesos Uruguayos...")
+  function numLetras(n) {
+    n = Math.round(n);
+    var u = ['','uno','dos','tres','cuatro','cinco','seis','siete','ocho','nueve','diez','once','doce','trece','catorce','quince','dieciséis','diecisiete','dieciocho','diecinueve','veinte','veintiuno','veintidós','veintitrés','veinticuatro','veinticinco','veintiséis','veintisiete','veintiocho','veintinueve'];
+    var d = ['','','','treinta','cuarenta','cincuenta','sesenta','setenta','ochenta','noventa'];
+    var c = ['','ciento','doscientos','trescientos','cuatrocientos','quinientos','seiscientos','setecientos','ochocientos','novecientos'];
+    function hasta999(x){
+      if (x === 0) return '';
+      if (x === 100) return 'cien';
+      var s = '';
+      var ce = Math.floor(x/100); x %= 100;
+      if (ce > 0) s += c[ce] + ' ';
+      if (x < 30) s += u[x];
+      else { s += d[Math.floor(x/10)]; if (x%10) s += ' y ' + u[x%10]; }
+      return s.trim();
+    }
+    if (n === 0) return 'cero';
+    var miles = Math.floor(n/1000), resto = n % 1000;
+    var s = '';
+    if (miles > 0) {
+      if (miles === 1) s = 'mil';
+      else s = hasta999(miles) + ' mil';
+      if (resto > 0) s += ' ' + hasta999(resto);
+    } else s = hasta999(resto);
+    return s;
+  }
+
+  // Logo SVG inline: trébol dorado del resi sobre verde
+  var logoSVG =
+    '<svg width="56" height="56" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">' +
+    '<circle cx="50" cy="50" r="48" fill="#1a3d35" stroke="#c9a84c" stroke-width="2"/>' +
+    '<text x="50" y="44" text-anchor="middle" font-family="Cormorant Garamond,serif" font-size="14" font-style="italic" fill="#e8d08a">Elderly</text>' +
+    '<text x="50" y="60" text-anchor="middle" font-family="Cormorant Garamond,serif" font-size="14" font-style="italic" fill="#e8d08a">Care</text>' +
+    '<line x1="22" y1="68" x2="78" y2="68" stroke="#c9a84c" stroke-width="0.7"/>' +
+    '<text x="50" y="78" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="6" letter-spacing="1.5" fill="#c9a84c">CARRASCO</text>' +
+    '</svg>';
+
+  // ─── Filas de NOMINAL ───
+  var filaNom = function(cant, lbl, importeUni, total){
+    return '<tr>' +
+      '<td style="padding:3px 6px;text-align:right;width:70px">' + fmt4(cant) + '</td>' +
+      '<td style="padding:3px 8px">' + lbl + '</td>' +
+      '<td style="padding:3px 6px;text-align:right;width:90px">' + fmt4(importeUni) + '</td>' +
+      '<td style="padding:3px 6px;text-align:right;width:90px;font-weight:600">' + fmt(total) + '</td>' +
+    '</tr>';
+  };
+  var nomRows = '';
+  nomRows += filaNom(1.0000, 'SUELDO', d.sueldo, d.sueldo);
+  nomRows += filaNom(1.0000, 'PRESENTISMO', d.pres, d.pres);
+  if (d.hexHoras > 0)   nomRows += filaNom(d.hexHoras, 'H. EXTRA DIURNAS', d.hex/d.hexHoras, d.hex);
+  if (d.hnoctHoras > 0) nomRows += filaNom(d.hnoctHoras, 'H. NOCTURNAS', d.hnoct/d.hnoctHoras, d.hnoct);
+  if (d.primaAntig > 0) nomRows += filaNom(d.anios, 'ANTIGÜEDAD ('+d.antigPctAnio+'%/año)', d.primaAntig/Math.max(d.anios,1), d.primaAntig);
+  if (d.descFaltas > 0) nomRows += '<tr><td style="padding:3px 6px;text-align:right">'+d.faltas+'</td><td style="padding:3px 8px">DTO. FALTAS</td><td style="padding:3px 6px;text-align:right">'+fmt(d.descFaltas/Math.max(d.faltas,1))+'</td><td style="padding:3px 6px;text-align:right;color:#c0392b;font-weight:600">-'+fmt(d.descFaltas)+'</td></tr>';
+
+  // ─── Filas de DESCUENTOS ───
+  var filaDesc = function(pct, lbl, baseImp, total){
+    return '<tr>' +
+      '<td style="padding:3px 6px;text-align:right;width:70px">' + pct + '%</td>' +
+      '<td style="padding:3px 8px">' + lbl + '</td>' +
+      '<td style="padding:3px 6px;text-align:right;width:90px">' + fmt4(baseImp) + '</td>' +
+      '<td style="padding:3px 6px;text-align:right;width:90px;font-weight:600">' + fmt(total) + '</td>' +
+    '</tr>';
+  };
+  var descRows = '';
+  descRows += filaDesc('15', 'BPS', d.nominal, d.bps);
+  descRows += filaDesc('0.1', 'FRL', d.nominal, d.frl);
+  descRows += filaDesc('3', 'SNIS', d.nominal, d.snis);
+  if (d.snisad > 0)   descRows += filaDesc((d.snisadPct*100).toString().replace(/\.0$/,''), 'SNISAD', d.nominal, d.snisad);
+  if (d.sniscony > 0) descRows += filaDesc('2', 'SNIS CÓNYUGE', d.nominal, d.sniscony);
+  if (d.adel > 0)     descRows += '<tr><td colspan="2" style="padding:3px 6px;padding-left:8px">ADELANTO</td><td></td><td style="padding:3px 6px;text-align:right;font-weight:600">'+fmt(d.adel)+'</td></tr>';
+
+  var totalDeducciones = d.totalDesc + d.adel;
+  var totalImponible = d.nominal; // imponible IRPF mensual del recibo
+  var liqRedondeo = Math.round(d.liquido);
+
+  var html =
+'<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>Recibo · '+(e.nombre||'')+' · '+mesLabel+'</title>'+
+'<style>'+
+'@page{margin:12mm;size:A4}'+
+'*{box-sizing:border-box}'+
+'body{font-family:Arial,Helvetica,sans-serif;font-size:10px;color:#1a1a1a;margin:0;padding:0;line-height:1.4}'+
+'.recibo{border:2px solid #1a3d35;border-radius:8px;padding:14px;max-width:780px;margin:0 auto;background:white}'+
+'.cabezal{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #1a3d35;padding-bottom:10px;margin-bottom:10px;gap:14px}'+
+'.empresa{display:flex;gap:12px;align-items:flex-start;flex:1}'+
+'.empresa-info{font-size:9.5px;color:#444;line-height:1.5}'+
+'.empresa-info b{color:#1a3d35;font-size:13px;letter-spacing:.3px}'+
+'.cab-derecha{text-align:right;font-size:9.5px;color:#444;min-width:240px}'+
+'.cab-derecha b{color:#1a3d35;display:inline-block;min-width:60px}'+
+'.titulo-recibo{font-size:13px;color:#1a3d35;font-weight:bold;letter-spacing:1px;margin-bottom:4px;text-transform:uppercase}'+
+'.datos-emp{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px 14px;font-size:9.5px;border-bottom:1px solid #ccc;padding:8px 0;margin-bottom:0}'+
+'.datos-emp .lbl{color:#666;margin-right:4px}'+
+'.datos-emp .val{color:#1a1a1a;font-weight:600}'+
+'.bloque-tabla{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-top:4px}'+
+'.col{border:1px solid #ccc}'+
+'.col-head{background:#1a3d35;color:#e8d08a;text-align:center;padding:5px;font-size:10px;letter-spacing:1.5px;font-weight:600}'+
+'table.detalle{width:100%;border-collapse:collapse;font-size:9.5px;font-variant-numeric:tabular-nums}'+
+'table.detalle th{background:#f5f0e8;padding:4px 6px;text-align:right;font-size:8.5px;color:#666;border-bottom:1px solid #ccc;font-weight:600}'+
+'table.detalle th:nth-child(2){text-align:left}'+
+'table.detalle td{vertical-align:top}'+
+'.totales{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid #1a3d35;border-top:none}'+
+'.totales div{padding:5px 10px;font-size:10px;display:flex;justify-content:space-between;border-top:1px solid #ddd}'+
+'.totales div span:first-child{color:#444;font-weight:600}'+
+'.totales div span:last-child{font-variant-numeric:tabular-nums}'+
+'.totales .izq{border-right:1px solid #1a3d35}'+
+'.liquido{background:#1a3d35;color:#e8d08a;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;border-radius:0 0 6px 6px;margin-top:0}'+
+'.liquido span:first-child{font-size:13px;letter-spacing:1px;font-weight:bold}'+
+'.liquido span:last-child{font-size:18px;font-weight:bold;font-variant-numeric:tabular-nums}'+
+'.notas{font-size:8.5px;color:#555;margin-top:10px;line-height:1.5;padding:6px 0;border-top:1px dashed #ccc}'+
+'.firma{margin-top:25px;text-align:right;padding-top:6px;border-top:1px solid #888;display:inline-block;float:right;width:240px;font-size:9.5px;color:#444}'+
+'@media print{body{padding:0}.recibo{border:2px solid #1a3d35;box-shadow:none}}'+
+'</style></head><body>'+
+
+'<div class="recibo">'+
+
+  '<div class="cabezal">'+
+    '<div class="empresa">'+
+      '<div>'+logoSVG+'</div>'+
+      '<div class="empresa-info">'+
+        '<b>CARRASCO ELDERLY CARE SAS</b><br>'+
+        'Rafael Barradas 1527 · Montevideo<br>'+
+        'RUC: 220257400017<br>'+
+      '</div>'+
+    '</div>'+
+    '<div class="cab-derecha">'+
+      '<div class="titulo-recibo">Recibo de sueldo</div>'+
+      '<div><b>BPS:</b> 8831922</div>'+
+      '<div><b>BSE:</b> 5470137</div>'+
+      '<div><b>Grupo:</b> 15 &nbsp; <b>Subgrupo:</b> 200</div>'+
+      '<div style="margin-top:4px;color:#1a3d35;font-weight:600">'+mesLabel+'</div>'+
+    '</div>'+
+  '</div>'+
+
+  '<div class="datos-emp">'+
+    '<div><span class="lbl">Empleada:</span><span class="val">'+(e.nombre||'')+'</span></div>'+
+    '<div><span class="lbl">CI:</span><span class="val">'+(e.ci||'—')+'</span></div>'+
+    '<div><span class="lbl">Liq.:</span><span class="val">Sueldo '+mesLabel+'</span></div>'+
+    '<div><span class="lbl">Categoría:</span><span class="val">'+(e.categoria||'Cuidador')+'</span></div>'+
+    '<div><span class="lbl">Turno:</span><span class="val">'+(e.turno||'—')+'</span></div>'+
+    '<div><span class="lbl">Mes liquidación:</span><span class="val">'+(parseInt(partes[1],10))+'/'+partes[0]+'</span></div>'+
+    '<div><span class="lbl">Ingreso:</span><span class="val">'+(e.ingreso ? new Date(e.ingreso).toLocaleDateString('es-UY') : '—')+'</span></div>'+
+    '<div><span class="lbl">Banco:</span><span class="val">'+(e.banco||'—')+'</span></div>'+
+    '<div><span class="lbl">Nº Cuenta:</span><span class="val">'+(e.cuenta||'—')+'</span></div>'+
+  '</div>'+
+
+  '<div class="bloque-tabla">'+
+    '<div class="col">'+
+      '<div class="col-head">NOMINAL</div>'+
+      '<table class="detalle"><thead><tr><th>Cant.</th><th>Concepto</th><th>Importe</th><th>Total</th></tr></thead>'+
+      '<tbody>'+nomRows+'</tbody></table>'+
+    '</div>'+
+    '<div class="col">'+
+      '<div class="col-head">DESCUENTOS</div>'+
+      '<table class="detalle"><thead><tr><th>%</th><th>Concepto</th><th>Base</th><th>Total</th></tr></thead>'+
+      '<tbody>'+descRows+'</tbody></table>'+
+    '</div>'+
+  '</div>'+
+
+  '<div class="totales">'+
+    '<div class="izq"><span>Total Nominal</span><span>$ '+fmt(d.nominal)+'</span></div>'+
+    '<div><span>Total Descuentos</span><span>$ '+fmt(d.totalDesc)+'</span></div>'+
+    '<div class="izq"><span>Total Imponible IRPF (mes)</span><span>$ '+fmt(totalImponible)+'</span></div>'+
+    '<div><span>Total Neto</span><span>$ '+fmt(d.nominal - d.totalDesc)+'</span></div>'+
+    '<div class="izq"><span>Total Deducciones</span><span>$ '+fmt(totalDeducciones)+'</span></div>'+
+    '<div><span>Redondeo</span><span>$ 0,00</span></div>'+
+  '</div>'+
+
+  '<div class="liquido">'+
+    '<span>LÍQUIDO A COBRAR</span>'+
+    '<span>$ '+fmt(liqRedondeo)+'</span>'+
+  '</div>'+
+
+  '<div class="notas">'+
+    'La empresa declara haber efectuado los aportes de seguridad social correspondientes a los haberes del mes anterior según decreto 278/017.<br>'+
+    'Según Res. 192/017 MTSS, el N° de transacción se encuentra consignado directamente en el documento emitido por la institución de intermediación financiera.<br>'+
+    '<b>Son Pesos Uruguayos '+numLetras(liqRedondeo)+'.</b><br>'+
+    'Recibí el importe y copia de esta liquidación no teniendo nada que reclamar por ningún concepto.<br>'+
+    '<span style="color:#888;font-size:8px">Aportes según normativa BPS vigente · BPC '+d.bpc.toLocaleString('es-UY')+' · Umbral 2,5 BPC: $'+d.umbralFonasa.toLocaleString('es-UY')+
+    ' · '+(d.tieneHijos?'Con hijos':'Sin hijos')+' · '+(d.tieneConyuge?'Con cónyuge':'Sin cónyuge')+'</span>'+
+  '</div>'+
+
+  '<div style="clear:both"></div>'+
+  '<div class="firma">Firma del trabajador</div>'+
+  '<div style="clear:both"></div>'+
+
+'</div>'+
+
+'<script>window.addEventListener("load",function(){setTimeout(function(){try{window.print();}catch(e){}}, 400);});<\/script>'+
+'</body></html>';
+
+  abrirPDF(html, 'Recibo — ' + (e.nombre||'').split(' ').slice(0,2).join(' ') + ' — ' + mesLabel);
 }
 
 function generarEgresoEmpPDF() {
@@ -7207,7 +7542,6 @@ function generarReporteMSP() {
   var r = DB.residentes.find(function(x){ return String(x.id)===String(residenteActual); }) || {};
   var clinico = {};
   try { clinico = JSON.parse(r.clinico_json || '{}'); } catch(e) {}
-  var hoy = new Date().toLocaleDateString('es-UY');
   var resHist = (DB.historial||[]).filter(function(h){ return String(h.residente_id)===String(residenteActual); });
   var barthelRecs = resHist.filter(function(h){ return h.tipo==='barthel'; })
     .sort(function(a,b){ return b.created_at > a.created_at ? 1:-1; });
@@ -7215,94 +7549,130 @@ function generarReporteMSP() {
   var caidas  = resHist.filter(function(h){ return h.tipo==='caida'; });
   var meds    = (DB.medicacion||[]).filter(function(m){ return String(m.residente_id)===String(residenteActual) && m.activo==='Sí'; });
   var barthelActual = barthelRecs.length > 0 ? (parseInt(barthelRecs[0].vit_pa)||0) : null;
-  var barthelCatLabel = barthelActual !== null ? barthelActual+' pts — '+categoriaBarthel(barthelActual).cat : 'Sin registros';
+  var barthelCatLabel = barthelActual !== null
+    ? barthelActual+' pts — '+(typeof categoriaBarthel==='function' ? categoriaBarthel(barthelActual).cat : '')
+    : 'Sin registros';
 
-  function row(lbl, val) {
-    if (!val) return '';
-    return '<tr><td style="color:#666;width:38%;padding:4px 8px;border-bottom:1px solid #f0ebe0">'+lbl+'</td>' +
-           '<td style="padding:4px 8px;border-bottom:1px solid #f0ebe0;font-weight:500">'+val+'</td></tr>';
+  function kvRow(lbl, val) {
+    if (!val || val === '—') return '';
+    return '<tr><td>'+lbl+'</td><td>'+val+'</td></tr>';
   }
-  function sec(titulo, contenido) {
-    return '<div style="margin-bottom:12px;border:1px solid #ddd;border-radius:6px;overflow:hidden">' +
-      '<div style="background:#1a3d35;color:white;padding:5px 10px;font-size:11px;font-weight:700;letter-spacing:.5px">'+titulo+'</div>' +
-      '<div style="padding:0">'+contenido+'</div></div>';
+  function seccion(titulo, cuerpo) {
+    return '<div class="seccion"><div class="sec-head">'+titulo+'</div>'+
+      '<div class="sec-body" style="padding:0">'+cuerpo+'</div></div>';
   }
 
-  var html = '<!DOCTYPE html><html><head><meta charset="UTF-8">' +
-    '<style>body{font-family:Arial,sans-serif;font-size:11px;padding:14px;color:#222;max-width:720px;margin:0 auto}' +
-    '@media print{@page{margin:10mm;size:A4}}' +
-    'table{width:100%;border-collapse:collapse}' +
-    '.header{border-bottom:3px solid #1a3d35;margin-bottom:12px;padding-bottom:8px;display:flex;justify-content:space-between}' +
-    '.paciente{background:#f0f7f4;border-left:4px solid #1a3d35;padding:8px 12px;margin-bottom:12px;border-radius:0 4px 4px 0}' +
-    '</style></head><body>' +
-    '<div class="header"><div>' +
-    '<div style="font-size:15px;font-weight:bold;color:#1a3d35">REPORTE ESTADO CLÍNICO — MSP</div>' +
-    '<div style="font-size:10px;color:#666">Carrasco Elderly Care SAS · Rafael Barradas 1527 · Montevideo</div>' +
-    '</div><div style="text-align:right;font-size:10px;color:#666">'+hoy+'<br>'+
-    'Usuario: '+((typeof currentUser!=='undefined'&&currentUser.nombre)||'—')+'</div></div>' +
-    '<div class="paciente"><strong style="font-size:13px">'+r.nombre+'</strong> ' +
-    '<span style="color:#666;font-size:10px">CI: '+(r.ci||'—')+' · '+(r.edad?r.edad+' años · ':'')+'Hab. '+(r.hab||'—')+' · '+(r.mutualista||'—')+'</span><br>' +
-    '<span style="font-size:10px;color:#666">Médico: '+(r.medico||'—')+'</span></div>' +
-    (r.alergias && r.alergias!=='Sin alergias documentadas' ?
-      '<div style="background:#ffebee;border-left:4px solid #c62828;padding:6px 10px;margin-bottom:10px;font-weight:bold;font-size:11px">⚠️ '+r.alergias.replace(/\|/g,' · ')+'</div>' : '') +
+  // Diagnósticos como bullets
+  var diagsHTML = '<div class="lista-bullets" style="padding:9px 12px">'+
+    ((r.diags||'—').split('|').filter(Boolean).map(function(d){ return '• '+d.trim(); }).join('<br>') || '—')+
+    '</div>';
 
-    sec('DIAGNÓSTICOS',
-      '<div style="padding:8px 10px;font-size:11px;line-height:1.8">' +
-      (r.diags||'—').split('|').filter(Boolean).map(function(d){ return '• '+d.trim(); }).join('<br>') +
-      '</div>') +
+  // Barthel
+  var barthelHTML = '<table class="kv">'+
+    kvRow('Último registro', barthelCatLabel) +
+    (barthelRecs.length>0
+      ? kvRow('Fecha', new Date(barthelRecs[0].created_at).toLocaleDateString('es-UY')) +
+        kvRow('Evaluado por', barthelRecs[0].usuario || '—')
+      : '') +
+    (barthelRecs.length>1
+      ? kvRow('Evolución previa',
+          barthelRecs.slice(1,4).map(function(b){
+            return (parseInt(b.vit_pa)||0)+' pts ('+new Date(b.created_at).toLocaleDateString('es-UY')+')';
+          }).join(' → '))
+      : '') +
+    '</table>';
 
-    sec('ÍNDICE DE BARTHEL',
-      '<table>'+row('Último registro',barthelCatLabel)+
-      (barthelRecs.length>0?row('Fecha',new Date(barthelRecs[0].created_at).toLocaleDateString('es-UY'))+''+row('Evaluado por',barthelRecs[0].usuario):'')+
-      (barthelRecs.length>1?row('Evolución previa',barthelRecs.slice(1,4).map(function(b){ return (parseInt(b.vit_pa)||0)+' pts ('+new Date(b.created_at).toLocaleDateString('es-UY')+')'; }).join(' → ')):'')+
-      '</table>') +
+  // Movilidad
+  var movHTML = '<table class="kv">'+
+    kvRow('Movilidad', r.cuid_movilidad) +
+    kvRow('Auxiliares de marcha', clinico.auxiliar) +
+    kvRow('Continencia', r.cuid_continencia) +
+    kvRow('Pañal', r.cuid_panal) +
+    '</table>';
 
-    sec('MOVILIDAD Y AUXILIARES',
-      '<table>'+row('Movilidad',r.cuid_movilidad)+row('Auxiliares de marcha',clinico.auxiliar||'No registrado')+
-      row('Continencia',r.cuid_continencia)+row('Pañal',r.cuid_panal)+'</table>') +
+  // Contenciones
+  var contHTML = '<table class="kv">'+
+    kvRow('Físicas', clinico.contencion_fisica || 'No') +
+    kvRow('Farmacológicas', clinico.contencion_farm || 'No') +
+    kvRow('Observaciones', clinico.cont_obs) +
+    '</table>';
 
-    sec('CONTENCIONES',
-      '<table>'+row('Físicas',clinico.contencion_fisica||'No')+row('Farmacológicas',clinico.contencion_farm||'No')+
-      row('Observaciones',clinico.cont_obs)+'</table>') +
+  // Salidas
+  var salidasHTML = '<table class="kv">'+
+    kvRow('Permitidas', clinico.salida || 'No registrado') +
+    kvRow('Justificación', clinico.salidas_just) +
+    '</table>';
 
-    sec('SALIDAS DEL CENTRO',
-      '<table>'+row('Permitidas',clinico.salida||'No registrado')+row('Justificación',clinico.salidas_just)+'</table>') +
+  // LPP
+  var lppHTML = '<table class="kv">'+
+    kvRow('Estadío', clinico.lpp || 'Sin lesiones activas') +
+    kvRow('Descripción', clinico.lpp_desc) +
+    '</table>';
 
-    sec('LESIONES POR PRESIÓN',
-      '<table>'+row('Estadío',clinico.lpp||'Sin lesiones activas')+row('Descripción',clinico.lpp_desc)+'</table>') +
+  // Vacunas
+  var vacHTML = vacunas.length > 0
+    ? '<table class="tabla"><thead><tr><th style="width:25%">Fecha</th><th>Vacuna</th><th style="width:18%">Aplicó</th></tr></thead><tbody>'+
+      vacunas.map(function(v){
+        return '<tr><td>'+new Date(v.created_at).toLocaleDateString('es-UY')+'</td>'+
+          '<td>'+(v.texto||'—')+'</td>'+
+          '<td>'+(v.usuario||'—')+'</td></tr>';
+      }).join('')+'</tbody></table>'
+    : '<div style="padding:9px 12px;color:#888;text-align:center">Sin vacunas registradas</div>';
 
-    sec('VACUNAS EN EL CENTRO ('+vacunas.length+')',
-      vacunas.length>0 ?
-      '<table>'+vacunas.map(function(v){ return row(new Date(v.created_at).toLocaleDateString('es-UY'),v.texto); }).join('')+'</table>' :
-      '<div style="padding:8px 10px;color:#999">Sin vacunas registradas</div>') +
+  // Caídas
+  var caidasHTML = caidas.length > 0
+    ? '<div style="padding:6px 11px">'+
+        caidas.map(function(ca){
+          return '<div style="padding:6px 0;border-bottom:1px solid #f0ebe0">'+
+            '<b style="color:#1a3d35">'+new Date(ca.created_at).toLocaleDateString('es-UY')+'</b> '+
+            '<span style="color:#666;font-size:9.5px">· '+(ca.usuario||'')+'</span><br>'+
+            '<span style="font-size:10.5px">'+(ca.texto||'—').replace(/\n/g,'<br>')+'</span>'+
+          '</div>';
+        }).join('')+
+      '</div>'
+    : '<div style="padding:9px 12px;color:#888;text-align:center">Sin caídas registradas</div>';
 
-    sec('REGISTRO DE CAÍDAS ('+caidas.length+')',
-      caidas.length>0 ?
-      '<div style="padding:6px 10px">'+caidas.map(function(ca){
-        return '<div style="padding:4px 0;border-bottom:1px solid #f0ebe0">' +
-          '<strong>'+new Date(ca.created_at).toLocaleDateString('es-UY')+'</strong> — '+ca.texto+'</div>';
-      }).join('')+'</div>' :
-      '<div style="padding:8px 10px;color:#999">Sin caídas registradas</div>') +
+  // Factores de riesgo
+  var frHTML = (clinico.fr_caida && clinico.fr_caida.length)
+    ? '<div style="padding:9px 12px;font-size:10.5px">'+
+        clinico.fr_caida.map(function(f){ return '<span style="background:#f5f0e8;padding:2px 8px;border-radius:10px;margin-right:4px;display:inline-block;margin-bottom:3px">'+f+'</span>'; }).join('')+
+      '</div>'
+    : '<div style="padding:9px 12px;color:#888;text-align:center">No registrados</div>';
 
-    sec('FACTORES DE RIESGO DE CAÍDAS',
-      '<div style="padding:8px 10px;font-size:11px">'+(clinico.fr_caida&&clinico.fr_caida.length ?
-        clinico.fr_caida.join(' · ') : 'No registrados')+'</div>') +
+  // Medicación
+  var medsHTML = meds.length > 0
+    ? '<table class="tabla"><thead><tr><th>Medicamento</th><th style="width:15%">Dosis</th><th style="width:18%">Horario</th><th>Notas</th></tr></thead><tbody>'+
+      meds.map(function(m){
+        return '<tr><td><b>'+m.medicamento+'</b></td><td>'+m.dosis+'</td><td>'+m.horario+'</td>'+
+          '<td style="color:'+(m.nota?'#c0392b':'#888')+'">'+(m.nota||'—')+'</td></tr>';
+      }).join('')+'</tbody></table>'
+    : '<div style="padding:9px 12px;color:#888;text-align:center">Sin medicación registrada</div>';
 
-    (meds.length>0 ?
-    sec('MEDICACIÓN ACTUAL',
-      '<table><tr style="background:#f0f7f4"><th style="padding:4px 8px;text-align:left">Medicamento</th><th>Dosis</th><th>Horario</th><th>Notas</th></tr>' +
-      meds.map(function(m){ return '<tr><td style="padding:4px 8px;border-bottom:1px solid #f0ebe0">'+m.medicamento+'</td>' +
-        '<td style="padding:4px 8px;border-bottom:1px solid #f0ebe0">'+m.dosis+'</td>' +
-        '<td style="padding:4px 8px;border-bottom:1px solid #f0ebe0">'+m.horario+'</td>' +
-        '<td style="padding:4px 8px;border-bottom:1px solid #f0ebe0;color:'+(m.nota?'#c62828':'#666')+'">'+( m.nota||'—')+'</td></tr>'; }).join('') +
-      '</table>') : '') +
+  var contenido =
+    pdfCabezal('Reporte MSP', 'Estado clínico — Adulto mayor institucionalizado') +
+    pdfAlergias(r) +
+    pdfBoxPaciente(r) +
 
-    '<div style="margin-top:40px;display:flex;justify-content:space-between;font-size:10px">' +
-    '<div style="text-align:center;border-top:1px solid #aaa;padding-top:4px;width:38%">Médico responsable / Firma</div>' +
-    '<div style="text-align:center;border-top:1px solid #aaa;padding-top:4px;width:38%">Sello</div>' +
-    '</div></body></html>';
+    seccion('Diagnósticos', diagsHTML) +
+    seccion('Índice de Barthel', barthelHTML) +
+    seccion('Movilidad y auxiliares', movHTML) +
+    seccion('Contenciones', contHTML) +
+    seccion('Salidas del centro', salidasHTML) +
+    seccion('Lesiones por presión', lppHTML) +
+    seccion('Factores de riesgo de caídas', frHTML) +
+    seccion('Vacunaciones en el centro ('+vacunas.length+')', vacHTML) +
+    seccion('Registro de caídas ('+caidas.length+')', caidasHTML) +
+    seccion('Medicación actual', medsHTML) +
 
-  abrirPDF(html, 'Reporte MSP — '+(r.nombre||'').split(' ').slice(0,2).join(' '));
+    '<div class="firmas">'+
+      '<div>Médico responsable / Firma</div>'+
+      '<div>Sello institucional</div>'+
+    '</div>'+
+
+    pdfFooter((typeof currentUser !== 'undefined' ? currentUser.nombre : ''));
+
+  abrirPDF(pdfArmar('Reporte MSP — '+(r.nombre||''), contenido),
+           'Reporte MSP — '+(r.nombre||'').split(' ').slice(0,2).join(' '));
 }
 
 // ═══════════════════════════════════════════════════════
@@ -7313,83 +7683,81 @@ function generarFichaInternacion() {
   var r = DB.residentes.find(function(x){ return String(x.id)===String(residenteActual); }) || {};
   var motivo   = (document.getElementById('fs-motivo')||{}).value || '(sin completar)';
   var fsDate   = (document.getElementById('fs-fecha')||{}).value  || '';
-  var fechaHora = fsDate ? new Date(fsDate).toLocaleString('es-UY') : new Date().toLocaleString('es-UY');
+  var fechaHora = fsDate ? new Date(fsDate).toLocaleString('es-UY', {day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit'}) : '—';
   var pa    = (document.getElementById('fs-pa')||{}).value    || '—';
   var pulso = (document.getElementById('fs-pulso')||{}).value || '—';
   var temp  = (document.getElementById('fs-temp')||{}).value  || '—';
   var sat   = (document.getElementById('fs-sat')||{}).value   || '—';
   var gluc  = (document.getElementById('fs-gluc')||{}).value  || '—';
   var peso  = (document.getElementById('fs-peso')||{}).value  || '—';
+  var cogn  = (function(){ var s = document.querySelector('.chip.sel[onclick*="cogn"]'); return s ? s.textContent.trim() : '—'; })();
+  var cognObs = (document.getElementById('fs-cogn-obs')||{}).value || '';
   var meds  = (DB.medicacion||[]).filter(function(m){ return String(m.residente_id)===String(residenteActual)&&m.activo==='Sí'; });
-  var hoy   = new Date().toLocaleDateString('es-UY');
 
-  var alertas = r.alergias && r.alergias!=='Sin alergias documentadas'
-    ? '<div style="background:#ffebee;border:2px solid #c62828;border-radius:6px;padding:8px 12px;margin:10px 0;font-weight:bold;font-size:12px">⚠️ ALERTAS: '+r.alergias.replace(/\|/g,' · ')+'</div>' : '';
+  // Diagnósticos como bullets
+  var diags = (r.diags||'').split('|').filter(Boolean).map(function(d){ return '• '+d.trim(); }).join('<br>') || '—';
 
-  function fila(lbl, val) {
-    return '<tr><td style="padding:5px 8px;color:#555;width:38%;border-bottom:1px solid #f0ebe0">'+lbl+'</td>' +
-           '<td style="padding:5px 8px;border-bottom:1px solid #f0ebe0;font-weight:500">'+(val||'—')+'</td></tr>';
-  }
+  var bloqueVitales =
+    '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:9px">'+
+      '<div style="border:1px solid #ddd;border-radius:5px;padding:8px;text-align:center">'+
+        '<div style="font-size:15px;font-weight:bold;color:#1a3d35">'+pa+'</div>'+
+        '<div style="font-size:8.5px;color:#888;letter-spacing:1px;text-transform:uppercase;margin-top:2px">P. Arterial</div></div>'+
+      '<div style="border:1px solid #ddd;border-radius:5px;padding:8px;text-align:center">'+
+        '<div style="font-size:15px;font-weight:bold;color:#1a3d35">'+pulso+'</div>'+
+        '<div style="font-size:8.5px;color:#888;letter-spacing:1px;text-transform:uppercase;margin-top:2px">Pulso</div></div>'+
+      '<div style="border:1px solid #ddd;border-radius:5px;padding:8px;text-align:center">'+
+        '<div style="font-size:15px;font-weight:bold;color:#1a3d35">'+temp+'°C</div>'+
+        '<div style="font-size:8.5px;color:#888;letter-spacing:1px;text-transform:uppercase;margin-top:2px">Temp.</div></div>'+
+      '<div style="border:1px solid #ddd;border-radius:5px;padding:8px;text-align:center">'+
+        '<div style="font-size:15px;font-weight:bold;color:#1a3d35">'+sat+'%</div>'+
+        '<div style="font-size:8.5px;color:#888;letter-spacing:1px;text-transform:uppercase;margin-top:2px">Sat O₂</div></div>'+
+      '<div style="border:1px solid #ddd;border-radius:5px;padding:8px;text-align:center">'+
+        '<div style="font-size:15px;font-weight:bold;color:#1a3d35">'+gluc+'</div>'+
+        '<div style="font-size:8.5px;color:#888;letter-spacing:1px;text-transform:uppercase;margin-top:2px">Glucemia</div></div>'+
+      '<div style="border:1px solid #ddd;border-radius:5px;padding:8px;text-align:center">'+
+        '<div style="font-size:15px;font-weight:bold;color:#1a3d35">'+peso+'kg</div>'+
+        '<div style="font-size:8.5px;color:#888;letter-spacing:1px;text-transform:uppercase;margin-top:2px">Peso</div></div>'+
+    '</div>';
 
-  var html = '<!DOCTYPE html><html><head><meta charset="UTF-8">' +
-    '<style>body{font-family:Arial,sans-serif;font-size:12px;padding:16px;color:#222;max-width:720px;margin:0 auto}' +
-    '@media print{@page{margin:10mm;size:A4}}' +
-    'table{width:100%;border-collapse:collapse}' +
-    '.sec{margin-bottom:14px}.sec-tit{background:#1a3d35;color:white;padding:6px 10px;font-size:11px;font-weight:700;letter-spacing:.5px;border-radius:4px 4px 0 0}' +
-    '.sec-body{border:1px solid #ddd;border-top:none;border-radius:0 0 4px 4px}' +
-    '.vitales{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:10px}' +
-    '.vital{border:1px solid #ddd;border-radius:6px;padding:8px;text-align:center}' +
-    '.vval{font-size:18px;font-weight:bold;color:#1a3d35}.vlbl{font-size:9px;color:#666;text-transform:uppercase}' +
-    '</style></head><body>' +
+  var medsHTML = meds.length > 0
+    ? '<table class="tabla"><thead><tr><th>Medicamento</th><th>Dosis</th><th>Horario</th></tr></thead><tbody>'+
+      meds.map(function(m){
+        return '<tr><td><b>'+m.medicamento+'</b></td><td>'+m.dosis+'</td><td>'+m.horario+'</td></tr>';
+      }).join('')+'</tbody></table>'
+    : '<div style="padding:8px;color:#888;text-align:center">Sin medicación habitual registrada</div>';
 
-    '<div style="border-bottom:3px solid #1a3d35;margin-bottom:14px;padding-bottom:10px;display:flex;justify-content:space-between;align-items:flex-end">' +
-    '<div><div style="font-size:17px;font-weight:bold;color:#1a3d35">FICHA DE INTERNACIÓN / DERIVACIÓN</div>' +
-    '<div style="font-size:10px;color:#666">Carrasco Elderly Care SAS · Rafael Barradas 1527 · Montevideo · Tel: ___________</div></div>' +
-    '<div style="text-align:right;font-size:11px;color:#444">'+fechaHora+'</div></div>' +
+  var contenido =
+    pdfCabezal('Ficha de internación', 'Derivación a centro asistencial') +
+    pdfAlergias(r) +
+    pdfBoxPaciente(r) +
 
-    alertas +
+    '<div class="seccion"><div class="sec-head">Motivo de internación / derivación</div>'+
+      '<div class="sec-body" style="font-size:12px;min-height:55px;padding:11px 12px">'+motivo+'</div></div>'+
 
-    '<div class="sec"><div class="sec-tit">DATOS DEL PACIENTE</div>' +
-    '<div class="sec-body"><table>' +
-    fila('Nombre completo',r.nombre) + fila('CI',r.ci) +
-    fila('Edad',r.edad?r.edad+' años':'—') + fila('Mutualista',r.mutualista) +
-    fila('Médico de cabecera',r.medico) +
-    fila('Familiar de referencia',(r.familiar_nom||r.familiar||'—')+(r.familiar_parentesco?' ('+r.familiar_parentesco+')':'')) +
-    fila('Tel. familiar',r.familiar_tel) +
-    '</table></div></div>' +
+    '<div class="seccion"><div class="sec-head">Episodio</div>'+
+      '<table class="kv"><tr><td>Fecha y hora de salida</td><td>'+fechaHora+'</td></tr>'+
+      (cogn !== '—' ? '<tr><td>Estado cognitivo</td><td>'+cogn+'</td></tr>' : '')+
+      (cognObs ? '<tr><td>Observaciones cognitivas</td><td>'+cognObs+'</td></tr>' : '')+
+      '</table></div>'+
 
-    '<div class="sec"><div class="sec-tit">DIAGNÓSTICOS</div>' +
-    '<div class="sec-body" style="padding:8px 10px;line-height:1.8">' +
-    (r.diags||'—').split('|').filter(Boolean).map(function(d){ return '• '+d.trim(); }).join('<br>') +
-    '</div></div>' +
+    '<div class="seccion"><div class="sec-head">Diagnósticos</div>'+
+      '<div class="sec-body lista-bullets">'+diags+'</div></div>'+
 
-    '<div class="sec"><div class="sec-tit">MOTIVO DE INTERNACIÓN / DERIVACIÓN</div>' +
-    '<div class="sec-body" style="padding:12px;font-size:13px;min-height:70px">'+motivo+'</div></div>' +
+    '<div class="seccion"><div class="sec-head">Signos vitales al momento de salida</div>'+
+      '<div style="padding:0">'+bloqueVitales+'</div></div>'+
 
-    '<div class="sec"><div class="sec-tit">SIGNOS VITALES AL MOMENTO DE LA SALIDA</div>' +
-    '<div class="vitales">' +
-    '<div class="vital"><div class="vval">'+pa+'</div><div class="vlbl">Presión arterial</div></div>' +
-    '<div class="vital"><div class="vval">'+pulso+'</div><div class="vlbl">Pulso</div></div>' +
-    '<div class="vital"><div class="vval">'+temp+'°C</div><div class="vlbl">Temperatura</div></div>' +
-    '<div class="vital"><div class="vval">'+sat+'%</div><div class="vlbl">Sat O₂</div></div>' +
-    '<div class="vital"><div class="vval">'+gluc+'</div><div class="vlbl">Glucemia</div></div>' +
-    '<div class="vital"><div class="vval">'+peso+'kg</div><div class="vlbl">Peso</div></div>' +
-    '</div></div>' +
+    '<div class="seccion"><div class="sec-head">Medicación habitual</div>'+
+      '<div class="sec-body" style="padding:0">'+medsHTML+'</div></div>'+
 
-    (meds.length>0 ?
-    '<div class="sec"><div class="sec-tit">MEDICACIÓN HABITUAL</div><div class="sec-body">' +
-    '<table><tr style="background:#f0f7f4"><th style="padding:5px 8px;text-align:left">Medicamento</th><th>Dosis</th><th>Horario</th></tr>' +
-    meds.map(function(m){ return '<tr><td style="padding:5px 8px;border-bottom:1px solid #f0ebe0">'+m.medicamento+'</td>' +
-      '<td style="padding:5px 8px;border-bottom:1px solid #f0ebe0">'+m.dosis+'</td>' +
-      '<td style="padding:5px 8px;border-bottom:1px solid #f0ebe0">'+m.horario+'</td></tr>'; }).join('') +
-    '</table></div></div>' : '') +
+    '<div class="firmas">'+
+      '<div>Médico / Firma</div>'+
+      '<div>Sello institucional</div>'+
+    '</div>'+
 
-    '<div style="margin-top:40px;display:flex;justify-content:space-between;font-size:10px">' +
-    '<div style="text-align:center;border-top:1px solid #aaa;padding-top:4px;width:38%">Médico / Firma</div>' +
-    '<div style="text-align:center;border-top:1px solid #aaa;padding-top:4px;width:38%">Sello institucional</div>' +
-    '</div></body></html>';
+    pdfFooter((typeof currentUser !== 'undefined' ? currentUser.nombre : ''));
 
-  abrirPDF(html, 'Internación — '+(r.nombre||'').split(' ').slice(0,2).join(' '));
+  abrirPDF(pdfArmar('Ficha internación — '+(r.nombre||''), contenido),
+           'Ficha internación — '+(r.nombre||'').split(' ').slice(0,2).join(' '));
 }
 
 
@@ -8013,6 +8381,110 @@ var _origAbrirEmpleada = typeof abrirEmpleada === 'function' ? abrirEmpleada : n
 async 
 // ── Helper PDF: genera Blob y abre en nueva pestaña (sin popup bloqueado) ──
 // En iOS Safari: funciona si se llama desde un evento de usuario directo
+// ═══════════════════════════════════════════════════════
+// HELPERS PARA PDFs CLÍNICOS (Historial, MSP, Internación)
+// Cabezal con logo Elderly Care + tipografía consistente
+// ═══════════════════════════════════════════════════════
+function pdfLogoSVG() {
+  return '<svg width="50" height="50" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0">' +
+    '<circle cx="50" cy="50" r="48" fill="#1a3d35" stroke="#c9a84c" stroke-width="2"/>' +
+    '<text x="50" y="44" text-anchor="middle" font-family="Cormorant Garamond,serif" font-size="14" font-style="italic" fill="#e8d08a">Elderly</text>' +
+    '<text x="50" y="60" text-anchor="middle" font-family="Cormorant Garamond,serif" font-size="14" font-style="italic" fill="#e8d08a">Care</text>' +
+    '<line x1="22" y1="68" x2="78" y2="68" stroke="#c9a84c" stroke-width="0.7"/>' +
+    '<text x="50" y="78" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="6" letter-spacing="1.5" fill="#c9a84c">CARRASCO</text>' +
+    '</svg>';
+}
+
+function pdfEstilosBase() {
+  return '@page{margin:12mm;size:A4}'+
+    '*{box-sizing:border-box}'+
+    'body{font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#1a1a1a;margin:0;padding:0;line-height:1.5}'+
+    '.doc{border:2px solid #1a3d35;border-radius:8px;padding:14px 18px;max-width:780px;margin:0 auto;background:white}'+
+    '.cabezal{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #1a3d35;padding-bottom:10px;margin-bottom:12px;gap:14px}'+
+    '.cab-izq{display:flex;gap:12px;align-items:flex-start;flex:1}'+
+    '.cab-info{font-size:10px;color:#444;line-height:1.5}'+
+    '.cab-info b{color:#1a3d35;font-size:13px;letter-spacing:.3px;display:block;margin-bottom:1px}'+
+    '.cab-der{text-align:right;font-size:10px;color:#666;min-width:200px}'+
+    '.titulo-doc{font-family:"Cormorant Garamond",Georgia,serif;font-size:18px;font-weight:600;font-style:italic;color:#1a3d35;line-height:1.1;margin-bottom:4px}'+
+    '.subtitulo-doc{font-size:9.5px;letter-spacing:1.5px;color:#888;text-transform:uppercase}'+
+    '.paciente{background:#f5f0e8;border-left:4px solid #c9a84c;padding:9px 12px;margin-bottom:11px;border-radius:0 5px 5px 0}'+
+    '.paciente .pnom{font-family:"Cormorant Garamond",Georgia,serif;font-size:16px;font-weight:600;color:#1a3d35;margin-bottom:3px}'+
+    '.paciente .pdetalle{font-size:10px;color:#555;line-height:1.6}'+
+    '.alerta-roja{background:#ffebee;border-left:4px solid #c0392b;padding:7px 11px;margin-bottom:10px;font-size:11px;font-weight:600;color:#922}'+
+    '.seccion{margin-bottom:11px;border:1px solid #ccc;border-radius:6px;overflow:hidden}'+
+    '.sec-head{background:#1a3d35;color:#e8d08a;padding:6px 11px;font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase}'+
+    '.sec-body{padding:8px 11px;font-size:10.5px}'+
+    'table.kv{width:100%;border-collapse:collapse;font-size:10.5px}'+
+    'table.kv td{padding:4px 8px;border-bottom:1px solid #f0ebe0;vertical-align:top}'+
+    'table.kv td:first-child{color:#666;width:40%;font-weight:500}'+
+    'table.kv td:last-child{font-weight:500;color:#222}'+
+    'table.kv tr:last-child td{border-bottom:none}'+
+    'table.tabla{width:100%;border-collapse:collapse;font-size:10px}'+
+    'table.tabla th{background:#f5f0e8;color:#1a3d35;padding:5px 8px;text-align:left;font-size:9.5px;letter-spacing:.5px;text-transform:uppercase;border-bottom:1px solid #ccc}'+
+    'table.tabla td{padding:5px 8px;border-bottom:1px solid #f0ebe0;vertical-align:top}'+
+    '.lista-bullets{padding:4px 0;line-height:1.8;font-size:11px}'+
+    '.firmas{margin-top:24px;display:flex;justify-content:space-between;gap:30px;font-size:10px;color:#444}'+
+    '.firmas div{flex:1;text-align:center;border-top:1px solid #888;padding-top:5px}'+
+    '.pie{margin-top:14px;padding-top:8px;border-top:1px dashed #ccc;font-size:9px;color:#888;text-align:center;line-height:1.6}'+
+    '.fecha-emision{font-family:"Cormorant Garamond",Georgia,serif;font-style:italic;color:#1a3d35}'+
+    '@media print{body{padding:0}.doc{border:2px solid #1a3d35;box-shadow:none}}';
+}
+
+function pdfCabezal(tituloDoc, subtitulo) {
+  var hoy = new Date();
+  var fechaStr = hoy.toLocaleDateString('es-UY', {day:'2-digit', month:'long', year:'numeric'});
+  var horaStr  = hoy.toLocaleTimeString('es-UY', {hour:'2-digit', minute:'2-digit'});
+  return '<div class="cabezal">'+
+    '<div class="cab-izq">'+
+      pdfLogoSVG()+
+      '<div class="cab-info">'+
+        '<b>CARRASCO ELDERLY CARE SAS</b>'+
+        'Rafael Barradas 1527 · Montevideo<br>'+
+        'RUC 220257400017 · BPS 8831922<br>'+
+      '</div>'+
+    '</div>'+
+    '<div class="cab-der">'+
+      '<div class="titulo-doc">'+tituloDoc+'</div>'+
+      (subtitulo ? '<div class="subtitulo-doc">'+subtitulo+'</div>' : '')+
+      '<div class="fecha-emision" style="margin-top:5px">'+fechaStr+' · '+horaStr+'</div>'+
+    '</div>'+
+  '</div>';
+}
+
+function pdfBoxPaciente(r) {
+  if (!r) return '';
+  return '<div class="paciente">'+
+    '<div class="pnom">'+(r.nombre||'—')+'</div>'+
+    '<div class="pdetalle">'+
+      'CI: <b>'+(r.ci||'—')+'</b> · '+(r.edad ? r.edad+' años · ' : '')+
+      'Hab. <b>'+(r.hab||'—')+'</b> · '+(r.mutualista||'—')+
+      (r.medico ? '<br>Médico de cabecera: <b>'+r.medico+'</b>' : '')+
+      (r.familiar_nom ? '<br>Familiar de referencia: <b>'+r.familiar_nom+'</b>'+(r.familiar_tel ? ' · Tel '+r.familiar_tel : '') : '')+
+    '</div>'+
+  '</div>';
+}
+
+function pdfAlergias(r) {
+  if (!r || !r.alergias || r.alergias === 'Sin alergias documentadas') return '';
+  return '<div class="alerta-roja">⚠️ ALERGIAS / ANTICOAGULANTES: '+r.alergias.replace(/\|/g,' · ')+'</div>';
+}
+
+function pdfFooter(usuarioOpcional) {
+  return '<div class="pie">'+
+    'Documento generado electrónicamente desde Carrasco Elderly Care SAS'+
+    (usuarioOpcional ? ' · Por: '+usuarioOpcional : '')+'<br>'+
+    'Rafael Barradas 1527 · Montevideo · contacto@elderlycarecarrasco.com.uy'+
+  '</div>';
+}
+
+function pdfArmar(tituloPestana, contenido) {
+  return '<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>'+tituloPestana+'</title>'+
+    '<style>'+pdfEstilosBase()+'</style></head><body>'+
+    '<div class="doc">'+contenido+'</div>'+
+    '<script>window.addEventListener("load",function(){setTimeout(function(){try{window.print();}catch(e){}}, 400);});<\/script>'+
+    '</body></html>';
+}
+
 function abrirPDF(html, titulo) {
   // Usar window.open — funciona en todos los browsers desde un evento de usuario
   var w = window.open('', '_blank');
@@ -8109,10 +8581,6 @@ function generarHistorialPDF() {
   var caidas   = hist.filter(function(h){ return h.tipo==='caida'; });
   var incidentes = hist.filter(function(h){ return h.tipo==='incidente'; });
 
-  // ── Datos clínicos guardados ──
-  var clinico = {};
-  try { clinico = JSON.parse(r.clinico_json||'{}'); } catch(e){}
-
   var TIPO_LABEL = { nota:'Nota clínica', medico:'Nota médica', estudio:'Estudio',
     vital:'Signos vitales', barthel:'Índice de Barthel', vacuna:'Vacuna',
     caida:'Caída', incidente:'Incidente', medicacion:'Medicación' };
@@ -8125,145 +8593,118 @@ function generarHistorialPDF() {
     try { return new Date(str).toLocaleString('es-UY',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}); }
     catch(e){ return str; }
   }
-  function sec(titulo, color, contenido) {
-    return '<div style="margin-bottom:16px">' +
-      '<div style="background:'+color+';color:white;padding:6px 10px;font-size:11px;font-weight:700;' +
-        'letter-spacing:.5px;border-radius:4px 4px 0 0">'+titulo+'</div>' +
-      '<div style="border:1px solid #ddd;border-top:none;border-radius:0 0 4px 4px;padding:0">'+contenido+'</div>' +
-    '</div>';
-  }
-  function fila(label, val, alert) {
-    return '<div style="display:flex;padding:5px 10px;border-bottom:1px solid #f5f0e8;font-size:11px">' +
-      '<div style="width:38%;color:#666">'+label+'</div>' +
-      '<div style="flex:1;font-weight:500'+(alert?';color:#c62828':'')+'">'+(val||'—')+'</div>' +
-    '</div>';
+  function seccion(titulo, cuerpo) {
+    return '<div class="seccion"><div class="sec-head">'+titulo+'</div>'+
+      '<div class="sec-body" style="padding:0">'+cuerpo+'</div></div>';
   }
 
-  var html = '<!DOCTYPE html><html><head><meta charset="UTF-8">' +
-    '<style>body{font-family:Arial,sans-serif;font-size:11px;padding:14px;color:#222;max-width:740px;margin:0 auto}' +
-    '@media print{@page{margin:10mm;size:A4}}' +
-    '.header{border-bottom:3px solid #1a3d35;padding-bottom:8px;margin-bottom:12px;display:flex;justify-content:space-between}' +
-    '.paciente{background:#f0f7f4;border-left:4px solid #1a3d35;padding:8px 12px;margin-bottom:12px;border-radius:0 4px 4px 0}' +
-    '.reg{margin-bottom:6px;border:1px solid #e0d8cc;border-radius:6px;overflow:hidden}' +
-    '.reg-h{padding:5px 10px;color:white;font-size:10px;font-weight:700;display:flex;justify-content:space-between}' +
-    '.reg-b{padding:7px 10px;font-size:11px;line-height:1.5}' +
-    'table{width:100%;border-collapse:collapse}' +
-    'th{background:#1a3d35;color:white;padding:5px 8px;text-align:left;font-size:10px}' +
-    'td{padding:4px 8px;border-bottom:1px solid #f0ebe0;font-size:11px}' +
-    '</style></head><body>' +
+  // Diagnósticos
+  var diagsHTML = r.diags
+    ? '<div class="lista-bullets" style="padding:9px 12px">'+
+      r.diags.split('|').filter(Boolean).map(function(d){ return '• '+d.trim(); }).join('<br>')+
+      '</div>'
+    : '';
 
-    '<div class="header">' +
-      '<div><div style="font-size:16px;font-weight:bold;color:#1a3d35">HISTORIAL CLÍNICO COMPLETO</div>' +
-        '<div style="font-size:10px;color:#666">Carrasco Elderly Care SAS · Rafael Barradas 1527 · Montevideo</div></div>' +
-      '<div style="text-align:right;font-size:10px;color:#666">Generado: '+hoy+'<br>'+
-        'Usuario: '+((typeof currentUser!=='undefined'&&currentUser.nombre)||'—')+'</div>' +
-    '</div>' +
-
-    // Datos del paciente
-    '<div class="paciente">' +
-      '<div style="font-size:14px;font-weight:bold;color:#1a3d35">'+r.nombre+'</div>' +
-      '<div style="font-size:11px;margin-top:3px">' +
-        'CI: '+(r.ci||'—')+' · '+(r.edad?r.edad+' años · ':'')+
-        'Hab. '+(r.hab||'—')+' · Mutualista: '+(r.mutualista||'—')+'</div>' +
-      '<div style="font-size:11px">Ingreso: '+(r.ingreso?String(r.ingreso).split('T')[0]:'—')+
-        ' · Médico: '+(r.medico||'—')+'</div>' +
-      (r.familiar_nom ? '<div style="font-size:11px">Familiar: '+r.familiar_nom+
-        (r.familiar_parentesco?' ('+r.familiar_parentesco+')':'')+' — '+(r.familiar_tel||'')+'</div>' : '') +
-    '</div>' +
-
-    // Alertas
-    (r.alergias && r.alergias !== 'Sin alergias documentadas' ?
-      '<div style="background:#ffebee;border-left:4px solid #c62828;padding:6px 10px;margin-bottom:10px;font-weight:bold;font-size:11px">⚠️ '+r.alergias.replace(/\|/g,' · ')+'</div>' : '') +
-
-    // Diagnósticos
-    (r.diags ? sec('DIAGNÓSTICOS', '#1a3d35',
-      '<div style="padding:8px 10px;line-height:1.8">' +
-      r.diags.split('|').filter(Boolean).map(function(d){ return '• '+d.trim(); }).join('<br>') +
-      '</div>') : '') +
-
-    // Medicación activa
-    (medsActivas.length > 0 ? sec('MEDICACIÓN ACTIVA ('+medsActivas.length+')', '#1a5c2f',
-      '<table><tr><th>Medicamento</th><th>Dosis</th><th>Horario</th><th>Notas</th></tr>' +
+  // Medicación activa
+  var medsActHTML = medsActivas.length > 0
+    ? '<table class="tabla"><thead><tr><th>Medicamento</th><th style="width:15%">Dosis</th><th style="width:18%">Horario</th><th>Notas</th></tr></thead><tbody>'+
       medsActivas.map(function(m){
-        return '<tr><td>'+m.medicamento+'</td><td>'+m.dosis+'</td><td>'+m.horario+'</td>' +
-          '<td style="color:'+(m.nota?'#c62828':'#555')+'">'+( m.nota||'—')+'</td></tr>';
-      }).join('') + '</table>') : '') +
+        return '<tr><td><b>'+m.medicamento+'</b></td><td>'+m.dosis+'</td><td>'+m.horario+'</td>'+
+          '<td style="color:'+(m.nota?'#c0392b':'#888')+'">'+(m.nota||'—')+'</td></tr>';
+      }).join('')+'</tbody></table>'
+    : '';
 
-    // Medicación histórica
-    (medsHistorica.length > 0 ? sec('MEDICACIÓN HISTÓRICA (descontinuada)', '#555',
-      '<table><tr><th>Medicamento</th><th>Dosis</th><th>Horario</th></tr>' +
+  // Medicación histórica
+  var medsHistHTML = medsHistorica.length > 0
+    ? '<table class="tabla"><thead><tr><th>Medicamento</th><th style="width:15%">Dosis</th><th style="width:18%">Horario</th></tr></thead><tbody>'+
       medsHistorica.map(function(m){
         return '<tr style="color:#888"><td>'+m.medicamento+'</td><td>'+m.dosis+'</td><td>'+m.horario+'</td></tr>';
-      }).join('') + '</table>') : '') +
+      }).join('')+'</tbody></table>'
+    : '';
 
-    // Evolución Barthel
-    (barthels.length > 0 ? sec('EVOLUCIÓN ÍNDICE DE BARTHEL', '#00695c',
-      '<table><tr><th>Fecha</th><th>Puntaje</th><th>Categoría</th><th>Evaluado por</th></tr>' +
+  // Barthel evolutivo
+  var barthelHTML = barthels.length > 0
+    ? '<table class="tabla"><thead><tr><th>Fecha</th><th>Puntaje</th><th>Categoría</th><th>Evaluado por</th></tr></thead><tbody>'+
       barthels.map(function(b){
         var sc = parseInt(b.vit_pa)||0;
         var cat = sc>=91?'Dep. leve':sc>=61?'Dep. moderada':sc>=21?'Dep. severa':'Dep. total';
         if(sc===100) cat='Independiente';
-        return '<tr><td>'+formatFecha(b.created_at)+'</td><td><strong>'+sc+' / 100</strong></td>' +
-          '<td>'+cat+'</td><td>'+( b.usuario||'—')+'</td></tr>';
-      }).join('') + '</table>') : '') +
+        return '<tr><td>'+formatFecha(b.created_at)+'</td><td><b>'+sc+' / 100</b></td>'+
+          '<td>'+cat+'</td><td>'+(b.usuario||'—')+'</td></tr>';
+      }).join('')+'</tbody></table>'
+    : '';
 
-    // Vacunas
-    (vacunas.length > 0 ? sec('VACUNACIONES EN EL CENTRO ('+vacunas.length+')', '#1565c0',
-      '<div style="padding:4px 0">'+
+  // Vacunas
+  var vacHTML = vacunas.length > 0
+    ? '<div style="padding:4px 0">'+
       vacunas.map(function(v){
-        return '<div style="padding:5px 10px;border-bottom:1px solid #f0ebe0">' +
-          '<span style="font-weight:600">'+v.texto+'</span>' +
-          ' <span style="color:#666">— '+formatFecha(v.created_at)+'</span>' +
-          (v.usuario?' · '+v.usuario:'') + '</div>';
-      }).join('') + '</div>') : '') +
+        return '<div style="padding:6px 12px;border-bottom:1px solid #f0ebe0;font-size:10.5px">'+
+          '<b>'+(v.texto||'—')+'</b> '+
+          '<span style="color:#888">· '+formatFecha(v.created_at)+(v.usuario?' · '+v.usuario:'')+'</span></div>';
+      }).join('')+'</div>'
+    : '';
 
-    // Caídas
-    (caidas.length > 0 ? sec('REGISTRO DE CAÍDAS ('+caidas.length+')', '#b71c1c',
-      '<div style="padding:4px 0">'+
+  // Caídas
+  var caidasHTML = caidas.length > 0
+    ? '<div style="padding:4px 0">'+
       caidas.map(function(ca){
-        return '<div style="padding:5px 10px;border-bottom:1px solid #f0ebe0">' +
-          '<div style="display:flex;justify-content:space-between">' +
-            '<span style="font-weight:600;color:#b71c1c">⚠️ Caída registrada</span>' +
-            '<span style="color:#666">'+formatFecha(ca.created_at)+'</span>' +
-          '</div>' +
-          (ca.texto?'<div style="margin-top:3px">'+ca.texto+'</div>':'') +
-          (ca.usuario?'<div style="color:#666;font-size:10px">Registrado por: '+ca.usuario+'</div>':'') +
+        return '<div style="padding:7px 12px;border-bottom:1px solid #f0ebe0;font-size:10.5px">'+
+          '<div style="display:flex;justify-content:space-between;margin-bottom:3px">'+
+            '<span style="font-weight:600;color:#b71c1c">⚠️ Caída registrada</span>'+
+            '<span style="color:#666;font-size:9.5px">'+formatFecha(ca.created_at)+'</span>'+
+          '</div>'+
+          (ca.texto ? '<div style="line-height:1.5">'+ca.texto.replace(/\n/g,'<br>')+'</div>' : '')+
+          (ca.usuario ? '<div style="color:#888;font-size:9.5px;margin-top:2px">Registrado por: '+ca.usuario+'</div>' : '')+
         '</div>';
-      }).join('') + '</div>') : '') +
+      }).join('')+'</div>'
+    : '';
 
-    // Signos vitales
-    (vitales.length > 0 ? sec('REGISTROS DE SIGNOS VITALES ('+vitales.length+')', '#2e7d32',
-      '<table><tr><th>Fecha</th><th>PA</th><th>Pulso</th><th>Temp</th><th>Sat O₂</th><th>Glucemia</th><th>Peso</th><th>Por</th></tr>' +
+  // Vitales
+  var vitHTML = vitales.length > 0
+    ? '<table class="tabla"><thead><tr><th>Fecha</th><th>PA</th><th>Pulso</th><th>Temp</th><th>Sat O₂</th><th>Gluc.</th><th>Peso</th><th>Por</th></tr></thead><tbody>'+
       vitales.map(function(v){
-        return '<tr><td>'+formatFecha(v.created_at)+'</td>' +
-          '<td>'+(v.vit_pa||'—')+'</td><td>'+(v.vit_pulso||'—')+'</td>' +
-          '<td>'+(v.vit_temp||'—')+'</td><td>'+(v.vit_sat||'—')+'</td>' +
-          '<td>'+(v.vit_gluc||'—')+'</td><td>'+(v.vit_peso||'—')+'</td>' +
-          '<td>'+(v.usuario||'—')+'</td></tr>';
-      }).join('') + '</table>') : '') +
+        return '<tr><td style="font-size:9.5px">'+formatFecha(v.created_at)+'</td>'+
+          '<td>'+(v.vit_pa||'—')+'</td><td>'+(v.vit_pulso||'—')+'</td>'+
+          '<td>'+(v.vit_temp||'—')+'</td><td>'+(v.vit_sat||'—')+'</td>'+
+          '<td>'+(v.vit_gluc||'—')+'</td><td>'+(v.vit_peso||'—')+'</td>'+
+          '<td style="font-size:9.5px">'+(v.usuario||'—')+'</td></tr>';
+      }).join('')+'</tbody></table>'
+    : '';
 
-    // Notas clínicas e incidentes
-    ((notas.length+incidentes.length) > 0 ? sec('NOTAS CLÍNICAS E INCIDENTES ('+(notas.length+incidentes.length)+')', '#37474f',
-      '<div style="padding:4px 0">' +
-      notas.concat(incidentes).map(function(n){
+  // Notas e incidentes
+  var notasHTML = (notas.length + incidentes.length) > 0
+    ? '<div style="padding:4px 0">'+
+      notas.concat(incidentes).sort(function(a,b){ return a.created_at > b.created_at ? 1 : -1; }).map(function(n){
         var col = TIPO_COLOR[n.tipo]||'#37474f';
         var lbl = TIPO_LABEL[n.tipo]||n.tipo;
-        return '<div style="padding:6px 10px;border-bottom:1px solid #f0ebe0">' +
-          '<div style="display:flex;justify-content:space-between;margin-bottom:3px">' +
-            '<span style="background:'+col+';color:white;border-radius:3px;padding:1px 6px;font-size:9px;font-weight:700">'+lbl.toUpperCase()+'</span>' +
-            '<span style="color:#666;font-size:10px">'+formatFecha(n.created_at)+(n.usuario?' · '+n.usuario:'')+(n.turno?' · '+n.turno:'')+'</span>' +
-          '</div>' +
-          (n.texto?'<div>'+n.texto+'</div>':'') +
+        return '<div style="padding:7px 12px;border-bottom:1px solid #f0ebe0;font-size:10.5px">'+
+          '<div style="display:flex;justify-content:space-between;margin-bottom:3px">'+
+            '<span style="background:'+col+';color:white;border-radius:3px;padding:1px 7px;font-size:8.5px;font-weight:700;letter-spacing:.5px">'+lbl.toUpperCase()+'</span>'+
+            '<span style="color:#888;font-size:9.5px">'+formatFecha(n.created_at)+(n.usuario?' · '+n.usuario:'')+(n.turno?' · '+n.turno:'')+'</span>'+
+          '</div>'+
+          (n.texto ? '<div style="line-height:1.5">'+n.texto.replace(/\n/g,'<br>')+'</div>' : '')+
         '</div>';
-      }).join('') + '</div>') : '') +
+      }).join('')+'</div>'
+    : '';
 
-    '<div style="border-top:1px solid #1a3d35;margin-top:14px;padding-top:6px;font-size:9px;color:#555;text-align:center">' +
-      'Carrasco Elderly Care SAS · Historial de '+r.nombre+' · Generado el '+hoy +
-      ' · Total registros: '+hist.length+
-    '</div>' +
-    '</body></html>';
+  var contenido =
+    pdfCabezal('Historial clínico', 'Documento completo · '+hist.length+' registros') +
+    pdfAlergias(r) +
+    pdfBoxPaciente(r) +
 
-  abrirPDF(html, 'Historial — '+(r.nombre||'').split(' ').slice(0,2).join(' '));
+    (diagsHTML     ? seccion('Diagnósticos', diagsHTML) : '') +
+    (medsActHTML   ? seccion('Medicación activa ('+medsActivas.length+')', medsActHTML) : '') +
+    (medsHistHTML  ? seccion('Medicación histórica (descontinuada)', medsHistHTML) : '') +
+    (barthelHTML   ? seccion('Evolución Índice de Barthel', barthelHTML) : '') +
+    (vacHTML       ? seccion('Vacunaciones en el centro ('+vacunas.length+')', vacHTML) : '') +
+    (caidasHTML    ? seccion('Registro de caídas ('+caidas.length+')', caidasHTML) : '') +
+    (vitHTML       ? seccion('Signos vitales ('+vitales.length+')', vitHTML) : '') +
+    (notasHTML     ? seccion('Notas clínicas e incidentes ('+(notas.length+incidentes.length)+')', notasHTML) : '') +
+
+    pdfFooter((typeof currentUser !== 'undefined' ? currentUser.nombre : ''));
+
+  abrirPDF(pdfArmar('Historial — '+(r.nombre||''), contenido),
+           'Historial — '+(r.nombre||'').split(' ').slice(0,2).join(' '));
 }
 </script>
 </body>
