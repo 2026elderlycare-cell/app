@@ -2,11 +2,11 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-  <!-- Cache busting v202605100326 — fuerza descarga de versión nueva -->
+  <!-- Cache busting v202605102156 — fuerza descarga de versión nueva -->
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <meta name="version" content="202605100326">
+  <meta name="version" content="202605102156">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Elderly Care Carrasco — Sistema de Gestión</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
@@ -734,29 +734,6 @@ html{overflow-x:hidden;}
 
   <div class="stitle">Equipo</div>
   <div class="ssub">Carrasco Elderly Care · Grupo 15 / Subgrupo 200</div>
-
-  <!-- ALERTAS -->
-  <div class="alerta al-naranja">
-    <div class="al-ico">⏰</div>
-    <div>
-      <div class="al-tit">Período de prueba finalizando</div>
-      <div class="al-txt">Aguiar Camila — cumple 3 meses el 18/06/2026 · Revisar presentismo</div>
-    </div>
-  </div>
-  <div class="alerta al-amarillo">
-    <div class="al-ico">💰</div>
-    <div>
-      <div class="al-tit">Adelanto alto pendiente</div>
-      <div class="al-txt">Pereira Florencia — $7.000 sin descontar (>1 sueldo)</div>
-    </div>
-  </div>
-  <div class="alerta al-azul">
-    <div class="al-ico">🌴</div>
-    <div>
-      <div class="al-tit">Licencia acumulada alta</div>
-      <div class="al-txt">Rodríguez Marianela — 12 días acumulados sin gozar</div>
-    </div>
-  </div>
 
   <div class="sep">Cuidadoras activas</div>
   <div id="lista-empleadas"></div>
@@ -1718,7 +1695,7 @@ html{overflow-x:hidden;}
 </div>
 
 <!-- MODAL: REGISTRAR CAÍDA -->
-<div class="moverlay" id="modal-caida" onclick="if(event.target===this)resCloseM('modal-caida')">
+<div class="moverlay" id="modal-caida" onclick="if(event.target===this)cerrarSubModal('modal-caida')">
   <div class="modal">
     <div class="mhandle"></div>
     <div class="mtit">Registrar caída</div>
@@ -1801,14 +1778,14 @@ html{overflow-x:hidden;}
     </div>
 
     <div style="display:flex;gap:8px">
-      <button class="btn bs" style="flex:1" onclick="resCloseM('modal-caida')">← Volver</button>
+      <button class="btn bs" style="flex:1" onclick="cerrarSubModal('modal-caida')">← Volver</button>
       <button class="btn bv" style="flex:1" onclick="guardarCaida()">✅ Registrar caída</button>
     </div>
   </div>
 </div>
 
 <!-- MODAL: REGISTRAR VACUNA -->
-<div class="moverlay" id="modal-vacuna" onclick="if(event.target===this)resCloseM('modal-vacuna')">
+<div class="moverlay" id="modal-vacuna" onclick="if(event.target===this)cerrarSubModal('modal-vacuna')">
   <div class="modal">
     <div class="mhandle"></div>
     <div class="mtit">Registrar vacuna</div>
@@ -1840,7 +1817,7 @@ html{overflow-x:hidden;}
       <input class="fi" type="date" id="vacuna-proxima">
     </div>
     <div style="display:flex;gap:8px">
-      <button class="btn bs" style="flex:1" onclick="resCloseM('modal-vacuna')">← Volver</button>
+      <button class="btn bs" style="flex:1" onclick="cerrarSubModal('modal-vacuna')">← Volver</button>
       <button class="btn bv" style="flex:1" onclick="guardarVacuna()">✅ Guardar vacuna</button>
     </div>
   </div>
@@ -2998,7 +2975,7 @@ html{overflow-x:hidden;}
 <script>
 // ── Cache busting: si la versión cambió, forzar reload limpio ──
 (function() {
-  var APP_VERSION = '202605100326';
+  var APP_VERSION = '202605102156';
   var stored = localStorage.getItem('ec_version');
   if (stored && stored !== APP_VERSION) {
     localStorage.setItem('ec_version', APP_VERSION);
@@ -6127,6 +6104,35 @@ function getSelChips(group) {
   return Array.from(sels).map(function(c){ return c.textContent.trim(); }).join(', ');
 }
 
+// ═══════════════════════════════════════════════════════
+// HELPER: abrir modal por encima de otro modal abierto
+// Soluciona el bug de stacking context creado por
+// transform:translateY del modal-residente padre.
+// ═══════════════════════════════════════════════════════
+function abrirSubModal(id) {
+  var modal = document.getElementById(id);
+  if (!modal) {
+    console.error('Sub-modal no encontrado:', id);
+    toast('Error: no se encuentra el formulario', 'error');
+    return false;
+  }
+  // Garantizar que esté como hijo directo del body
+  // (sale del stacking context creado por transform de modales padre)
+  if (modal.parentElement !== document.body) {
+    document.body.appendChild(modal);
+  }
+  // Forzar z-index alto explícito
+  modal.style.zIndex = '99999';
+  // Abrir
+  modal.classList.add('open');
+  return true;
+}
+
+function cerrarSubModal(id) {
+  var modal = document.getElementById(id);
+  if (modal) modal.classList.remove('open');
+}
+
 // ── ABRIR MODAL CAÍDA ──
 function abrirRegistroCaida() {
   if (!residenteActual) { toast('Abrí primero la ficha del residente', 'error'); return; }
@@ -6145,7 +6151,7 @@ function abrirRegistroCaida() {
     var desc = modal.querySelector('#caida-desc');
     if (desc) desc.value = '';
   }
-  resShowM('modal-caida');
+  abrirSubModal('modal-caida');
 }
 
 // ── GUARDAR CAÍDA ──
@@ -6161,9 +6167,18 @@ async function guardarCaida() {
   var centinela = getSelChipByGroup('c-centinela');
   var valoro  = getSelChips('c-valoro');
 
+  // Validar mínimo: que haya fecha
+  if (!fecha) {
+    toast('Completá la fecha de la caída', 'error');
+    return;
+  }
+
   var resumen = [
-    presenc, tipo, prodr ? 'Pródromos: ' + prodr : null,
-    'Levanta: ' + levanta, trauma ? 'Trauma: ' + trauma : null,
+    presenc || 'Sin presenciada',
+    tipo || 'Sin tipo',
+    prodr ? 'Pródromos: ' + prodr : null,
+    levanta ? 'Levanta: ' + levanta : null,
+    trauma ? 'Trauma: ' + trauma : null,
     centinela === 'Sí — requirió evaluación urgente' ? '⚠️ CENTINELA' : null,
     valoro ? 'Valoró: ' + valoro : null
   ].filter(Boolean).join(' | ');
@@ -6172,28 +6187,35 @@ async function guardarCaida() {
     residente_id:  residenteActual,
     residente_nom: (DB.residentes.find(function(x){ return String(x.id)===String(residenteActual); }) || {}).nombre || '',
     tipo:          'caida',
-    usuario:       currentUser.nombre,
+    usuario:       (typeof currentUser !== 'undefined' && currentUser.nombre) || '',
     turno:         turno,
     texto:         resumen + (desc ? '\n' + desc : ''),
     vit_pa:        centinela || '',
     vit_pulso:     presenc || '',
     vit_temp:      tipo || '',
-    adjunto:       JSON.stringify({ trauma, valoro, prodr, levanta })
+    adjunto:       JSON.stringify({ trauma: trauma, valoro: valoro, prodr: prodr, levanta: levanta })
   };
 
   showLoading('Guardando caída...');
-  var result = await apiPost('historial', 'insert', data);
-  hideLoading();
-  if (result) {
-    result.tipo = 'caida';
-    result.residente_id = residenteActual;
-    result.created_at = result.created_at || new Date().toISOString();
-    DB.historial.unshift(result);
-    toast('✅ Caída registrada', 'ok');
-    resCloseM('modal-caida');
-    cargarDatosClinicos(residenteActual);
-  } else {
-    toast('❌ Error al guardar', 'error');
+  try {
+    var result = await apiPost('historial', 'insert', data);
+    hideLoading();
+    if (result) {
+      result.tipo = 'caida';
+      result.residente_id = residenteActual;
+      result.created_at = result.created_at || new Date().toISOString();
+      if (!Array.isArray(DB.historial)) DB.historial = [];
+      DB.historial.unshift(result);
+      toast('✅ Caída registrada', 'ok');
+      cerrarSubModal('modal-caida');
+      try { cargarDatosClinicos(residenteActual); } catch(e) { console.warn(e); }
+    } else {
+      toast('❌ Error de conexión. Revisá internet y reintentá.', 'error');
+    }
+  } catch (e) {
+    hideLoading();
+    console.error('guardarCaida:', e);
+    toast('❌ Error al guardar: ' + (e.message || 'desconocido'), 'error');
   }
 }
 
@@ -6218,11 +6240,11 @@ function agregarVacuna() {
   var fec = document.getElementById('vacuna-fecha');
   if (fec) fec.value = new Date().toISOString().split('T')[0];
   var ap = document.getElementById('vacuna-aplicador');
-  if (ap) ap.value = currentUser.nombre;
+  if (ap) ap.value = (typeof currentUser !== 'undefined' && currentUser.nombre) || '';
   // Limpiar campos de sesión anterior
   var lote = document.getElementById('vacuna-lote');     if (lote) lote.value = '';
   var prox = document.getElementById('vacuna-proxima');  if (prox) prox.value = '';
-  resShowM('modal-vacuna');
+  abrirSubModal('modal-vacuna');
 }
 
 // ── GUARDAR VACUNA ──
@@ -6230,8 +6252,12 @@ async function guardarVacuna() {
   var tipo  = (document.getElementById('vacuna-tipo')     || {}).value || '';
   var fecha = (document.getElementById('vacuna-fecha')    || {}).value || '';
   var lote  = (document.getElementById('vacuna-lote')     || {}).value || '';
-  var aplic = (document.getElementById('vacuna-aplicador')|| {}).value || currentUser.nombre;
+  var aplic = (document.getElementById('vacuna-aplicador')|| {}).value ||
+              ((typeof currentUser !== 'undefined' && currentUser.nombre) || '');
   var prox  = (document.getElementById('vacuna-proxima')  || {}).value || '';
+
+  if (!tipo) { toast('Seleccioná la vacuna', 'error'); return; }
+  if (!fecha) { toast('Completá la fecha', 'error'); return; }
 
   var data = {
     residente_id:  residenteActual,
@@ -6242,23 +6268,29 @@ async function guardarVacuna() {
     turno:         '',
     texto:         tipo + (lote ? ' · Lote: ' + lote : '') + (prox ? ' · Próxima: ' + prox : ''),
     vit_pa:        prox,
-    adjunto:       JSON.stringify({ lote, aplic, prox })
+    adjunto:       JSON.stringify({ lote: lote, aplic: aplic, prox: prox })
   };
 
   showLoading('Guardando vacuna...');
-  var result = await apiPost('historial', 'insert', data);
-  hideLoading();
-  if (result) {
-    // Update DB.historial in memory
-    result.tipo = 'vacuna';
-    result.residente_id = residenteActual;
-    result.created_at = result.created_at || new Date().toISOString();
-    DB.historial.unshift(result);
-    toast('✅ Vacuna registrada', 'ok');
-    resCloseM('modal-vacuna');
-    cargarDatosClinicos(residenteActual);
-  } else {
-    toast('❌ Error al guardar', 'error');
+  try {
+    var result = await apiPost('historial', 'insert', data);
+    hideLoading();
+    if (result) {
+      result.tipo = 'vacuna';
+      result.residente_id = residenteActual;
+      result.created_at = result.created_at || new Date().toISOString();
+      if (!Array.isArray(DB.historial)) DB.historial = [];
+      DB.historial.unshift(result);
+      toast('✅ Vacuna registrada', 'ok');
+      cerrarSubModal('modal-vacuna');
+      try { cargarDatosClinicos(residenteActual); } catch(e) { console.warn(e); }
+    } else {
+      toast('❌ Error de conexión. Revisá internet y reintentá.', 'error');
+    }
+  } catch (e) {
+    hideLoading();
+    console.error('guardarVacuna:', e);
+    toast('❌ Error al guardar: ' + (e.message || 'desconocido'), 'error');
   }
 }
 
@@ -7085,6 +7117,16 @@ function calcEgresoEmp() {
   var bpsAguin = aguinaldo * 0.15;
   var liquido  = vacacional + licencia + aguinaldo - bpsAguin;
 
+  // Guardar resultado para PDF
+  window._egresoData = {
+    ingreso: ingStr, salida: salStr,
+    anios: anios, diasAnuales: diasAnuales,
+    jornal: jornal, nomAguin: nomAguin,
+    diasVac: diasVac, diasLic: diasLic, mesesSem: mesesSem,
+    vacacional: vacacional, licencia: licencia, aguinaldo: aguinaldo,
+    bpsAguin: bpsAguin, liquido: liquido
+  };
+
   var info = document.getElementById('eg-lic-emp-info');
   if (info) info.textContent = diasAnuales + ' días/año · Antigüedad: ' + anios.toFixed(1) +
     ' años · Vacacional proporcional: ' + diasVac + ' días · Semestre: ' + mesesSem + ' meses';
@@ -7312,30 +7354,209 @@ function generarReciboEmpPDF() {
 
 function generarEgresoEmpPDF() {
   var e = DB.empleadas.find(function(x){ return String(x.id) === String(empleadaActual); }) || {};
-  var liquido = (document.getElementById('eg-emp-liquido')||{}).textContent || '$0';
-  var detalle = (document.getElementById('eg-emp-detalle')||{}).textContent || '';
-  var hoy = new Date().toLocaleDateString('es-UY');
+  if (!e.id) { toast('Sin empleada seleccionada', 'error'); return; }
 
-  var html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>' +
-    'body{font-family:Arial,sans-serif;font-size:11px;padding:20px;max-width:500px;margin:0 auto}' +
-    '@media print{@page{margin:10mm;size:A5}}' +
-    '.titulo{font-size:14px;font-weight:bold;color:#1a3d35;margin-bottom:4px}' +
-    '.row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #ede5d4}' +
-    '.total{font-size:16px;font-weight:bold;color:#1a3d35;padding:10px 0}' +
-    '</style></head><body>' +
-    '<div class="titulo">CARRASCO ELDERLY CARE SAS</div>' +
-    '<div style="font-size:10px;color:#555;margin-bottom:12px">Rafael Barradas 1527 · Montevideo · ' + hoy + '</div>' +
-    '<div style="font-weight:bold;margin-bottom:2px">' + (e.nombre||'—') + '</div>' +
-    '<div style="font-size:10px;color:#555;margin-bottom:12px">LIQUIDACIÓN POR EGRESO</div>' +
-    '<div style="font-size:10px;color:#555;padding:8px 0;border-bottom:1px solid #ede5d4">' + detalle + '</div>' +
-    '<div class="row total"><span>TOTAL EGRESO</span><span>' + liquido + '</span></div>' +
-    '<div style="margin-top:40px;display:flex;justify-content:space-between;font-size:10px">' +
-    '<div style="text-align:center;border-top:1px solid #555;padding-top:4px;width:40%">Firma empleada</div>' +
-    '<div style="text-align:center;border-top:1px solid #555;padding-top:4px;width:40%">Firma empleador</div></div>' +
-    '</body></html>';
+  // Asegurar cálculo actualizado
+  try { calcEgresoEmp(); } catch(ex) {}
+  var d = window._egresoData;
+  if (!d) { toast('Completá fechas y datos antes de generar el PDF', 'error'); return; }
 
-    abrirPDF(html, 'Recibo egreso');
-  toast('✅ Recibo egreso generado', 'ok');
+  function fmt(n)  { return Math.round(n).toLocaleString('es-UY'); }
+  function fmt4(n) { return n.toLocaleString('es-UY',{minimumFractionDigits:4, maximumFractionDigits:4}); }
+
+  // Importe en letras
+  function numLetras(n) {
+    n = Math.round(n);
+    var u = ['','uno','dos','tres','cuatro','cinco','seis','siete','ocho','nueve','diez','once','doce','trece','catorce','quince','dieciséis','diecisiete','dieciocho','diecinueve','veinte','veintiuno','veintidós','veintitrés','veinticuatro','veinticinco','veintiséis','veintisiete','veintiocho','veintinueve'];
+    var dec = ['','','','treinta','cuarenta','cincuenta','sesenta','setenta','ochenta','noventa'];
+    var c = ['','ciento','doscientos','trescientos','cuatrocientos','quinientos','seiscientos','setecientos','ochocientos','novecientos'];
+    function hasta999(x){
+      if (x === 0) return '';
+      if (x === 100) return 'cien';
+      var s = '';
+      var ce = Math.floor(x/100); x %= 100;
+      if (ce > 0) s += c[ce] + ' ';
+      if (x < 30) s += u[x];
+      else { s += dec[Math.floor(x/10)]; if (x%10) s += ' y ' + u[x%10]; }
+      return s.trim();
+    }
+    if (n === 0) return 'cero';
+    var miles = Math.floor(n/1000), resto = n % 1000;
+    var s = '';
+    if (miles > 0) {
+      if (miles === 1) s = 'mil';
+      else s = hasta999(miles) + ' mil';
+      if (resto > 0) s += ' ' + hasta999(resto);
+    } else s = hasta999(resto);
+    return s;
+  }
+
+  var fIng = d.ingreso ? new Date(d.ingreso).toLocaleDateString('es-UY') : '—';
+  var fSal = d.salida ? new Date(d.salida).toLocaleDateString('es-UY') : '—';
+  var hoy = new Date();
+  var fechaEm = hoy.toLocaleDateString('es-UY', {day:'2-digit', month:'long', year:'numeric'});
+
+  // Logo SVG inline (mismo que recibo de sueldo)
+  var logoSVG =
+    '<svg width="56" height="56" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">' +
+    '<circle cx="50" cy="50" r="48" fill="#1a3d35" stroke="#c9a84c" stroke-width="2"/>' +
+    '<text x="50" y="44" text-anchor="middle" font-family="Cormorant Garamond,serif" font-size="14" font-style="italic" fill="#e8d08a">Elderly</text>' +
+    '<text x="50" y="60" text-anchor="middle" font-family="Cormorant Garamond,serif" font-size="14" font-style="italic" fill="#e8d08a">Care</text>' +
+    '<line x1="22" y1="68" x2="78" y2="68" stroke="#c9a84c" stroke-width="0.7"/>' +
+    '<text x="50" y="78" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="6" letter-spacing="1.5" fill="#c9a84c">CARRASCO</text>' +
+    '</svg>';
+
+  // Filas de HABERES por egreso
+  var filaH = function(cant, lbl, importeUni, total){
+    return '<tr>' +
+      '<td style="padding:3px 6px;text-align:right;width:70px">' + fmt4(cant) + '</td>' +
+      '<td style="padding:3px 8px">' + lbl + '</td>' +
+      '<td style="padding:3px 6px;text-align:right;width:90px">' + fmt4(importeUni) + '</td>' +
+      '<td style="padding:3px 6px;text-align:right;width:90px;font-weight:600">' + fmt(total) + '</td>' +
+    '</tr>';
+  };
+  var habRows = '';
+  var jornalVac = d.jornal * 1.12;
+  if (d.diasVac > 0) habRows += filaH(d.diasVac, 'VACACIONAL (' + d.diasAnuales + 'd/año)', jornalVac, d.vacacional);
+  if (d.diasLic > 0) habRows += filaH(d.diasLic, 'LICENCIA NO GOZADA', jornalVac, d.licencia);
+  if (d.aguinaldo > 0) habRows += filaH(d.mesesSem, 'AGUINALDO PROPORCIONAL', d.aguinaldo / Math.max(d.mesesSem,1), d.aguinaldo);
+
+  // Descuentos (solo BPS sobre aguinaldo)
+  var filaD = function(pct, lbl, base, total){
+    return '<tr>' +
+      '<td style="padding:3px 6px;text-align:right;width:70px">' + pct + '%</td>' +
+      '<td style="padding:3px 8px">' + lbl + '</td>' +
+      '<td style="padding:3px 6px;text-align:right;width:90px">' + fmt4(base) + '</td>' +
+      '<td style="padding:3px 6px;text-align:right;width:90px;font-weight:600">' + fmt(total) + '</td>' +
+    '</tr>';
+  };
+  var descRows = '';
+  if (d.bpsAguin > 0) descRows += filaD('15', 'BPS s/ AGUINALDO', d.aguinaldo, d.bpsAguin);
+  if (descRows === '') descRows = '<tr><td colspan="4" style="padding:8px;color:#888;text-align:center;font-style:italic">Sin aportes BPS (vacacional y lic. no gozada exentos)</td></tr>';
+
+  var totalNominal = d.vacacional + d.licencia + d.aguinaldo;
+  var liqRedondeo = Math.round(d.liquido);
+
+  var html =
+'<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>Liquidación por egreso · '+(e.nombre||'')+'</title>'+
+'<style>'+
+'@page{margin:12mm;size:A4}'+
+'*{box-sizing:border-box}'+
+'body{font-family:Arial,Helvetica,sans-serif;font-size:10px;color:#1a1a1a;margin:0;padding:0;line-height:1.4}'+
+'.recibo{border:2px solid #1a3d35;border-radius:8px;padding:14px;max-width:780px;margin:0 auto;background:white}'+
+'.cabezal{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #1a3d35;padding-bottom:10px;margin-bottom:10px;gap:14px}'+
+'.empresa{display:flex;gap:12px;align-items:flex-start;flex:1}'+
+'.empresa-info{font-size:9.5px;color:#444;line-height:1.5}'+
+'.empresa-info b{color:#1a3d35;font-size:13px;letter-spacing:.3px}'+
+'.cab-derecha{text-align:right;font-size:9.5px;color:#444;min-width:240px}'+
+'.cab-derecha b{color:#1a3d35;display:inline-block;min-width:60px}'+
+'.titulo-recibo{font-size:13px;color:#1a3d35;font-weight:bold;letter-spacing:1px;margin-bottom:4px;text-transform:uppercase}'+
+'.datos-emp{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px 14px;font-size:9.5px;border-bottom:1px solid #ccc;padding:8px 0;margin-bottom:0}'+
+'.datos-emp .lbl{color:#666;margin-right:4px}'+
+'.datos-emp .val{color:#1a1a1a;font-weight:600}'+
+'.aviso-egreso{background:#fff4d6;border-left:4px solid #c9a84c;padding:7px 10px;margin:8px 0;font-size:10px;color:#5a4a1a;border-radius:0 4px 4px 0}'+
+'.bloque-tabla{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-top:4px}'+
+'.col{border:1px solid #ccc}'+
+'.col-head{background:#1a3d35;color:#e8d08a;text-align:center;padding:5px;font-size:10px;letter-spacing:1.5px;font-weight:600}'+
+'table.detalle{width:100%;border-collapse:collapse;font-size:9.5px;font-variant-numeric:tabular-nums}'+
+'table.detalle th{background:#f5f0e8;padding:4px 6px;text-align:right;font-size:8.5px;color:#666;border-bottom:1px solid #ccc;font-weight:600}'+
+'table.detalle th:nth-child(2){text-align:left}'+
+'table.detalle td{vertical-align:top}'+
+'.totales{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid #1a3d35;border-top:none}'+
+'.totales div{padding:5px 10px;font-size:10px;display:flex;justify-content:space-between;border-top:1px solid #ddd}'+
+'.totales div span:first-child{color:#444;font-weight:600}'+
+'.totales div span:last-child{font-variant-numeric:tabular-nums}'+
+'.totales .izq{border-right:1px solid #1a3d35}'+
+'.liquido{background:#1a3d35;color:#e8d08a;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;border-radius:0 0 6px 6px;margin-top:0}'+
+'.liquido span:first-child{font-size:13px;letter-spacing:1px;font-weight:bold}'+
+'.liquido span:last-child{font-size:18px;font-weight:bold;font-variant-numeric:tabular-nums}'+
+'.notas{font-size:8.5px;color:#555;margin-top:10px;line-height:1.5;padding:6px 0;border-top:1px dashed #ccc}'+
+'.firma{margin-top:25px;text-align:right;padding-top:6px;border-top:1px solid #888;display:inline-block;float:right;width:240px;font-size:9.5px;color:#444}'+
+'@media print{body{padding:0}.recibo{border:2px solid #1a3d35;box-shadow:none}}'+
+'</style></head><body>'+
+
+'<div class="recibo">'+
+
+  '<div class="cabezal">'+
+    '<div class="empresa">'+
+      '<div>'+logoSVG+'</div>'+
+      '<div class="empresa-info">'+
+        '<b>CARRASCO ELDERLY CARE SAS</b><br>'+
+        'Rafael Barradas 1527 · Montevideo<br>'+
+        'RUC: 220257400017<br>'+
+      '</div>'+
+    '</div>'+
+    '<div class="cab-derecha">'+
+      '<div class="titulo-recibo">Liquidación por egreso</div>'+
+      '<div><b>BPS:</b> 8831922</div>'+
+      '<div><b>BSE:</b> 5470137</div>'+
+      '<div><b>Grupo:</b> 15 &nbsp; <b>Subgrupo:</b> 200</div>'+
+      '<div style="margin-top:4px;color:#1a3d35;font-weight:600">Fecha emisión: '+fechaEm+'</div>'+
+    '</div>'+
+  '</div>'+
+
+  '<div class="datos-emp">'+
+    '<div><span class="lbl">Empleada:</span><span class="val">'+(e.nombre||'')+'</span></div>'+
+    '<div><span class="lbl">CI:</span><span class="val">'+(e.ci||'—')+'</span></div>'+
+    '<div><span class="lbl">Liq.:</span><span class="val">Egreso</span></div>'+
+    '<div><span class="lbl">Categoría:</span><span class="val">'+(e.categoria||'Cuidador')+'</span></div>'+
+    '<div><span class="lbl">Fecha ingreso:</span><span class="val">'+fIng+'</span></div>'+
+    '<div><span class="lbl">Fecha egreso:</span><span class="val">'+fSal+'</span></div>'+
+    '<div><span class="lbl">Antigüedad:</span><span class="val">'+d.anios.toFixed(1)+' años</span></div>'+
+    '<div><span class="lbl">Banco:</span><span class="val">'+(e.banco||'—')+'</span></div>'+
+    '<div><span class="lbl">Nº Cuenta:</span><span class="val">'+(e.cuenta||'—')+'</span></div>'+
+  '</div>'+
+
+  '<div class="aviso-egreso">'+
+    '⚠️ <b>BPS solo aplica sobre aguinaldo.</b> Vacacional y licencia no gozada no tributan aportes. ' +
+    'Jornal base: $'+fmt4(d.jornal)+' · Jornal vacacional (×1,12): $'+fmt4(jornalVac)+
+  '</div>'+
+
+  '<div class="bloque-tabla">'+
+    '<div class="col">'+
+      '<div class="col-head">HABERES POR EGRESO</div>'+
+      '<table class="detalle"><thead><tr><th>Cant.</th><th>Concepto</th><th>Importe</th><th>Total</th></tr></thead>'+
+      '<tbody>'+habRows+'</tbody></table>'+
+    '</div>'+
+    '<div class="col">'+
+      '<div class="col-head">DESCUENTOS</div>'+
+      '<table class="detalle"><thead><tr><th>%</th><th>Concepto</th><th>Base</th><th>Total</th></tr></thead>'+
+      '<tbody>'+descRows+'</tbody></table>'+
+    '</div>'+
+  '</div>'+
+
+  '<div class="totales">'+
+    '<div class="izq"><span>Total Haberes</span><span>$ '+fmt(totalNominal)+'</span></div>'+
+    '<div><span>Total Descuentos</span><span>$ '+fmt(d.bpsAguin)+'</span></div>'+
+    '<div class="izq"><span>Vacacional</span><span>$ '+fmt(d.vacacional)+'</span></div>'+
+    '<div><span>Aguinaldo</span><span>$ '+fmt(d.aguinaldo)+'</span></div>'+
+    '<div class="izq"><span>Licencia no gozada</span><span>$ '+fmt(d.licencia)+'</span></div>'+
+    '<div><span>Redondeo</span><span>$ 0,00</span></div>'+
+  '</div>'+
+
+  '<div class="liquido">'+
+    '<span>LÍQUIDO A COBRAR</span>'+
+    '<span>$ '+fmt(liqRedondeo)+'</span>'+
+  '</div>'+
+
+  '<div class="notas">'+
+    'Liquidación final por egreso correspondiente a la relación laboral entre Carrasco Elderly Care SAS y la trabajadora arriba mencionada.<br>'+
+    'Conceptos calculados según Ley 12.590 (licencia anual y salario vacacional) y normativa BPS vigente para aguinaldo proporcional.<br>'+
+    '<b>Son Pesos Uruguayos '+numLetras(liqRedondeo)+'.</b><br>'+
+    'Recibí el importe y copia de esta liquidación final por egreso. Manifiesto no tener nada que reclamar a la empresa por ningún concepto derivado de la relación laboral.<br>'+
+    '<span style="color:#888;font-size:8px">Período liquidado: '+fIng+' a '+fSal+' · Días de licencia/año aplicables: '+d.diasAnuales+'</span>'+
+  '</div>'+
+
+  '<div style="clear:both"></div>'+
+  '<div class="firma">Firma del trabajador</div>'+
+  '<div style="clear:both"></div>'+
+
+'</div>'+
+
+'<script>window.addEventListener("load",function(){setTimeout(function(){try{window.print();}catch(e){}}, 400);});<\/script>'+
+'</body></html>';
+
+  abrirPDF(html, 'Egreso — ' + (e.nombre||'').split(' ').slice(0,2).join(' '));
 }
 
 // ─ Pastillero JS ─
